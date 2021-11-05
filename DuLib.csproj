@@ -47,6 +47,8 @@
     <Compile Include="Data\LineDb.cs" />
     <Compile Include="System\RegKey.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System\TestSystem.cs" />
+    <Compile Include="System\UnixTime.cs" />
     <Compile Include="WinForm\SplitButton.cs">
       <SubType>Component</SubType>
     </Compile>
