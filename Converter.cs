@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Net;
 using System.Text;
 
-namespace DuLib.Data
+namespace DuLib
 {
 	public static class Converter
 	{
@@ -88,6 +88,44 @@ namespace DuLib.Data
 		{
 			var bs = Convert.FromBase64String(rawstring);
 			return Encoding.Unicode.GetString(bs);
+		}
+
+		public static string EncodingString(string readblestring)
+		{
+			var bs = Encoding.UTF8.GetBytes(readblestring);
+
+			StringBuilder sb = new StringBuilder();
+			foreach (var b in bs)
+				sb.Append($"{b:X2}");
+
+			return sb.ToString();
+		}
+
+		private static byte HexCharToByte(char ch)
+		{
+			var b = ch - '0';
+			if (b >= 0 && b <= 9)
+				return (byte)b;
+			b = ch - 'A' + 10;
+			if (b >= 10 && b <= 15)
+				return (byte)b;
+			return 0;
+		}
+
+		public static string DecodingString(string rawstring)
+		{
+			if ((rawstring.Length % 2) != 0)
+				return null;
+
+			byte[] bs = new byte[rawstring.Length / 2];
+
+			for (int i = 0, u = 0; i < rawstring.Length; i += 2, u++)
+			{
+				var b = HexCharToByte(rawstring[i]) * 16 + HexCharToByte(rawstring[i + 1]);
+				bs[u] = (byte)b;
+			}
+
+			return Encoding.UTF8.GetString(bs);
 		}
 	}
 }

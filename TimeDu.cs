@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DuLib.Data
+namespace DuLib
 {
-	public static class TimeSupp
+	public static class TimeDu
 	{
 		// 유닉스 시간(epoch)
 		public static long UnixTimeNow

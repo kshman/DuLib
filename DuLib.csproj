@@ -43,16 +43,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\Converter.cs" />
+    <Compile Include="Converter.cs" />
     <Compile Include="Data\LineDb.cs" />
-    <Compile Include="Data\TimeSupp.cs" />
-    <Compile Include="System\RegKey.cs" />
+    <Compile Include="TimeDu.cs" />
+    <Compile Include="WhatsDu.cs" />
+    <Compile Include="PlatForm\RegKey.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="System\TestSystem.cs" />
-    <Compile Include="WinForm\SplitButton.cs">
+    <Compile Include="PlatForm\TestPlatform.cs" />
+    <Compile Include="WinForms\BadakForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\BadakForm.Designer.cs">
+      <DependentUpon>BadakForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\MinMaxCloseButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="WinForm\FormSupp.cs" />
+    <Compile Include="WinForms\SizeMoveHitTest.cs" />
+    <Compile Include="WinForms\SplitButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForms\FormDu.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
