@@ -20,6 +20,8 @@ namespace DuLib.WinForms
 
 		}
 
+		public override string Text { get => BadakText?.Text; set => BadakText.Text = value; }
+
 		#region 윈도우 프로시저
 		private const int WM_NCHITTEST = 0x84;
 

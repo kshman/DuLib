@@ -56,6 +56,9 @@
     <Compile Include="WinForms\BadakForm.Designer.cs">
       <DependentUpon>BadakForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="WinForms\DarkMenuStrip.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WinForms\MinMaxCloseButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -64,6 +67,11 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="WinForms\FormDu.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="WinForms\BadakForm.resx">
+      <DependentUpon>BadakForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

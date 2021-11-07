@@ -16,7 +16,8 @@ namespace DuLib.WinForms
 
 		public SplitButton()
 		{
-			DialogResult = DialogResult.OK;
+			BackColor = Color.FromArgb(20, 20, 20);
+			ForeColor = Color.White;
 		}
 
 		protected override void OnMouseDown(MouseEventArgs mevent)
@@ -50,7 +51,9 @@ namespace DuLib.WinForms
 				int arrowX = ClientRectangle.Width - 14;
 				int arrowY = ClientRectangle.Height / 2 - 1;
 
-				var arrowBrush = Enabled ? SystemBrushes.ControlText : SystemBrushes.ButtonShadow;
+				var arrowColor = Enabled ? ForeColor : SystemColors.ButtonShadow;
+				//var arrowBrush = Enabled ? SystemBrushes.ControlText : SystemBrushes.ButtonShadow;
+				var arrowBrush = new SolidBrush(arrowColor);
 				var arrows = new[] {
 					new Point(arrowX, arrowY),
 					new Point(arrowX + 7, arrowY),
