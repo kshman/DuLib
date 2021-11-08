@@ -38,18 +38,13 @@ namespace DuLib.WinForms
 		}
 		#endregion
 
-		#region 탑패널 - 버튼
-		private void BadakCloseButton_Click(object sender, EventArgs e)
-		{
-			Close();
-		}
-
-		private void BadakMinButton_Click(object sender, EventArgs e)
+		#region 창관리 기능
+		protected void BadakMinimize()
 		{
 			WindowState = FormWindowState.Minimized;
 		}
 
-		private void BadakMaxButton_Click(object sender, EventArgs e)
+		protected void BadakMaximize()
 		{
 			if (WindowState == FormWindowState.Maximized)
 			{
@@ -62,36 +57,32 @@ namespace DuLib.WinForms
 				BadakMaxButton.MinMaxCloseState = MinMaxCloseState.Maximize;
 			}
 		}
-		#endregion
 
-		#region 탑패널 - 마우스
-		private Point _offset = new Point(0, 0);
-		private bool _drag_toppanel = false;
+		private Point _drag_offset = new Point(0, 0);
+		private bool _drag_window = false;
 
-		private void BadakTopPanel_MouseDown(object sender, MouseEventArgs e)
+		protected void BadakDragOnMouseDown(MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left)
-			{
-				_drag_toppanel = true;
-				var pt = PointToScreen(e.Location);
-				_offset.X = Location.X - pt.X;
-				_offset.Y = Location.Y - pt.Y;
-			}
+			if (e.Button != MouseButtons.Left)
+				_drag_window = false;
 			else
 			{
-				_drag_toppanel = false;
+				_drag_window = true;
+				var pt = PointToScreen(e.Location);
+				_drag_offset.X = Location.X - pt.X;
+				_drag_offset.Y = Location.Y - pt.Y;
 			}
 
 			if (e.Clicks == 2)
 			{
-				_drag_toppanel = false;
-				BadakMaxButton_Click(sender, e);
+				_drag_window = false;
+				BadakMaximize();
 			}
 		}
 
-		private void BadakTopPanel_MouseUp(object sender, MouseEventArgs e)
+		protected void BadakDragOnMouseUp(MouseEventArgs e)
 		{
-			_drag_toppanel = false;
+			_drag_window = false;
 
 			if (Location.Y <= 5 && WindowState != FormWindowState.Maximized)
 			{
@@ -100,12 +91,12 @@ namespace DuLib.WinForms
 			}
 		}
 
-		private void BadakTopPanel_MouseMove(object sender, MouseEventArgs e)
+		protected void BadakDragOnMouseMove(MouseEventArgs e)
 		{
-			if (_drag_toppanel)
+			if (_drag_window)
 			{
 				var pt = BadakTopPanel.PointToScreen(e.Location);
-				pt.Offset(_offset);
+				pt.Offset(_drag_offset);
 
 				if (WindowState == FormWindowState.Normal)
 					Location = pt;
@@ -120,6 +111,41 @@ namespace DuLib.WinForms
 					}
 				}
 			}
+		}
+		#endregion
+
+		#region 탑패널 - 버튼
+		private void BadakCloseButton_Click(object sender, EventArgs e)
+		{
+			Close();
+		}
+
+		private void BadakMinButton_Click(object sender, EventArgs e)
+		{
+			BadakMinimize();
+		}
+
+		private void BadakMaxButton_Click(object sender, EventArgs e)
+		{
+			BadakMaximize();
+		}
+		#endregion
+
+		#region 탑패널 - 마우스
+
+		private void BadakTopPanel_MouseDown(object sender, MouseEventArgs e)
+		{
+			BadakDragOnMouseDown(e);
+		}
+
+		private void BadakTopPanel_MouseUp(object sender, MouseEventArgs e)
+		{
+			BadakDragOnMouseUp(e);
+		}
+
+		private void BadakTopPanel_MouseMove(object sender, MouseEventArgs e)
+		{
+			BadakDragOnMouseMove(e);
 		}
 		#endregion
 	}
