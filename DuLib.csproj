@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Converter.cs" />
     <Compile Include="Data\LineDb.cs" />
+    <Compile Include="Data\StringAsNumericComparer.cs" />
     <Compile Include="TimeDu.cs" />
     <Compile Include="WhatsDu.cs" />
     <Compile Include="PlatForm\RegKey.cs" />
