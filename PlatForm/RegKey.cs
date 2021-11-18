@@ -86,6 +86,11 @@ namespace DuLib.Platform
 			return _rk != null && _rk.GetValue(name) is int value ? value : failret;
 		}
 
+		public long GetLong(string name, long failret = -1)
+		{
+			return _rk != null && _rk.GetValue(name) is long value ? value : failret;
+		}
+
 		public byte[] GetBytes(string name)
 		{
 			return _rk != null && _rk.GetValue(name) is byte[] value ? value : null;
