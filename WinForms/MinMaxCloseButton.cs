@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace DuLib.WinForms
+namespace Du.WinForms
 {
 	public class MinMaxCloseButton : Button
 	{

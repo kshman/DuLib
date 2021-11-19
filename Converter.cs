@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Net;
 using System.Text;
 
-namespace DuLib
+namespace Du
 {
 	public static class Converter
 	{

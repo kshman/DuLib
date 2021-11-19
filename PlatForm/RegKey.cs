@@ -1,11 +1,11 @@
 ﻿using Microsoft.Win32;
 using System;
 
-namespace DuLib.Platform
+namespace Du.Platform
 {
 	public class RegKey : IDisposable
 	{
-		private string BaseKey = "Software";
+		private readonly string BaseKey = "Software";
 
 		private RegistryKey _rk;
 
@@ -46,8 +46,14 @@ namespace DuLib.Platform
 
 		public void Dispose()
 		{
-			if (_rk != null)
-				_rk.Dispose();
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+				Close();
 		}
 
 		public void Close()
@@ -183,7 +189,7 @@ namespace DuLib.Platform
 					using (var re = rc.CreateKey(extension))
 						re.SetString(null, type);
 
-					using (var rt = rc.CreateKey(type))
+					using (var rt = rc.CreateKey(type)) 
 					{
 						rt.SetString(null, description);
 

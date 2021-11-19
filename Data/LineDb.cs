@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace DuLib.Data
+namespace Du.Data
 {
 	// LineDb v3
 	public class LineDb
@@ -71,7 +71,7 @@ namespace DuLib.Data
 			return true;
 		}
 
-		private static char[] _ParseSplitChars = new char[] { '\n', '\r' };
+		private static readonly char[] _ParseSplitChars = new char[] { '\n', '\r' };
 
 		private void ParseLines(string ctx, bool useintdb)
 		{

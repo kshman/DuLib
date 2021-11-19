@@ -1,12 +1,10 @@
-﻿namespace DuLib
+﻿namespace Du
 {
-	public static class WhatsDu
+	internal static class WhatsDu
 	{
-		public static string Name => "DuLib";
-
-		public static void TestLib()
+		public static string Name()
 		{
-			
+			return "DuLib";
 		}
 	}
 }

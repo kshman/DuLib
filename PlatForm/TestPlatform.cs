@@ -1,7 +1,8 @@
-﻿using System.Drawing.Text;
+﻿using System;
+using System.Drawing.Text;
 using System.Security.Principal;
 
-namespace DuLib.Platform
+namespace Du.Platform
 {
 	public static class TestPlatform
 	{
@@ -9,21 +10,37 @@ namespace DuLib.Platform
 		{
 			get
 			{
-				WindowsIdentity identity = WindowsIdentity.GetCurrent();
-				WindowsPrincipal principal = new WindowsPrincipal(identity);
-				return principal.IsInRole(WindowsBuiltInRole.Administrator);
+#if false
+				if (OperatingSystem.IsWindows())
+					return WindowsIsAdministrator();
+				else
+					return false;
+#else
+				return WindowsIsAdministrator();
+#endif
 			}
+		}
+
+		private static bool WindowsIsAdministrator()
+		{
+			var identity = WindowsIdentity.GetCurrent();
+			var principal = new WindowsPrincipal(identity);
+			return principal.IsInRole(WindowsBuiltInRole.Administrator);
 		}
 
 		public static bool IsFontInstalled(string fontname)
 		{
 			InstalledFontCollection collection = new InstalledFontCollection();
+#if false
+			return Array.Find(collection.Families, f => f.Name == fontname) != null;
+#else
 			foreach (var family in collection.Families)
 			{
 				if (family.Name == fontname)
 					return true;
 			}
 			return false;
+#endif
 		}
 
 		public static int IsFontInstalled(string[] fontnames)

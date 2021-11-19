@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace DuLib.WinForms
+namespace Du.WinForms
 {
 	// https://stackoverflow.com/questions/10803184/windows-forms-button-with-drop-down-menu/10803307
 	public class SplitButton : Button

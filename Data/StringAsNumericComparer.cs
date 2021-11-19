@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace DuLib.Data
+namespace Du.Data
 {
 	// https://stackoverflow.com/questions/23114201/sorting-issue-in-net
 	public class StringAsNumericComparer : IComparer<string>
 	{
 		public StringAsNumericComparer()
 		{ }
-
-		public int Compare(object x, object y)
-		{
-			return (x is string sx) && (y is string sy) ? Comparer.Compare(sx, sy) : -1;
-		}
 
 		public int Compare(string x, string y)
 		{

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
 
-namespace DuLib.WinForms
+namespace Du.WinForms
 {
 	public class SizeMoveHitTest
 	{

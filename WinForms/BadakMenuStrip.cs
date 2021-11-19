@@ -2,24 +2,24 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace DuLib.WinForms
+namespace Du.WinForms
 {
-	public class DarkMenuStrip : MenuStrip
+	public class BadakMenuStrip : MenuStrip
 	{
-		public DarkMenuStrip()
+		public BadakMenuStrip()
 		{
 			Renderer = new InternalDarkMenuRenderer();
 		}
 	}
 
-	public class DarkContextMenuStrip : ContextMenuStrip
+	public class BadakContextMenuStrip : ContextMenuStrip
 	{
-		public DarkContextMenuStrip()
+		public BadakContextMenuStrip()
 		{
 			Renderer = new InternalDarkMenuRenderer();
 		}
 
-		public DarkContextMenuStrip(IContainer container)
+		public BadakContextMenuStrip(IContainer container)
 			: base(container)
 		{
 			Renderer = new InternalDarkMenuRenderer();
@@ -81,8 +81,8 @@ namespace DuLib.WinForms
 			{
 				var rect = new Rectangle(4, 2, 18, 18);
 				var rect2 = new Rectangle(5, 3, 16, 16);
-				SolidBrush b = new SolidBrush(Color.Black);
-				SolidBrush b2 = new SolidBrush(Color.FromArgb(220, 220, 220));
+				var b = new SolidBrush(Color.Black);
+				var b2 = new SolidBrush(Color.FromArgb(220, 220, 220));
 
 				e.Graphics.FillRectangle(b, rect);
 				e.Graphics.FillRectangle(b2, rect2);
@@ -92,8 +92,8 @@ namespace DuLib.WinForms
 			{
 				var rect = new Rectangle(4, 2, 18, 18);
 				var rect2 = new Rectangle(5, 3, 16, 16);
-				SolidBrush b = new SolidBrush(Color.White);
-				SolidBrush b2 = new SolidBrush(Color.FromArgb(255, 80, 90, 90));
+				var b = new SolidBrush(Color.White);
+				var b2 = new SolidBrush(Color.FromArgb(255, 80, 90, 90));
 
 				e.Graphics.FillRectangle(b, rect);
 				e.Graphics.FillRectangle(b2, rect2);

@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 using System.Windows.Forms;
 
-namespace DuLib.WinForms
+namespace Du.WinForms
 {
-	public static class FormDu
+	public static class ControlDu
 	{
 		public static void DoubleBuffered(Control control, bool enabled)
 		{
