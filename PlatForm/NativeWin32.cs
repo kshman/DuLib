@@ -6,6 +6,7 @@ namespace Du.PlatForm
 	internal class NativeWin32
 	{
 		internal const int WM_COPYDATA = 0x004A;
+		internal const int WM_WINDOWPOSCHANGING = 0x0046;
 
 		internal const int SW_RESTORE = 9;
 

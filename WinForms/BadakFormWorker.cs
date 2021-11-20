@@ -27,6 +27,7 @@ namespace Du.WinForms
 		}
 
 		public bool BodyAsTitle => _ht.BodyAsTitle;
+		public bool MoveTopToMaximize { get; set; } = true;
 
 		private const int WM_NCHITTEST = 0x84;
 
@@ -75,8 +76,9 @@ namespace Du.WinForms
 		{
 			_drag_form = false;
 
-			if (_form.Location.Y <= 5 && _form.WindowState != FormWindowState.Maximized && _sysbtn != null)
-				_sysbtn.ForceMaximize();
+			if (_sysbtn != null && MoveTopToMaximize)
+				if (_form.Location.Y <= 5 && _form.WindowState != FormWindowState.Maximized)
+					_sysbtn.ForceMaximize();
 		}
 
 		public void DragOnMove(MouseEventArgs e)

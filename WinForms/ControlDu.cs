@@ -1,6 +1,7 @@
 ﻿using Du.PlatForm;
 using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Du.WinForms
@@ -88,18 +89,60 @@ namespace Du.WinForms
 		}
 
 		//
-		public static bool ReceiveCopyDataString(int msg, IntPtr lparam, out string value)
+		public static bool ReceiveCopyDataString(ref Message msg, out string value)
 		{
-			if (msg != NativeWin32.WM_COPYDATA)
+			if (msg.Msg != NativeWin32.WM_COPYDATA)
 			{
 				value = null;
 				return false;
 			}
 			else
 			{
-				value = NativeWin32.WmCopyData.Receive(lparam);
+				value = NativeWin32.WmCopyData.Receive(msg.LParam);
 				return true;
 			}
+		}
+
+		//
+		public static void MagneticDockForm(ref Message msg, Form form, int margin)
+		{
+			if (msg.Msg != NativeWin32.WM_WINDOWPOSCHANGING)
+				return;
+
+			var desktop = (Screen.FromHandle(form.Handle)).WorkingArea;
+			var pos = Marshal.PtrToStructure<WindowPos>(msg.LParam);
+
+			// 왼쪽
+			if (Math.Abs(pos.x - desktop.Left) < margin)
+				pos.x = desktop.Left;
+
+			// 오른쪽
+			if (Math.Abs((pos.x + pos.cx) - (desktop.Left + desktop.Width)) < margin)
+				pos.x = desktop.Right - pos.cx;
+
+			// 위쪽
+			if (Math.Abs(pos.y - desktop.Top) < margin)
+				pos.y = desktop.Top;
+
+			// 아래쪽
+			if (Math.Abs((pos.y + pos.cy) - (desktop.Top + desktop.Height)) < margin)
+				pos.y = desktop.Bottom - form.Bounds.Height;
+
+			Marshal.StructureToPtr(pos, msg.LParam, false);
+			msg.Result = IntPtr.Zero;
+		}
+
+		//
+		[StructLayout(LayoutKind.Sequential)]
+		internal struct WindowPos
+		{
+			public IntPtr hwnd;
+			public IntPtr hwndInsertAfter;
+			public int x;
+			public int y;
+			public int cx;
+			public int cy;
+			public int flags;
 		}
 	}
 }
