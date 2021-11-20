@@ -1,36 +1,199 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Du.Data
 {
+	//
+	public class LineStringDb<T> : Generic.LineDb<string, T>
+	//, IEnumerable<KeyValuePair<string, T>>, IEnumerable, IReadOnlyCollection<KeyValuePair<string, T>>
+	{
+		public LineStringDb()
+		{
+		}
+
+		public static LineStringDb<T> FromContext(string context, Generic.IConverter<T> converter)
+		{
+			var l = new LineStringDb<T>();
+			l.AddFromContext(context, converter);
+			return l;
+		}
+
+		public static LineStringDb<T> FromFile(string filename, Encoding encoding, Generic.IConverter<T> converter)
+		{
+			var l = new LineStringDb<T>();
+			return l.AddFromFile(filename, encoding, converter) ? l : null;
+		}
+
+		private void InternalParseLines(string ctx, Generic.IConverter<T> converter)
+		{
+			var ss = ctx.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+			foreach (var v in ss)
+			{
+				string l = v.TrimStart();
+				if (LineToKeyValue(l, out string key, out string value))
+					Db[key] = converter.Convert(value);
+			}
+		}
+
+		public void AddFromContext(string context, Generic.IConverter<T> converter)
+		{
+			InternalParseLines(context, converter);
+		}
+
+		public bool AddFromFile(string filename, Encoding encoding, Generic.IConverter<T> converter)
+		{
+			try
+			{
+				if (File.Exists(filename))
+				{
+					var context = File.ReadAllText(filename, encoding);
+					InternalParseLines(context, converter);
+					return true;
+				}
+			}
+			catch { }
+
+			return false;
+		}
+	}
+
+	//
+	public class LineIntDb<T> : Generic.LineDb<int, T>
+	{
+		public LineIntDb()
+		{
+		}
+
+		public static LineIntDb<T> FromContext(string context, Generic.IConverter<T> converter)
+		{
+			var l = new LineIntDb<T>();
+			l.AddFromContext(context, converter);
+			return l;
+		}
+
+		public static LineIntDb<T> FromFile(string filename, Encoding encoding, Generic.IConverter<T> converter)
+		{
+			var l = new LineIntDb<T>();
+			return l.AddFromFile(filename, encoding, converter) ? l : null;
+		}
+
+		private void InternalParseLines(string ctx, Generic.IConverter<T> converter)
+		{
+			var ss = ctx.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+			foreach (var v in ss)
+			{
+				string l = v.TrimStart();
+				if (LineToKeyValue(l, out string key, out string value) && int.TryParse(key, out var nkey))
+					Db[nkey] = converter.Convert(value);
+			}
+		}
+
+		public void AddFromContext(string context, Generic.IConverter<T> converter)
+		{
+			InternalParseLines(context, converter);
+		}
+
+		public bool AddFromFile(string filename, Encoding encoding, Generic.IConverter<T> converter)
+		{
+			try
+			{
+				if (File.Exists(filename))
+				{
+					var context = File.ReadAllText(filename, encoding);
+					InternalParseLines(context, converter);
+					return true;
+				}
+			}
+			catch { }
+
+			return false;
+		}
+	}
+
+	//
+	public class LineDb : Generic.LineDb<string, string>
+	{
+		public LineDb()
+		{
+		}
+
+		public static LineDb FromContext(string context)
+		{
+			var l = new LineDb();
+			l.AddFromContext(context);
+			return l;
+		}
+
+		public static LineDb FromFile(string filename, Encoding encoding)
+		{
+			var l = new LineDb();
+			return l.AddFromFile(filename, encoding) ? l : null;
+		}
+
+		private void InternalParseLines(string ctx)
+		{
+			var ss = ctx.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+			foreach (var v in ss)
+			{
+				string l = v.TrimStart();
+				if (LineToKeyValue(l, out string key, out string value))
+					Db[key] = value;
+			}
+		}
+
+		public void AddFromContext(string context)
+		{
+			InternalParseLines(context);
+		}
+
+		public bool AddFromFile(string filename, Encoding encoding)
+		{
+			try
+			{
+				if (File.Exists(filename))
+				{
+					var context = File.ReadAllText(filename, encoding);
+					InternalParseLines(context);
+					return true;
+				}
+			}
+			catch { }
+
+			return false;
+		}
+	}
+
 	// LineDb v3
-	public class LineDb
+	public class LineDbV3
 	{
 		protected readonly Dictionary<string, string> StringDb = new Dictionary<string, string>();
 		protected readonly Dictionary<int, string> IntDb = new Dictionary<int, string>();
 
-		protected LineDb()
+		protected LineDbV3()
 		{
 		}
 
-		public static LineDb Empty()
+		public static LineDbV3 Empty()
 		{
-			var l = new LineDb();
+			var l = new LineDbV3();
 			return l;
 		}
 
-		public static LineDb FromContext(string ctx, bool useintdb)
+		public static LineDbV3 FromContext(string ctx, bool useintdb)
 		{
-			var l = new LineDb();
+			var l = new LineDbV3();
 			l.AddFromContext(ctx, useintdb);
 			return l;
 		}
 
-		public static LineDb FromFile(string filename, Encoding encoding, bool useintdb)
+		public static LineDbV3 FromFile(string filename, Encoding encoding, bool useintdb)
 		{
-			var l = new LineDb();
+			var l = new LineDbV3();
 			l.AddFromFile(filename, encoding, useintdb);
 			return l;
 		}

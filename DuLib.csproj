@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converter.cs" />
+    <Compile Include="Data\Generic\IConverter.cs" />
+    <Compile Include="Data\Generic\LineDb.cs" />
     <Compile Include="Data\LineDb.cs" />
     <Compile Include="Data\StringAsNumericComparer.cs" />
     <Compile Include="EorzeaTime.cs" />
