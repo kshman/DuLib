@@ -26,7 +26,7 @@ namespace Du.WinForms
 			_sysbtn = system_button;
 		}
 
-		public bool BodyAsTitle => _ht.BodyAsTitle;
+		public bool BodyAsTitle { get => _ht.BodyAsTitle; set => _ht.BodyAsTitle = value; }
 		public bool MoveTopToMaximize { get; set; } = true;
 
 		private const int WM_NCHITTEST = 0x84;
