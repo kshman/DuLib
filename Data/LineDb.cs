@@ -8,11 +8,17 @@ namespace Du.Data
 	// LineDb v3
 	public class LineDb
 	{
-		private Dictionary<string, string> _dbstr = new Dictionary<string, string>();
-		private Dictionary<int, string> _dbint = new Dictionary<int, string>();
+		protected readonly Dictionary<string, string> StringDb = new Dictionary<string, string>();
+		protected readonly Dictionary<int, string> IntDb = new Dictionary<int, string>();
 
-		private LineDb()
+		protected LineDb()
 		{
+		}
+
+		public static LineDb Empty()
+		{
+			var l = new LineDb();
+			return l;
 		}
 
 		public static LineDb FromContext(string ctx, bool useintdb)
@@ -29,18 +35,19 @@ namespace Du.Data
 			return l;
 		}
 
-		public void AddFromContext(string context, bool useintdb=false)
+		public void AddFromContext(string context, bool useintdb = false)
 		{
 			ParseLines(context, useintdb);
 		}
 
-		public void AddFromFile(string filename, Encoding encoding, bool useintdb=false)
+		public void AddFromFile(string filename, Encoding encoding, bool useintdb = false)
 		{
 			try
 			{
 				var context = File.ReadAllText(filename, encoding);
 				ParseLines(context, useintdb);
-			} catch { }
+			}
+			catch { }
 		}
 
 		public bool SaveToFile(string filename, Encoding enc, string header = null)
@@ -56,7 +63,7 @@ namespace Du.Data
 					sw.WriteLine();
 				}
 
-				foreach (var l in _dbstr)
+				foreach (var l in StringDb)
 				{
 					if (l.Key.IndexOf('=') < 0)
 						sw.WriteLine($"{l.Key}={l.Value}");
@@ -64,7 +71,7 @@ namespace Du.Data
 						sw.WriteLine($"\"{l.Key}\"={l.Value}");
 				}
 
-				foreach (var l in _dbint)
+				foreach (var l in IntDb)
 					sw.WriteLine($"{l.Key}={l.Value}");
 			}
 
@@ -73,9 +80,9 @@ namespace Du.Data
 
 		private static readonly char[] _ParseSplitChars = new char[] { '\n', '\r' };
 
-		private void ParseLines(string ctx, bool useintdb)
+		protected void ParseLines(string ctx, bool useintdb)
 		{
-			_dbstr.Clear();
+			StringDb.Clear();
 
 			var ss = ctx.Split(_ParseSplitChars, StringSplitOptions.RemoveEmptyEntries);
 
@@ -117,27 +124,25 @@ namespace Du.Data
 				}
 
 				if (!useintdb)
-				{
-					if (_dbstr.TryGetValue(name, out _))
-						_dbstr.Remove(name);
-					_dbstr.Add(name, value);
-				}
+					StringDb[name] = value;
 				else
 				{
 					if (!int.TryParse(name, out var nkey))
-					{
-						if (_dbstr.TryGetValue(name, out _))
-							_dbstr.Remove(name);
-						_dbstr.Add(name, value);
-					}
+						StringDb[name] = value;
 					else
-					{
-						if (_dbint.TryGetValue(nkey, out _))
-							_dbint.Remove(nkey);
-						_dbint.Add(nkey, value);
-					}
+						IntDb[nkey] = value;
 				}
 			}
+		}
+
+		public void Set(string name, string value)
+		{
+			StringDb[name] = value;
+		}
+
+		public void Set(int key, string value)
+		{
+			IntDb[key] = value;
 		}
 
 		public string Get(string name)
@@ -152,31 +157,31 @@ namespace Du.Data
 
 		public string Get(string name, string defvalue)
 		{
-			if (!_dbstr.TryGetValue(name, out string value))
+			if (!StringDb.TryGetValue(name, out string value))
 				return defvalue;
 			return value;
 		}
 
 		public string Get(int key, string defvalue)
 		{
-			if (!_dbint.TryGetValue(key, out string value))
+			if (!IntDb.TryGetValue(key, out string value))
 				return defvalue;
 			return value;
 		}
 
 		public bool Try(string name, out string value)
 		{
-			return _dbstr.TryGetValue(name, out value);
+			return StringDb.TryGetValue(name, out value);
 		}
 
 		public bool Try(int key, out string value)
 		{
-			return _dbint.TryGetValue(key, out value);
+			return IntDb.TryGetValue(key, out value);
 		}
 
 		public bool Try(string name, out int value)
 		{
-			if (!_dbstr.TryGetValue(name, out string v))
+			if (!StringDb.TryGetValue(name, out string v))
 			{
 				value = 0;
 				return false;
@@ -191,7 +196,7 @@ namespace Du.Data
 
 		public bool Try(string name, out ushort value)
 		{
-			if (!_dbstr.TryGetValue(name, out string v))
+			if (!StringDb.TryGetValue(name, out string v))
 			{
 				value = 0;
 				return false;
@@ -206,15 +211,15 @@ namespace Du.Data
 
 		public IEnumerator<KeyValuePair<string, string>> GetStringDb()
 		{
-			return (IEnumerator<KeyValuePair<string, string>>)_dbstr;
+			return (IEnumerator<KeyValuePair<string, string>>)StringDb;
 		}
 
 		public IEnumerator<KeyValuePair<int, string>> GetIntDb()
 		{
-			return (IEnumerator<KeyValuePair<int, string>>)_dbint;
+			return (IEnumerator<KeyValuePair<int, string>>)IntDb;
 		}
 
-		public int Count { get { return _dbstr.Count + _dbint.Count; } }
+		public int Count { get { return StringDb.Count + IntDb.Count; } }
 
 		public string this[string index]
 		{
