@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Text;
 
@@ -126,6 +128,58 @@ namespace Du
 			}
 
 			return Encoding.UTF8.GetString(bs);
+		}
+
+		public static string CompressString(string rawstring)
+		{
+			var raw = Encoding.UTF8.GetBytes(rawstring);
+			var mst = new MemoryStream();
+
+			using (var gzip = new GZipStream(mst, CompressionMode.Compress, true))
+				gzip.Write(raw, 0, raw.Length);
+
+			mst.Position = 0;
+
+			var buf = new byte[mst.Length];
+			mst.Read(buf, 0, buf.Length);
+
+			var bs = new byte[buf.Length + 4];
+			Buffer.BlockCopy(buf, 0, bs, 4, buf.Length);
+			Buffer.BlockCopy(BitConverter.GetBytes(raw.Length), 0, bs, 0, 4);
+
+			StringBuilder sb = new StringBuilder();
+			foreach (var b in bs)
+				sb.Append($"{b:X2}");
+
+			return sb.ToString();
+		}
+
+		public static string DecompressString(string compressedstring)
+		{
+			if ((compressedstring.Length % 2) != 0)
+				return null;
+
+			byte[] bs = new byte[compressedstring.Length / 2];
+
+			for (int i = 0, u = 0; i < compressedstring.Length; i += 2, u++)
+			{
+				var b = HexCharToByte(compressedstring[i]) * 16 + HexCharToByte(compressedstring[i + 1]);
+				bs[u] = (byte)b;
+			}
+
+			using (MemoryStream mst = new MemoryStream())
+			{
+				int len = BitConverter.ToInt32(bs, 0);
+				mst.Write(bs, 4, bs.Length - 4);
+
+				bs = new byte[len];
+				mst.Position = 0;
+
+				using (GZipStream gzip = new GZipStream(mst, CompressionMode.Decompress))
+					gzip.Read(bs, 0, bs.Length);
+
+				return Encoding.UTF8.GetString(bs);
+			}
 		}
 	}
 }

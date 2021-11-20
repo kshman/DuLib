@@ -114,6 +114,18 @@ namespace Du.Platform
 			return failret;
 		}
 
+		public string GetDecompressString(string name, string failret = null)
+		{
+			if (_rk != null && _rk.GetValue(name) is string value)
+			{
+				var s = Converter.DecompressString(value);
+				if (!string.IsNullOrEmpty(s))
+					return s;
+			}
+
+			return failret;
+		}
+
 		public void SetValue(string name, object value)
 		{
 			_rk?.SetValue(name, value);
@@ -144,6 +156,15 @@ namespace Du.Platform
 			if (_rk != null)
 			{
 				var s = Converter.EncodingString(value);
+				_rk.SetValue(name, s, RegistryValueKind.String);
+			}
+		}
+
+		public void SetCompressString(string name, string value)
+		{
+			if (_rk != null)
+			{
+				var s = Converter.CompressString(value);
 				_rk.SetValue(name, s, RegistryValueKind.String);
 			}
 		}

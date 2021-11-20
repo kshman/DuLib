@@ -16,6 +16,37 @@ namespace Du.WinForms
 			prop.SetValue(control, enabled, null);
 		}
 
+		static double[] _FormEffectAppearOpacity = new double[] { 0.1d, 0.3d, 0.7d, 0.8d, 0.9d, 1.0d };
+
+		//
+		public static void FormEffectAppear(Form form)
+		{
+			var count = 0;
+
+			var timer = new Timer()
+			{
+				Interval = 20,
+			};
+
+			form.RightToLeftLayout = false;
+			form.Opacity = 0d;
+
+			timer.Tick += (o, e) =>
+			{
+				if ((count + 1 > _FormEffectAppearOpacity.Length) || form == null)
+				{
+					timer.Stop();
+					timer.Dispose();
+					timer = null;
+				}
+				else
+				{
+					form.Opacity = _FormEffectAppearOpacity[count++];
+				}
+			};
+			timer.Start();
+		}
+
 		//
 		public static bool ShowIfIconic(IntPtr handle)
 		{
