@@ -26,6 +26,8 @@ namespace Du.WinForms
 			_sysbtn = system_button;
 		}
 
+		public bool BodyAsTitle => _ht.BodyAsTitle;
+
 		private const int WM_NCHITTEST = 0x84;
 
 		public bool WndProc(ref Message m)
@@ -38,6 +40,16 @@ namespace Du.WinForms
 			}
 
 			return false;
+		}
+
+		public void Minimize()
+		{
+			_sysbtn?.Minimize();
+		}
+
+		public void Maximize()
+		{
+			_sysbtn?.Maximize();
 		}
 
 		public void DragOnDown(MouseEventArgs e)

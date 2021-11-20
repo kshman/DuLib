@@ -47,6 +47,7 @@
     <Compile Include="Data\LineDb.cs" />
     <Compile Include="Data\StringAsNumericComparer.cs" />
     <Compile Include="EorzeaTime.cs" />
+    <Compile Include="PlatForm\NativeWin32.cs" />
     <Compile Include="UnixTime.cs" />
     <Compile Include="WhatsDu.cs" />
     <Compile Include="PlatForm\RegKey.cs" />

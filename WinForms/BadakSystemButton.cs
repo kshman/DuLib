@@ -44,7 +44,7 @@ namespace Du.WinForms
 		private void CloseButton_Click(object sender, EventArgs _)
 		{
 			var e = new CancelEventArgs(false);
-			CloseOrder(this, e);
+			CloseOrder?.Invoke(this, e);
 
 			if (!e.Cancel && Form != null)
 				Form.Close();
