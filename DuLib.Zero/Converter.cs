@@ -14,7 +14,7 @@ public static class Converter
 	/// <param name="s">문자열</param>
 	/// <param name="failret">실패시 반환값</param>
 	/// <returns></returns>
-	public static long ToLong(string s, long failret = 0)
+	public static long ToLong(string? s, long failret = 0)
 	{
 		return long.TryParse(s, out var ret) ? ret : failret;
 	}
@@ -25,7 +25,7 @@ public static class Converter
 	/// <param name="s"></param>
 	/// <param name="failret"></param>
 	/// <returns></returns>
-	public static int ToInt(string s, int failret = 0)
+	public static int ToInt(string? s, int failret = 0)
 	{
 		return int.TryParse(s, out var ret) ? ret : failret;
 	}
@@ -36,7 +36,7 @@ public static class Converter
 	/// <param name="s"></param>
 	/// <param name="failret"></param>
 	/// <returns></returns>
-	public static short ToShort(string s, short failret = 0)
+	public static short ToShort(string? s, short failret = 0)
 	{
 		return short.TryParse(s, out var ret) ? ret : failret;
 	}
@@ -47,7 +47,7 @@ public static class Converter
 	/// <param name="s"></param>
 	/// <param name="failret"></param>
 	/// <returns></returns>
-	public static ushort ToUshort(string s, ushort failret = 0)
+	public static ushort ToUshort(string? s, ushort failret = 0)
 	{
 		return ushort.TryParse(s, out var ret) ? ret : failret;
 	}
@@ -58,7 +58,7 @@ public static class Converter
 	/// <param name="s"></param>
 	/// <param name="failret"></param>
 	/// <returns></returns>
-	public static bool ToBool(string s, bool failret = false)
+	public static bool ToBool(string? s, bool failret = false)
 	{
 		return string.IsNullOrEmpty(s) ? failret : s.ToUpper().Equals("TRUE");
 	}
@@ -69,7 +69,7 @@ public static class Converter
 	/// <param name="s"></param>
 	/// <param name="failret"></param>
 	/// <returns></returns>
-	public static float ToFloat(string s, float failret = 0.0f)
+	public static float ToFloat(string? s, float failret = 0.0f)
 	{
 		return float.TryParse(s, out float v) ? v : failret;
 	}
@@ -80,7 +80,7 @@ public static class Converter
 	/// <param name="s"></param>
 	/// <param name="failret"></param>
 	/// <returns></returns>
-	public static Color ToColorArgb(string s, Color failret)
+	public static Color ToColorArgb(string? s, Color failret)
 	{
 		try
 		{
@@ -99,7 +99,7 @@ public static class Converter
 	/// </summary>
 	/// <param name="s"></param>
 	/// <returns></returns>
-	public static Color ToColorArgb(string s)
+	public static Color ToColorArgb(string? s)
 	{
 		return ToColorArgb(s, Color.Transparent);
 	}
@@ -109,24 +109,27 @@ public static class Converter
 	/// </summary>
 	/// <param name="ipstr"></param>
 	/// <returns></returns>
-	public static IPAddress ToIPAddressFromIPV4(string ipstr)
+	public static IPAddress ToIPAddressFromIPV4(string? ipstr)
 	{
-		try
+		if (!string.IsNullOrEmpty(ipstr))
 		{
-			var sa = ipstr.Trim().Split('.');
-			if (sa.Length == 4)
+			try
 			{
-				if (sa[3].Contains(':'))
-					sa[3] = sa[3][..sa[3].IndexOf(":")];
+				var sa = ipstr.Trim().Split('.');
+				if (sa.Length == 4)
+				{
+					if (sa[3].Contains(':'))
+						sa[3] = sa[3][..sa[3].IndexOf(":")];
 
-				var ivs = new byte[4];
-				for (var i = 0; i < 4; i++)
-					ivs[i] = byte.Parse(sa[i]);
+					var ivs = new byte[4];
+					for (var i = 0; i < 4; i++)
+						ivs[i] = byte.Parse(sa[i]);
 
-				return new IPAddress(ivs);
+					return new IPAddress(ivs);
+				}
 			}
+			catch { }
 		}
-		catch { }
 
 		return IPAddress.None;
 	}
