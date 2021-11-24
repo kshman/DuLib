@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31911.260
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DuLib.Zero", "DuLib.Zero\DuLib.Zero.csproj", "{48D9D136-DED3-4544-9B33-E6F7CBA58838}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DuLib.WinForms", "DuLib.WinForms\DuLib.WinForms.csproj", "{867882A6-6CBE-4FFB-B798-202B7F79895B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48D9D136-DED3-4544-9B33-E6F7CBA58838}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48D9D136-DED3-4544-9B33-E6F7CBA58838}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48D9D136-DED3-4544-9B33-E6F7CBA58838}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48D9D136-DED3-4544-9B33-E6F7CBA58838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{867882A6-6CBE-4FFB-B798-202B7F79895B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{867882A6-6CBE-4FFB-B798-202B7F79895B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{867882A6-6CBE-4FFB-B798-202B7F79895B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{867882A6-6CBE-4FFB-B798-202B7F79895B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5232318B-A1C5-4DEA-BC7A-67AA7D3C16C8}
+	EndGlobalSection
+EndGlobal

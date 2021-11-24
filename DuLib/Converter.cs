@@ -80,6 +80,7 @@ namespace Du
 			return IPAddress.None;
 		}
 
+		/*
 		public static string Base64Encoding(string readblestring)
 		{
 			var bs = Encoding.Unicode.GetBytes(readblestring);
@@ -91,6 +92,7 @@ namespace Du
 			var bs = Convert.FromBase64String(rawstring);
 			return Encoding.Unicode.GetString(bs);
 		}
+		*/
 
 		public static string EncodingString(string readblestring)
 		{

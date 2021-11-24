@@ -16,36 +16,36 @@ namespace Du.Data
 		{
 		}
 
-		public static LineStringDb<T> FromContext(string context, Generic.IConverter<T> converter)
+		public static LineStringDb<T> FromContext(string context, Generic.IStringConverter<T> converter)
 		{
 			var l = new LineStringDb<T>();
 			l.AddFromContext(context, converter);
 			return l;
 		}
 
-		public static LineStringDb<T> FromFile(string filename, Encoding encoding, Generic.IConverter<T> converter)
+		public static LineStringDb<T> FromFile(string filename, Encoding encoding, Generic.IStringConverter<T> converter)
 		{
 			var l = new LineStringDb<T>();
 			return l.AddFromFile(filename, encoding, converter) ? l : null;
 		}
 
-		private void InternalParseLines(string ctx, Generic.IConverter<T> converter)
+		private void InternalParseLines(string ctx, Generic.IStringConverter<T> converter)
 		{
 			var ss = ctx.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 			foreach (var v in ss)
 			{
 				string l = v.TrimStart();
 				if (LineToKeyValue(l, out string key, out string value))
-					Db[key] = converter.Convert(value);
+					Db[key] = converter.StringConvert(value);
 			}
 		}
 
-		public void AddFromContext(string context, Generic.IConverter<T> converter)
+		public void AddFromContext(string context, Generic.IStringConverter<T> converter)
 		{
 			InternalParseLines(context, converter);
 		}
 
-		public bool AddFromFile(string filename, Encoding encoding, Generic.IConverter<T> converter)
+		public bool AddFromFile(string filename, Encoding encoding, Generic.IStringConverter<T> converter)
 		{
 			try
 			{
@@ -69,36 +69,36 @@ namespace Du.Data
 		{
 		}
 
-		public static LineIntDb<T> FromContext(string context, Generic.IConverter<T> converter)
+		public static LineIntDb<T> FromContext(string context, Generic.IStringConverter<T> converter)
 		{
 			var l = new LineIntDb<T>();
 			l.AddFromContext(context, converter);
 			return l;
 		}
 
-		public static LineIntDb<T> FromFile(string filename, Encoding encoding, Generic.IConverter<T> converter)
+		public static LineIntDb<T> FromFile(string filename, Encoding encoding, Generic.IStringConverter<T> converter)
 		{
 			var l = new LineIntDb<T>();
 			return l.AddFromFile(filename, encoding, converter) ? l : null;
 		}
 
-		private void InternalParseLines(string ctx, Generic.IConverter<T> converter)
+		private void InternalParseLines(string ctx, Generic.IStringConverter<T> converter)
 		{
 			var ss = ctx.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 			foreach (var v in ss)
 			{
 				string l = v.TrimStart();
 				if (LineToKeyValue(l, out string key, out string value) && int.TryParse(key, out var nkey))
-					Db[nkey] = converter.Convert(value);
+					Db[nkey] = converter.StringConvert(value);
 			}
 		}
 
-		public void AddFromContext(string context, Generic.IConverter<T> converter)
+		public void AddFromContext(string context, Generic.IStringConverter<T> converter)
 		{
 			InternalParseLines(context, converter);
 		}
 
-		public bool AddFromFile(string filename, Encoding encoding, Generic.IConverter<T> converter)
+		public bool AddFromFile(string filename, Encoding encoding, Generic.IStringConverter<T> converter)
 		{
 			try
 			{
