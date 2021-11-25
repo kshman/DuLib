@@ -171,7 +171,7 @@ public static class Converter
 		if ((rawstring.Length % 2) != 0)
 			return null;
 
-		byte[] bs = new byte[rawstring.Length / 2];
+		var bs = new byte[rawstring.Length / 2];
 
 		for (int i = 0, u = 0; i < rawstring.Length; i += 2, u++)
 		{
@@ -231,7 +231,7 @@ public static class Converter
 
 		using var mst = new MemoryStream();
 
-		int len = BitConverter.ToInt32(bs, 0);
+		var len = BitConverter.ToInt32(bs, 0);
 		mst.Write(bs, 4, bs.Length - 4);
 
 		bs = new byte[len];
