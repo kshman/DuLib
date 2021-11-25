@@ -119,6 +119,8 @@ public partial class BadakSystemButton : UserControl
 	public BadakSystemButton()
 	{
 		InitializeComponent();
+
+		TabStop = false;
 	}
 
 	/// <summary>

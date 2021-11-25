@@ -70,6 +70,7 @@ public class BadakStateButton : Button
 		Size = new Size(31, 24);
 		ForeColor = Color.White;
 		FlatStyle = FlatStyle.Flat;
+		TabStop = false;
 	}
 
 	/// <summary>
