@@ -1,4 +1,4 @@
-﻿namespace Du;
+﻿namespace Du.Globalization;
 
 /// <summary>
 /// FFXIV 에오르제아 시간 제어

@@ -1,4 +1,4 @@
-﻿namespace Du;
+﻿namespace Du.Globalization;
 
 /// <summary>
 /// 유닉스시간 계산

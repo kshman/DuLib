@@ -365,7 +365,7 @@ public class LineDbV3
 	/// <param name="enc"></param>
 	/// <param name="header"></param>
 	/// <returns></returns>
-	public bool SaveToFile(string filename, Encoding enc, string? header = null)
+	public bool Save(string filename, Encoding enc, string? header = null)
 	{
 		if (string.IsNullOrEmpty(filename))
 			return false;
@@ -632,5 +632,14 @@ public class LineDbV3
 		{
 			return IntDb[key];
 		}
+	}
+
+	/// <summary>
+	/// 문자열로!
+	/// </summary>
+	/// <returns></returns>
+	public override string ToString()
+	{
+		return $"String={StringDb.Count} / Int={IntDb.Count}";
 	}
 }
