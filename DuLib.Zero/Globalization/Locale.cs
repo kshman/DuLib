@@ -9,8 +9,8 @@ namespace Du.Globalization;
 /// </summary>
 public static class Locale
 {
-	private static LineDbV3 s_db = LineDbV3.Empty();
-	private static Dictionary<string, string> s_langs = new();
+	private static readonly LineDbV3 s_db = LineDbV3.Empty();
+	private static readonly Dictionary<string, string> s_langs = new();
 
 	/// <summary>
 	/// 현재 로캘을 얻는다
@@ -40,27 +40,49 @@ public static class Locale
 	/// <param name="name"></param>
 	public static bool SetLocale(string name)
 	{
-		if (!s_langs.TryGetValue(name, out var context))
+		if (name != CurrentLocale)
+		{
+			if (!s_langs.TryGetValue(name, out var context))
+				return false;
+
+			InternalSetLocale(name, context);
+		}
+
+		return true;
+	}
+
+	/// <summary>
+	/// 기본 로캘
+	/// </summary>
+	/// <returns></returns>
+	public static bool SetDefaultLocale()
+	{
+		if (s_langs.Count == 0)
 			return false;
 
-		LineDbV3 db = LineDbV3.Empty();
+		var first = s_langs.First();
+		if (first.Key != CurrentLocale)
+			InternalSetLocale(first.Key, first.Value);
 
+		return true;
+	}
+
+	//
+	private static void InternalSetLocale(string name, string context)
+	{
 		if (context.StartsWith("FILE:"))
 		{
 			// 이건 파일
 			var filename = context[5..];
-			db.AddFromFile(filename, Encoding.UTF8, true);
+			s_db.AddFromFile(filename, Encoding.UTF8, true);
 		}
 		else
 		{
 			// 이건 컨텍스트
-			db.AddFromContext(context, true);
+			s_db.AddFromContext(context, true);
 		}
 
-		s_db = db;
 		CurrentLocale = name;
-
-		return true;
 	}
 
 	/// <summary>
