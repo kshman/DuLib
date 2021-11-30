@@ -6,20 +6,36 @@ using System.Windows.Forms;
 
 namespace Du.WinForms
 {
+	/// <summary>
+	/// 컨트롤 도움
+	/// </summary>
 	public static class ControlDu
 	{
+		/// <summary>
+		/// 컨트롤의 더블버퍼링 켬끔
+		/// </summary>
+		/// <param name="control"></param>
+		/// <param name="enabled"></param>
 		public static void DoubleBuffered(Control control, bool enabled)
 		{
 			var prop = control.GetType().GetProperty(
 				"DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
-
-			prop.SetValue(control, enabled, null);
+			prop?.SetValue(control, enabled, null);
 		}
+	}
 
-		static double[] _FormEffectAppearOpacity = new double[] { 0.1d, 0.3d, 0.7d, 0.8d, 0.9d, 1.0d };
+	/// <summary>
+	/// 폼 도움
+	/// </summary>
+	public static class FormDu
+	{
+		private static readonly double[] s_effect_appear_opacity = {0.1, 0.3, 0.7, 0.8, 0.9, 1.0};
 
-		//
-		public static void FormEffectAppear(Form form)
+		/// <summary>
+		/// 스르륵 나타나기 이펙트
+		/// </summary>
+		/// <param name="form"></param>
+		public static void EffectAppear(Form form)
 		{
 			var count = 0;
 
@@ -33,7 +49,7 @@ namespace Du.WinForms
 
 			timer.Tick += (o, e) =>
 			{
-				if ((count + 1 > _FormEffectAppearOpacity.Length) || form == null)
+				if ((count + 1 > s_effect_appear_opacity.Length))
 				{
 					timer.Stop();
 					timer.Dispose();
@@ -41,13 +57,37 @@ namespace Du.WinForms
 				}
 				else
 				{
-					form.Opacity = _FormEffectAppearOpacity[count++];
+					form.Opacity = s_effect_appear_opacity[count++];
 				}
 			};
 			timer.Start();
 		}
 
-		//
+		/// <summary>
+		/// 최상단 윈도우로
+		/// </summary>
+		/// <param name="handle"></param>
+		public static void SetForeground(IntPtr handle)
+		{
+			if (handle != IntPtr.Zero)
+				NativeWin32.SetForegroundWindow(handle);
+		}
+
+		/// <summary>
+		/// 최상단 윈도우로
+		/// </summary>
+		/// <param name="control"></param>
+		public static void SetForeground(Control control)
+		{
+			if (control != null)
+				SetForeground(control.Handle);
+		}
+
+		/// <summary>
+		/// 아이콘이면 보이게한다
+		/// </summary>
+		/// <param name="handle"></param>
+		/// <returns></returns>
 		public static bool ShowIfIconic(IntPtr handle)
 		{
 			if (handle == IntPtr.Zero)
@@ -62,44 +102,46 @@ namespace Du.WinForms
 			}
 		}
 
-		//
+		/// <summary>
+		/// 아이콘이면 보이게한다
+		/// </summary>
+		/// <param name="form"></param>
+		/// <returns></returns>
 		public static bool ShowIfIconic(Form form)
 		{
 			return form != null && ShowIfIconic(form.Handle);
 		}
 
-		//
+		/// <summary>
+		/// 아이콘 상태인가
+		/// </summary>
+		/// <param name="handle"></param>
+		/// <returns></returns>
 		public static bool IsIconic(IntPtr handle)
 		{
 			return handle != IntPtr.Zero && NativeWin32.IsIconic(handle);
 		}
 
-		//
+		/// <summary>
+		/// 아이콘 상태인가
+		/// </summary>
+		/// <param name="form"></param>
+		/// <returns></returns>
 		public static bool IsIconic(Form form)
 		{
 			return form != null && IsIconic(form.Handle);
 		}
 
-		//
-		public static void SetForeground(IntPtr handle)
-		{
-			if (handle != IntPtr.Zero)
-				NativeWin32.SetForegroundWindow(handle);
-		}
-
-		//
-		public static void SetForeground(Control control)
-		{
-			if (control != null)
-				SetForeground(control.Handle);
-		}
-
-		//
+		/// <summary>
+		/// CopyData로 문자열을 보낸다
+		/// </summary>
+		/// <param name="handle"></param>
+		/// <param name="value"></param>
 		public static void SendCopyDataString(IntPtr handle, string value)
 		{
 			if (handle != IntPtr.Zero)
 			{
-				NativeWin32.WmCopyData d = new NativeWin32.WmCopyData();
+				var d = new NativeWin32.WmCopyData();
 				try
 				{
 					d.SetString(value);
@@ -112,14 +154,23 @@ namespace Du.WinForms
 			}
 		}
 
-		//
+		/// <summary>
+		/// CopyData로 문자열을 보낸다
+		/// </summary>
+		/// <param name="control"></param>
+		/// <param name="value"></param>
 		public static void SendCopyDataString(Control control, string value)
 		{
 			if (control != null)
 				SendCopyDataString(control.Handle, value);
 		}
 
-		//
+		/// <summary>
+		/// CopyData로 온 문자열을 받는다
+		/// </summary>
+		/// <param name="msg"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		public static bool ReceiveCopyDataString(ref Message msg, out string value)
 		{
 			if (msg.Msg != NativeWin32.WM_COPYDATA)
@@ -134,7 +185,12 @@ namespace Du.WinForms
 			}
 		}
 
-		//
+		/// <summary>
+		/// 자석 도킹 기능을 수행한다
+		/// </summary>
+		/// <param name="msg">WndProc의 메시지</param>
+		/// <param name="form">수행할 폼</param>
+		/// <param name="margin">자석으로 붙일 감쇠거리</param>
 		public static void MagneticDockForm(ref Message msg, Form form, int margin)
 		{
 			if (msg.Msg != NativeWin32.WM_WINDOWPOSCHANGING)

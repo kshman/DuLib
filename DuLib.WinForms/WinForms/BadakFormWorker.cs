@@ -8,10 +8,10 @@ public class BadakFormWorker
 	private readonly Form _form;
 	private readonly BadakSystemButton? _sysbtn;
 
-	private SizeMoveHitTest _ht = new();
+	private readonly SizeMoveHitTest _ht = new();
 
-	private Point _drag_offset = new();
-	private bool _drag_form = false;
+	private Point _drag_offset;
+	private bool _drag_form;
 
 	/// <summary>
 	/// 생성자

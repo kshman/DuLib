@@ -25,7 +25,7 @@ public static class ControlDu
 /// </summary>
 public static class FormDu
 {
-	private static readonly double[] _effect_appear_opacity = new double[] { 0.1, 0.3, 0.7, 0.8, 0.9, 1.0 };
+	private static readonly double[] s_effect_appear_opacity = { 0.1, 0.3, 0.7, 0.8, 0.9, 1.0 };
 
 	/// <summary>
 	/// 스르륵 나타나기 이펙트
@@ -45,7 +45,7 @@ public static class FormDu
 
 		timer.Tick += (o, e) =>
 		{
-			if ((count + 1 > _effect_appear_opacity.Length) || form == null)
+			if ((count + 1 > s_effect_appear_opacity.Length))
 			{
 				timer.Stop();
 				timer.Dispose();
@@ -53,7 +53,7 @@ public static class FormDu
 			}
 			else
 			{
-				form.Opacity = _effect_appear_opacity[count++];
+				form.Opacity = s_effect_appear_opacity[count++];
 			}
 		};
 		timer.Start();

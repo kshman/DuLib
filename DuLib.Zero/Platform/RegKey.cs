@@ -106,7 +106,7 @@ public class RegKey : IDisposable
 	/// <summary>
 	/// 열려 있으면 참
 	/// </summary>
-	public bool IsOpen { get { return _rk != null; } }
+	public bool IsOpen => _rk != null;
 
 	/// <summary>
 	/// 하부키를 만듭니다
@@ -136,7 +136,7 @@ public class RegKey : IDisposable
 	/// <returns></returns>
 	public string? GetString(string name, string? failret = null)
 	{
-		return _rk != null && _rk.GetValue(name) is string value ? value : failret;
+		return _rk?.GetValue(name) is string value ? value : failret;
 	}
 
 	/// <summary>
@@ -147,7 +147,7 @@ public class RegKey : IDisposable
 	/// <returns></returns>
 	public int GetInt(string name, int failret = -1)
 	{
-		return _rk != null && _rk.GetValue(name) is int value ? value : failret;
+		return _rk?.GetValue(name) is int value ? value : failret;
 	}
 
 	/// <summary>
@@ -158,7 +158,7 @@ public class RegKey : IDisposable
 	/// <returns></returns>
 	public long GetLong(string name, long failret = -1)
 	{
-		return _rk != null && _rk.GetValue(name) is long value ? value : failret;
+		return _rk?.GetValue(name) is long value ? value : failret;
 	}
 
 	/// <summary>
@@ -168,7 +168,7 @@ public class RegKey : IDisposable
 	/// <returns></returns>
 	public byte[]? GetBytes(string name)
 	{
-		return _rk != null && _rk.GetValue(name) is byte[] value ? value : null;
+		return _rk?.GetValue(name) is byte[] value ? value : null;
 	}
 
 	/// <summary>
@@ -179,7 +179,7 @@ public class RegKey : IDisposable
 	/// <returns></returns>
 	public string? GetDecodingString(string name, string? failret = null)
 	{
-		if (_rk != null && _rk.GetValue(name) is string value)
+		if (_rk?.GetValue(name) is string value)
 		{
 			var s = Converter.DecodingString(value);
 			if (!string.IsNullOrEmpty(s))
@@ -197,7 +197,7 @@ public class RegKey : IDisposable
 	/// <returns></returns>
 	public string? GetDecompressString(string name, string? failret = null)
 	{
-		if (_rk != null && _rk.GetValue(name) is string value)
+		if (_rk?.GetValue(name) is string value)
 		{
 			var s = Converter.DecompressString(value);
 			if (!string.IsNullOrEmpty(s))
@@ -355,7 +355,7 @@ public class RegKey : IDisposable
 					rc.SetString("FriendlyAppName", friendlyname);
 
 				using var rn = ro?.CreateKey("command");
-				rn?.SetString(null, string.Format("\"{0}\" \"%1\"", executepath));
+				rn?.SetString(null, $"\"{executepath}\" \"%1\"");
 			}
 
 			return true;

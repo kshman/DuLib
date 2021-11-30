@@ -245,7 +245,7 @@ public class LineDb<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>, IEn
 
 	private void InternalParseLines(string ctx, IKeyValueStringConverter<TKey, TValue> converter)
 	{
-		var ss = ctx.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+		var ss = ParseLineDb.SplitLines(ctx);
 		foreach (var v in ss)
 		{
 			var l = v.TrimStart();

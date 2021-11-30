@@ -27,14 +27,7 @@ public class SizeMoveHitTest
 	/// 몸뚱아리도 타이틀로 취급
 	/// </summary>
 	[Category("SizeMoveHitTest"), Description("몸뚱아리도 타이틀로 취급")]
-	public bool BodyAsTitle { get; set; } = false;
-
-	/// <summary>
-	/// 생성자
-	/// </summary>
-	public SizeMoveHitTest()
-	{
-	}
+	public bool BodyAsTitle { get; set; }
 
 	/// <summary>
 	/// 눌림 테스트
@@ -44,16 +37,16 @@ public class SizeMoveHitTest
 	/// <returns></returns>
 	public HitTestResult HitTest(Point pt, Rectangle client_rectangle)
 	{
-		int w = client_rectangle.Width;
-		int h = client_rectangle.Height;
+		var w = client_rectangle.Width;
+		var h = client_rectangle.Height;
 
-		bool t_b = pt.X > RoundLength && pt.X < w - RoundLength;
-		bool l_r = pt.Y > RoundLength && pt.Y < h - RoundLength;
+		var t_b = pt.X > RoundLength && pt.X < w - RoundLength;
+		var l_r = pt.Y > RoundLength && pt.Y < h - RoundLength;
 
-		bool q_t = pt.Y <= Thickness;
-		bool q_b = pt.Y >= h - Thickness;
-		bool q_l = pt.X <= Thickness;
-		bool q_r = pt.X >= w - Thickness;
+		var q_t = pt.Y <= Thickness;
+		var q_b = pt.Y >= h - Thickness;
+		var q_l = pt.X <= Thickness;
+		var q_r = pt.X >= w - Thickness;
 
 		if (q_t && t_b) return HitTestResult.Top;
 		if (q_b && t_b) return HitTestResult.Bottom;
@@ -78,7 +71,7 @@ public class SizeMoveHitTest
 /// 충돌 테스트 결과 
 /// WIN32의 HT_와 같음
 /// </summary>
-public enum HitTestResult : int
+public enum HitTestResult
 {
 	/// <summary>
 	/// 몸뚱아리

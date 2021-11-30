@@ -1,5 +1,15 @@
 ﻿namespace Du.Data;
 
+internal static class ParseLineDb
+{
+	private static readonly char[] s_separates = {'\n', '\r'};
+
+	internal static string[] SplitLines(string context)
+	{
+		return context.Split(s_separates, StringSplitOptions.RemoveEmptyEntries);
+	}
+}
+
 /// <summary>
 /// 문자열 키를 가진 줄 디비
 /// </summary>
@@ -51,10 +61,10 @@ public class LineStringDb<T> : Generic.LineDb<string, T>
 
 	private void InternalParseLines(string ctx, Generic.IStringConverter<T> converter)
 	{
-		var ss = ctx.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+		var ss = ParseLineDb.SplitLines(ctx); 
 		foreach (var v in ss)
 		{
-			string l = v.TrimStart();
+			var l = v.TrimStart();
 			if (LineToKeyValue(l, out string key, out string value))
 				Db[key] = converter.StringConvert(value);
 		}
@@ -379,12 +389,7 @@ public class LineDbV3
 			}
 
 			foreach (var l in StringDb)
-			{
-				if (l.Key.IndexOf('=') < 0)
-					sw.WriteLine($"{l.Key}={l.Value}");
-				else
-					sw.WriteLine($"\"{l.Key}\"={l.Value}");
-			}
+				sw.WriteLine(l.Key.IndexOf('=') < 0 ? $"{l.Key}={l.Value}" : $"\"{l.Key}\"={l.Value}");
 
 			foreach (var l in IntDb)
 				sw.WriteLine($"{l.Key}={l.Value}");
@@ -591,7 +596,7 @@ public class LineDbV3
 	/// <returns></returns>
 	public IEnumerator<KeyValuePair<string, string>> GetStringDb()
 	{
-		return (IEnumerator<KeyValuePair<string, string>>)StringDb;
+		return StringDb.GetEnumerator();
 	}
 
 	/// <summary>
@@ -600,39 +605,27 @@ public class LineDbV3
 	/// <returns></returns>
 	public IEnumerator<KeyValuePair<int, string>> GetIntDb()
 	{
-		return (IEnumerator<KeyValuePair<int, string>>)IntDb;
+		return IntDb.GetEnumerator();
 	}
 
 	/// <summary>
 	///  갯수
 	/// </summary>
-	public int Count { get { return StringDb.Count + IntDb.Count; } }
+	public int Count => StringDb.Count + IntDb.Count;
 
 	/// <summary>
 	/// 이거!
 	/// </summary>
 	/// <param name="key"></param>
 	/// <returns></returns>
-	public string this[string key]
-	{
-		get
-		{
-			return StringDb[key];
-		}
-	}
+	public string this[string key] => StringDb[key];
 
 	/// <summary>
 	/// 이거!
 	/// </summary>
 	/// <param name="key"></param>
 	/// <returns></returns>
-	public string this[int key]
-	{
-		get
-		{
-			return IntDb[key];
-		}
-	}
+	public string this[int key] => IntDb[key];
 
 	/// <summary>
 	/// 문자열로!

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace Du.PlatForm
 {
-	internal class NativeWin32
+	internal static class NativeWin32
 	{
 		internal const int WM_COPYDATA = 0x004A;
 		internal const int WM_WINDOWPOSCHANGING = 0x0046;

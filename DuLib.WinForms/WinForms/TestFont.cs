@@ -14,7 +14,7 @@ public static class TestFont
 	/// <returns></returns>
 	public static bool IsInstalled(string fontname)
 	{
-		InstalledFontCollection collection = new InstalledFontCollection();
+		var collection = new InstalledFontCollection();
 #if false
 		return Array.Find(collection.Families, f => f.Name == fontname) != null;
 #else
@@ -35,7 +35,7 @@ public static class TestFont
 	public static int IsInstalled(string[] fontnames)
 	{
 		// 아 이거 select any 쓰면 되는데 까먹엇따
-		InstalledFontCollection collection = new InstalledFontCollection();
+		var collection = new InstalledFontCollection();
 		foreach (var family in collection.Families)
 		{
 			for (var i = 0; i < fontnames.Length; i++)

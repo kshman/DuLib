@@ -18,7 +18,7 @@ public class BadakStateButton : Button
 	[Category("BadakState 버튼"), Description("최소화/최대화/최대화상태/닫기 모양 고르기")]
 	public BadakState BadakState
 	{
-		get { return _badak_state; }
+		get => _badak_state;
 		set { _badak_state = value; Invalidate(); }
 	}
 
@@ -28,7 +28,7 @@ public class BadakStateButton : Button
 	[Category("BadakState 버튼"), Description("배경 색깔")]
 	public Color BadakBackColor
 	{
-		get { return _color_now; }
+		get => _color_now;
 		set { _color_now = value; Invalidate(); }
 	}
 
@@ -38,7 +38,7 @@ public class BadakStateButton : Button
 	[Category("BadakState 버튼"), Description("마우스 올라감 색깔")]
 	public Color MouseHoverColor
 	{
-		get { return _color_hover; }
+		get => _color_hover;
 		set { _color_hover = value; Invalidate(); }
 	}
 
@@ -48,7 +48,7 @@ public class BadakStateButton : Button
 	[Category("BadakState 버튼"), Description("마우스 누름 색깔")]
 	public Color MouseClickColor
 	{
-		get { return _color_click; }
+		get => _color_click;
 		set { _color_click = value; Invalidate(); }
 	}
 
@@ -58,7 +58,7 @@ public class BadakStateButton : Button
 	[Category("BadakState 버튼"), Description("모양 위치")]
 	public Point ShapeLocation
 	{
-		get { return _shape_location; }
+		get => _shape_location;
 		set { _shape_location = value; Invalidate(); }
 	}
 
@@ -129,7 +129,7 @@ public class BadakStateButton : Button
 		switch (_badak_state)
 		{
 			case BadakState.Normal:
-				for (int i = 0; i < 2; i++)
+				for (var i = 0; i < 2; i++)
 				{
 					pe.Graphics.DrawRectangle(new Pen(ForeColor), x + i + 1, y, 10, 10);
 					pe.Graphics.FillRectangle(new SolidBrush(ForeColor), x + 1, y - 1, 12, 4);
@@ -137,7 +137,7 @@ public class BadakStateButton : Button
 				break;
 
 			case BadakState.Maximize:
-				for (int i = 0; i < 2; i++)
+				for (var i = 0; i < 2; i++)
 				{
 					pe.Graphics.DrawRectangle(new Pen(ForeColor), x + 5, y, 8, 8);
 					pe.Graphics.FillRectangle(new SolidBrush(ForeColor), x + 5, y - 1, 9, 4);
@@ -154,7 +154,7 @@ public class BadakStateButton : Button
 				break;
 
 			case BadakState.Close:
-				for (int i = 0; i < 2; i++)
+				for (var i = 0; i < 2; i++)
 				{
 					pe.Graphics.DrawLine(new Pen(ForeColor), x + i + 1, y, x + i + 11, y + 10);
 					pe.Graphics.DrawLine(new Pen(ForeColor), x + i + 1, y + 10, x + i + 11, y);

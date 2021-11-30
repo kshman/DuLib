@@ -64,8 +64,8 @@ public class SplitButton : Button
 		if (Menu != null && SplitWidth > 0)
 		{
 			// Draw the arrow glyph on the right side of the button
-			int arrowX = ClientRectangle.Width - 14;
-			int arrowY = ClientRectangle.Height / 2 - 1;
+			var arrowX = ClientRectangle.Width - 14;
+			var arrowY = ClientRectangle.Height / 2 - 1;
 
 			var arrowColor = Enabled ? ForeColor : SystemColors.ButtonShadow;
 			//var arrowBrush = Enabled ? SystemBrushes.ControlText : SystemBrushes.ButtonShadow;
@@ -78,9 +78,9 @@ public class SplitButton : Button
 			pevent.Graphics.FillPolygon(arrowBrush, arrows);
 
 			// Draw a dashed separator on the left of the arrow
-			int lineX = ClientRectangle.Width - SplitWidth;
-			int lineYFrom = arrowY - 4;
-			int lineYTo = arrowY + 8;
+			var lineX = ClientRectangle.Width - SplitWidth;
+			var lineYFrom = arrowY - 4;
+			var lineYTo = arrowY + 8;
 			using var separatorPen = new Pen(Brushes.DarkGray) 
 			{
 				DashStyle = System.Drawing.Drawing2D.DashStyle.Dot 

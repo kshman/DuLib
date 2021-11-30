@@ -4,29 +4,45 @@ using System.Windows.Forms;
 
 namespace Du.WinForms
 {
+	/// <summary>
+	/// 깜장 메뉴 스트립
+	/// </summary>
 	public class BadakMenuStrip : MenuStrip
 	{
+		/// <summary>
+		/// 생성자
+		/// </summary>
 		public BadakMenuStrip()
 		{
-			Renderer = new InternalDarkMenuRenderer();
+			Renderer = new InternalBadakToolStripRenderer();
 		}
 	}
 
+	/// <summary>
+	/// 깜장 콘텍스트 메뉴 스트립
+	/// </summary>
 	public class BadakContextMenuStrip : ContextMenuStrip
 	{
+		/// <summary>
+		/// 생성자
+		/// </summary>
 		public BadakContextMenuStrip()
 		{
-			Renderer = new InternalDarkMenuRenderer();
+			Renderer = new InternalBadakToolStripRenderer();
 		}
 
+		/// <summary>
+		/// 생성자(디자인용)
+		/// </summary>
+		/// <param name="container"></param>
 		public BadakContextMenuStrip(IContainer container)
 			: base(container)
 		{
-			Renderer = new InternalDarkMenuRenderer();
+			Renderer = new InternalBadakToolStripRenderer();
 		}
 	}
 
-	internal class InternalDarkMenuRenderer : ToolStripRenderer
+	internal class InternalBadakToolStripRenderer : ToolStripRenderer
 	{
 		protected override void OnRenderMenuItemBackground(ToolStripItemRenderEventArgs e)
 		{
@@ -54,7 +70,8 @@ namespace Du.WinForms
 					e.Graphics.DrawRectangle(new Pen(new SolidBrush(Color.Black)), rect);
 					e.Item.ForeColor = Color.White;
 				}
-				if ((e.Item as ToolStripMenuItem).DropDown.Visible && e.Item.IsOnDropDown == false)
+
+				if (((ToolStripMenuItem) e.Item).DropDown.Visible && e.Item.IsOnDropDown == false)
 				{
 					var rect = new Rectangle(0, 0, e.Item.Width - 1, e.Item.Height - 1);
 					var rect2 = new Rectangle(0, 0, e.Item.Width - 1, e.Item.Height - 1);
@@ -112,7 +129,8 @@ namespace Du.WinForms
 			var rect3 = new Rectangle(0, 0, 26, e.AffectedBounds.Height);
 			e.Graphics.FillRectangle(DarkLine, rect3);
 
-			e.Graphics.DrawLine(new Pen(new SolidBrush(Color.FromArgb(20, 20, 20))), 28, 0, 28, e.AffectedBounds.Height);
+			e.Graphics.DrawLine(new Pen(new SolidBrush(Color.FromArgb(20, 20, 20))), 28, 0, 28,
+				e.AffectedBounds.Height);
 
 			var rect2 = new Rectangle(0, 0, e.ToolStrip.Width - 1, e.ToolStrip.Height - 1);
 			e.Graphics.DrawRectangle(new Pen(new SolidBrush(Color.Black)), rect2);
