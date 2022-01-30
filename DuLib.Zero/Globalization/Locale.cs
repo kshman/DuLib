@@ -139,3 +139,8 @@ public static class Locale
 }
 
 #nullable enable
+
+
+// 폼데이터 일괄 변환
+// Text = "\{(\d{4})\}";/g
+// Text = Locale.Text($1)

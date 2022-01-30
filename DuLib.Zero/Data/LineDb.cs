@@ -2,7 +2,7 @@
 
 internal static class ParseLineDb
 {
-	private static readonly char[] s_separates = {'\n', '\r'};
+	private static readonly char[] s_separates = { '\n', '\r' };
 
 	internal static string[] SplitLines(string context)
 	{
@@ -61,7 +61,7 @@ public class LineStringDb<T> : Generic.LineDb<string, T>
 
 	private void InternalParseLines(string ctx, Generic.IStringConverter<T> converter)
 	{
-		var ss = ParseLineDb.SplitLines(ctx); 
+		var ss = ParseLineDb.SplitLines(ctx);
 		foreach (var v in ss)
 		{
 			var l = v.TrimStart();
@@ -248,7 +248,7 @@ public class LineDb : Generic.LineDb<string, string>
 		foreach (var v in ss)
 		{
 			string l = v.TrimStart();
-			if (LineToKeyValue(l, out var key, out var value) && key!=null)
+			if (LineToKeyValue(l, out var key, out var value) && key != null)
 				Db[key] = value;
 		}
 	}
@@ -407,8 +407,6 @@ public class LineDbV3
 	/// <param name="useintdb"></param>
 	protected void ParseLines(string ctx, bool useintdb)
 	{
-		StringDb.Clear();
-
 		var ss = ctx.Split(_ParseSplitChars, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (var v in ss)
@@ -634,5 +632,14 @@ public class LineDbV3
 	public override string ToString()
 	{
 		return $"String={StringDb.Count} / Int={IntDb.Count}";
+	}
+
+	/// <summary>
+	/// 전부 지운다
+	/// </summary>
+	public void Clear()
+	{
+		StringDb.Clear();
+		IntDb.Clear();
 	}
 }
