@@ -2,6 +2,12 @@
 
 namespace Du.WinForms;
 
+static class DuSupp
+{
+	internal static readonly double[] EffectOpacityFaceIn = { 0.1, 0.3, 0.7, 0.8, 0.9, 1.0 };
+	internal static readonly double[] EffectOpacityFaceOut = { 0.9, 0.8, 0.7, 0.3, 0.1, 0.0 };
+}
+
 /// <summary>
 /// 컨트롤 도움
 /// </summary>
@@ -18,6 +24,91 @@ public static class ControlDu
 			"DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
 		prop?.SetValue(control, enabled, null);
 	}
+
+	/// <summary>
+	/// 컨트롤 페이드 인
+	/// </summary>
+	/// <param name="ctrl"></param>
+	/// <param name="interval"></param>
+	public static void EffectFadeIn(Control ctrl, int interval = 120)
+	{
+		var count = 0;
+		var timer = new System.Windows.Forms.Timer()
+		{
+			Interval = interval / DuSupp.EffectOpacityFaceIn.Length,
+		};
+
+		var fg = ctrl.ForeColor;
+		var bg = ctrl.BackColor;
+
+		ctrl.ForeColor = Color.Transparent;
+		ctrl.BackColor = Color.Transparent;
+		ctrl.Visible = true;
+
+		timer.Tick += (o, e) =>
+		{
+			if ((count + 1) > DuSupp.EffectOpacityFaceIn.Length)
+			{
+				ctrl.ForeColor = fg;
+				ctrl.BackColor = bg;
+
+				timer.Stop();
+				timer.Dispose();
+				timer = null;
+			}
+			else
+			{
+				var d = DuSupp.EffectOpacityFaceIn[count++];
+				var u = (int)(d * 255.0);
+
+				ctrl.ForeColor = Color.FromArgb(u, fg);
+				ctrl.BackColor = Color.FromArgb(u, bg);
+			}
+		};
+		timer.Start();
+	}
+
+	/// <summary>
+	/// 컨트롤 페이드 아웃
+	/// </summary>
+	/// <param name="ctrl"></param>
+	/// <param name="interval"></param>
+	public static void EffectFadeOut(Control ctrl, int interval = 120)
+	{
+		var count = 0;
+		var timer = new System.Windows.Forms.Timer()
+		{
+			Interval = interval / DuSupp.EffectOpacityFaceOut.Length,
+		};
+
+		var fg = ctrl.ForeColor;
+		var bg = ctrl.BackColor;
+
+		ctrl.Visible = true;
+
+		timer.Tick += (o, e) =>
+		{
+			if ((count + 1) > DuSupp.EffectOpacityFaceOut.Length)
+			{
+				ctrl.Visible = false;
+				ctrl.ForeColor = fg;
+				ctrl.BackColor = bg;
+
+				timer.Stop();
+				timer.Dispose();
+				timer = null;
+			}
+			else
+			{
+				var d = DuSupp.EffectOpacityFaceIn[count++];
+				var u = (int)(d * 255.0);
+
+				ctrl.ForeColor = Color.FromArgb(u, fg);
+				ctrl.BackColor = Color.FromArgb(u, bg);
+			}
+		};
+		timer.Start();
+	}
 }
 
 /// <summary>
@@ -25,8 +116,6 @@ public static class ControlDu
 /// </summary>
 public static class FormDu
 {
-	private static readonly double[] s_effect_appear_opacity = { 0.1, 0.3, 0.7, 0.8, 0.9, 1.0 };
-
 	/// <summary>
 	/// 스르륵 나타나기 이펙트
 	/// </summary>
@@ -45,7 +134,7 @@ public static class FormDu
 
 		timer.Tick += (o, e) =>
 		{
-			if ((count + 1 > s_effect_appear_opacity.Length))
+			if ((count + 1 > DuSupp.EffectOpacityFaceIn.Length))
 			{
 				timer.Stop();
 				timer.Dispose();
@@ -53,7 +142,7 @@ public static class FormDu
 			}
 			else
 			{
-				form.Opacity = s_effect_appear_opacity[count++];
+				form.Opacity = DuSupp.EffectOpacityFaceIn[count++];
 			}
 		};
 		timer.Start();
