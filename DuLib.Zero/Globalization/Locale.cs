@@ -142,5 +142,6 @@ public static class Locale
 
 
 // 폼데이터 일괄 변환
-// Text = "\{(\d{4})\}";/g
-// Text = Locale.Text($1)
+// Text = "\{(\d{4})\}";
+// Text = "\{(\d{1,4})\}";
+// Text = Locale.Text($1);
