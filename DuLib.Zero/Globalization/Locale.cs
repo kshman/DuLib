@@ -18,6 +18,15 @@ public static class Locale
 	public static string CurrentLocale { get; private set; } = string.Empty;
 
 	/// <summary>
+	/// 로캘 목록을 얻는다
+	/// </summary>
+	/// <returns>로켈 목록</returns>
+	public static IEnumerable<string> GetLocaleList()
+	{
+		return s_langs.Keys.ToArray();
+	}
+
+	/// <summary>
 	/// 로캘을 추가한다
 	/// </summary>
 	/// <param name="name"></param>
