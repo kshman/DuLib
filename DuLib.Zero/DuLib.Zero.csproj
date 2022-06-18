@@ -7,6 +7,9 @@
     <RootNamespace>Du</RootNamespace>
     <RepositoryUrl>https://github.com/kshman/DuLib</RepositoryUrl>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>DuLib.Zero</Title>
+    <Description>DuLib Zero</Description>
   </PropertyGroup>
 
 </Project>

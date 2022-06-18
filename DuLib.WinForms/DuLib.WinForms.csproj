@@ -8,6 +8,8 @@
     <RepositoryUrl>https://github.com/kshman/DuLib</RepositoryUrl>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <UseWindowsForms>true</UseWindowsForms>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>DuLib.WinForms</Title>
   </PropertyGroup>
 
   <ItemGroup>
