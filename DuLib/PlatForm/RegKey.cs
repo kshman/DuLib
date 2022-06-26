@@ -162,6 +162,17 @@ namespace Du.Platform
 		}
 
 		/// <summary>
+		/// 불 얻기
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="failret"></param>
+		/// <returns></returns>
+		public bool GetBool(string name, bool failret = false)
+		{
+			return _rk?.GetValue(name) is int value ? value != 0 : failret;
+		}
+
+		/// <summary>
 		/// 바이트 배열 얻기
 		/// </summary>
 		/// <param name="name"></param>
@@ -245,6 +256,16 @@ namespace Du.Platform
 		public void SetLong(string name, long value)
 		{
 			_rk?.SetValue(name, value, RegistryValueKind.QWord);
+		}
+
+		/// <summary>
+		/// 불 넣기
+		/// </summary>
+		/// <param name="name"></param>
+		/// <param name="value"></param>
+		public void SetBool(string name, bool value)
+		{
+			_rk?.SetValue(name, value ? 1 : 0, RegistryValueKind.DWord);
 		}
 
 		/// <summary>

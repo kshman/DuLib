@@ -57,6 +57,9 @@
     <Compile Include="PlatForm\RegKey.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PlatForm\TestEnv.cs" />
+    <Compile Include="WinForms\ScrollingBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="WinForms\TestFont.cs" />
     <Compile Include="WinForms\BadakFormWorker.cs" />
     <Compile Include="WinForms\BadakSystemButton.cs">
