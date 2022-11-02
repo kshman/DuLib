@@ -145,6 +145,16 @@ public static class Locale
 	{
 		return s_db.Try(key, out string v) ? string.Format(v, prms) : $"{{{key}}}";
 	}
+
+	/// <summary>
+	/// 값 얻기
+	/// </summary>
+	/// <param name="key">문자열로 된 숫자 키</param>
+	/// <returns>얻은값</returns>
+	public static string TextAsInt(string key)
+	{
+		return int.TryParse(key, out var n) ? Text(n) : key;
+	}
 }
 
 #nullable enable
