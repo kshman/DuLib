@@ -2,8 +2,6 @@
 
 namespace Du.Globalization;
 
-#nullable disable
-
 /// <summary>
 /// 로캘 데이터를 처리
 /// </summary>
@@ -111,7 +109,7 @@ public static class Locale
 	/// <returns>얻은 값</returns>
 	public static string Text(string key)
 	{
-		return s_db.Try(key, out string v) ? v : $"<{key}>";
+		return s_db.Try(key, out string? v) && v != null ? v : $"<{key}>";
 	}
 
 	/// <summary>
@@ -122,7 +120,7 @@ public static class Locale
 	/// <returns>만들어진 값</returns>
 	public static string Text(string key, params object[] prms)
 	{
-		return s_db.Try(key, out string v) ? string.Format(v, prms) : $"<{key}>";
+		return s_db.Try(key, out string? v) && v != null ? string.Format(v, prms) : $"<{key}>";
 	}
 
 	/// <summary>
@@ -132,7 +130,7 @@ public static class Locale
 	/// <returns>얻은 값</returns>
 	public static string Text(int key)
 	{
-		return s_db.Try(key, out string v) ? v : $"{{{key}}}";
+		return s_db.Try(key, out string? v) && v != null ? v : $"{{{key}}}";
 	}
 
 	/// <summary>
@@ -143,7 +141,7 @@ public static class Locale
 	/// <returns>만들어진 값</returns>
 	public static string Text(int key, params object[] prms)
 	{
-		return s_db.Try(key, out string v) ? string.Format(v, prms) : $"{{{key}}}";
+		return s_db.Try(key, out string? v) && v != null ? string.Format(v, prms) : $"{{{key}}}";
 	}
 
 	/// <summary>
@@ -157,8 +155,16 @@ public static class Locale
 	}
 }
 
-#nullable enable
-
+/// <summary>
+/// 로케일 바꾸기 인터페이스
+/// </summary>
+public interface ILocaleTranspose
+{
+	/// <summary>
+	/// 로케일 바꿈
+	/// </summary>
+	void LocaleTranspose();
+}
 
 // 폼데이터 일괄 변환
 // Text = "\{(\d{4})\}";
