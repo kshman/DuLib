@@ -1,7 +1,5 @@
 ﻿namespace Du.WinForms;
 
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-
 /// <summary>
 /// 스크롤링 박스
 /// URL: https://www.codeproject.com/articles/10678/scrolling-credits-control
@@ -9,11 +7,11 @@
 [ToolboxBitmap("ScrollBoxToolIcon")]
 public class ScrollingBox : Control
 {
-	private System.Timers.Timer timer;
+	private readonly System.Timers.Timer timer;
 	private ScrollingBoxCollection items;
 	private ArrowDirection movingDirection;
 	private bool showBackgroundImage;
-	private StringFormat stringFormat;
+	private readonly StringFormat stringFormat;
 	private int lastY;
 	private bool isMouseDown;
 	private bool startingPositionHasBeenSetAfterHeight;
@@ -59,6 +57,8 @@ public class ScrollingBox : Control
 		for (var i = 0; i < items.Count; i++)
 		{
 			var item = items[i];
+			if (item == null)
+				continue;
 
 			item.rectF.X = Padding.Left;
 			item.rectF.Width = availWidth;
@@ -98,7 +98,8 @@ public class ScrollingBox : Control
 			else
 			{
 				var prev = items[i - 1];
-				item.rectF.Y = (float)prev.rectF.Y + prev.rectF.Height;
+				if (prev != null)
+					item.rectF.Y = (float)prev.rectF.Y + prev.rectF.Height;
 			}
 		}
 	}
@@ -108,6 +109,8 @@ public class ScrollingBox : Control
 		for (var i = 0; i < items.Count; i++)
 		{
 			var item = items[i];
+			if (item == null)
+				continue;
 
 			if (movingDirection == ArrowDirection.Up)
 			{
@@ -117,12 +120,14 @@ public class ScrollingBox : Control
 					{
 						// Goto the bottom of the screen list items
 						var last = items[items.Count - 1];
-						item.rectF.Y = last.rectF.Y + Height + item.rectF.Height;
+						if (last != null)
+							item.rectF.Y = last.rectF.Y + Height + item.rectF.Height;
 					}
 					else
 					{
 						var prev = items[i - 1];
-						item.rectF.Y = prev.rectF.Y + prev.rectF.Height;
+						if (prev != null)
+							item.rectF.Y = prev.rectF.Y + prev.rectF.Height;
 					}
 				}
 				else
@@ -139,12 +144,14 @@ public class ScrollingBox : Control
 					{
 						// Goto the top of the screen list items
 						var first = items[0];
-						item.rectF.Y = first.rectF.Y - this.Height - item.rectF.Height;
+						if (first != null)
+							item.rectF.Y = first.rectF.Y - this.Height - item.rectF.Height;
 					}
 					else
 					{
 						var next = items[i + 1];
-						item.rectF.Y = next.rectF.Y - item.rectF.Height;
+						if (next != null)
+							item.rectF.Y = next.rectF.Y - item.rectF.Height;
 					}
 				}
 				else
@@ -181,12 +188,15 @@ public class ScrollingBox : Control
 		}
 		else
 		{
-			g.DrawImageUnscaled(this.BackgroundImage, 0, 0);
+			if (BackgroundImage != null)
+				g.DrawImageUnscaled(BackgroundImage, 0, 0);
 		}
 
 		for (var i = 0; i < items.Count; i++)
 		{
 			var item = items[i];
+			if (item == null)
+				continue;
 
 			if (clipRectF.IntersectsWith(item.rectF))
 			{
@@ -294,16 +304,6 @@ public class ScrollingBox : Control
 		base.OnPaddingChanged(e);
 		RecalculateItems();
 		Invalidate();
-	}
-
-	/// <summary>
-	/// 텍스트
-	/// </summary>
-	[Browsable(false)]
-	public override string Text
-	{
-		get => base.Text;
-		set => base.Text = value;
 	}
 
 	/// <summary>
@@ -472,5 +472,3 @@ public class ScrollingBoxCollection : System.Collections.CollectionBase
 		set => InnerList[index] = value;
 	}
 }
-
-#pragma warning restore CS8602 // Dereference of a possibly null reference.

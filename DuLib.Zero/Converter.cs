@@ -183,6 +183,30 @@ public static class Converter
 	}
 
 	/// <summary>
+	/// BASE64로 인코딩
+	/// </summary>
+	/// <param name="rawstring">원본</param>
+	/// <returns>BASE64로 바뀐 문자열</returns>
+	public static string EncodingBase64(string rawstring)
+	{
+		byte[] bytes= Encoding.UTF8.GetBytes(rawstring);
+		string base64 = Convert.ToBase64String(bytes);
+		return base64;
+	}
+
+	/// <summary>
+	/// BASE64를 디코딩
+	/// </summary>
+	/// <param name="base64string">BASE64 문자열</param>
+	/// <returns>변환된 원본 문자열</returns>
+	public static string DecodingBase64(string base64string)
+	{
+		byte[] bytes = Convert.FromBase64String(base64string);
+		string rawstring = Encoding.UTF8.GetString(bytes);
+		return rawstring;
+	}
+
+	/// <summary>
 	/// GZIP 으로 압축한 문자열
 	/// </summary>
 	/// <param name="rawstring"></param>

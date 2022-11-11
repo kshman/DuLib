@@ -98,7 +98,8 @@ internal class InternalBadakToolStripRenderer : ToolStripRenderer
 
 			e.Graphics.FillRectangle(b, rect);
 			e.Graphics.FillRectangle(b2, rect2);
-			e.Graphics.DrawImage(e.Image, new Point(5, 3));
+			if (e.Image != null)
+				e.Graphics.DrawImage(e.Image, new Point(5, 3));
 		}
 		else
 		{
@@ -109,6 +110,7 @@ internal class InternalBadakToolStripRenderer : ToolStripRenderer
 
 			e.Graphics.FillRectangle(b, rect);
 			e.Graphics.FillRectangle(b2, rect2);
+			if (e.Image != null)
 			e.Graphics.DrawImage(e.Image, new Point(5, 3));
 		}
 	}

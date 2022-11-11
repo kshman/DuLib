@@ -1,30 +1,33 @@
 ﻿using System.Runtime.InteropServices;
 
 namespace Du;
-internal class NativeWin32
+internal partial class NativeWin32
 {
 	internal const int WM_COPYDATA = 0x004A;
 	internal const int WM_WINDOWPOSCHANGING = 0x0046;
 
 	internal const int SW_RESTORE = 9;
 
-	[DllImport("user32.dll")]
-	internal static extern int SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, ref WmCopyData lParam);
+	[LibraryImport("user32.dll")]
+	internal static partial int SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, ref WmCopyData lParam);
 
-	[DllImport("user32.dll")]
-	internal static extern bool SetForegroundWindow(IntPtr hWnd);
+	[LibraryImport("user32.dll")]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	internal static partial bool SetForegroundWindow(IntPtr hWnd);
 
-	[DllImport("user32.dll")]
-	internal static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+	[LibraryImport("user32.dll")]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	internal static partial bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
 
-	[DllImport("user32.dll")]
-	internal static extern bool IsIconic(IntPtr hWnd);
+	[LibraryImport("user32.dll")]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	internal static partial bool IsIconic(IntPtr hWnd);
 
-	[DllImport("kernel32.dll", SetLastError = true)]
-	internal static extern IntPtr LocalAlloc(int flag, int size);
+	[LibraryImport("kernel32.dll", SetLastError = true)]
+	internal static partial IntPtr LocalAlloc(int flag, int size);
 
-	[DllImport("kernel32.dll", SetLastError = true)]
-	internal static extern IntPtr LocalFree(IntPtr p);
+	[LibraryImport("kernel32.dll", SetLastError = true)]
+	internal static partial IntPtr LocalFree(IntPtr p);
 
 	//
 	internal struct WmCopyData : IDisposable
