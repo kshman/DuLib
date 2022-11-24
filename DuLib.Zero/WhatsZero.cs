@@ -2,9 +2,9 @@
 global using System.Drawing;
 global using System.Runtime.Versioning;
 
-namespace DuLib.Zero;
+namespace Du;
 
-internal static class WhatsDu
+internal static class WhatsZero
 {
 	public static string Name()
 	{

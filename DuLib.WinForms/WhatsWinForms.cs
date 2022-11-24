@@ -4,9 +4,9 @@ global using System.Drawing;
 global using System.Windows.Forms;
 global using System.Reflection;
 
-namespace DuLib.WinForms;
+namespace Du;
 
-internal static class WhatsDu
+internal static class WhatsWinForms
 {
 	public static string Name()
 	{
