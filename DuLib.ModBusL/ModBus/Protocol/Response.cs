@@ -22,7 +22,7 @@ public class Response
 
     public bool IsTimeout { get; private set; }
 
-    public ModBusMeiType MeiType { get; set; }
+    public ModBusMei Mei { get; set; }
     public ModBusDevIdCategory MeiCategory { get; set; }
     public ModBusDevIdObject MeiObject { get; set; }
 
@@ -91,15 +91,15 @@ public class Response
                     break;
 
                 case ModBusFunctionCode.EncapsulatedInterface:
-                    buffer.AddByte((byte)MeiType);
-                    switch (MeiType)
+                    buffer.AddByte((byte)Mei);
+                    switch (Mei)
                     {
-                        case ModBusMeiType.CanOpenGeneralReference:
+                        case ModBusMei.CanOpenGeneralReference:
                             if (Data.Length > 0)
                                 buffer.AddBytes(Data.Buffer);
                             break;
 
-                        case ModBusMeiType.ReadDeviceInformation:
+                        case ModBusMei.ReadDeviceInformation:
                             if (Data == null)
                                 throw new ArgumentException(Cpr.ex_no_data);
                             buffer.AddByte((byte)MeiCategory);
@@ -192,14 +192,14 @@ public class Response
                     break;
 
                 case ModBusFunctionCode.EncapsulatedInterface:
-                    MeiType = (ModBusMeiType)buffer.GetByte(8);
-                    switch (MeiType)
+                    Mei = (ModBusMei)buffer.GetByte(8);
+                    switch (Mei)
                     {
-                        case ModBusMeiType.CanOpenGeneralReference:
+                        case ModBusMei.CanOpenGeneralReference:
                             Data = new DataBuffer(buffer.Buffer.Skip(9).ToArray());
                             break;
 
-                        case ModBusMeiType.ReadDeviceInformation:
+                        case ModBusMei.ReadDeviceInformation:
                             MeiCategory = (ModBusDevIdCategory)buffer.GetByte(9);
                             ConformityLevel = buffer.GetByte(10);
                             MoreRequestsNeeded = buffer.GetByte(11) > 0;
@@ -209,7 +209,7 @@ public class Response
                             break;
 
                         default:
-                            throw new NotImplementedException(Cpr.ex_unk_mei_with + MeiType);
+                            throw new NotImplementedException(Cpr.ex_unk_mei_with + Mei);
                     }
                     break;
 

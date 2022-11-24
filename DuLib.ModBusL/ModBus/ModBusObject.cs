@@ -25,7 +25,7 @@ public class ModBusObject
 	public const int MaxRegisterCountRead = 125;
 	public const int MaxRegisterCountWrite = 123;
 
-	public virtual ModBusObjectType Type { get; set; }
+	public virtual ModBusType Type { get; set; }
 
 	public int Address { get; set; }
 
@@ -61,10 +61,10 @@ public class ModBusObject
 	public override string? ToString()
 		=> Type switch
 		{
-			ModBusObjectType.Coil => $"{Cpr.coil}: {Address} ➜ {AsBool}",
-			ModBusObjectType.DiscreteInput => $"{Cpr.discrete}: {Address} ➜ {AsBool}",
-			ModBusObjectType.HoldingRegister => $"{Cpr.holding}: {Address} ➜ {ByteHi:X02} {ByteLo:X02} | {Register}",
-			ModBusObjectType.InputRegister => $"{Cpr.input}: {Address} ➜ {ByteHi:X02} {ByteLo:X02} | {Register}",
+			ModBusType.Coil => $"{Cpr.coil}: {Address} ➜ {AsBool}",
+			ModBusType.DiscreteInput => $"{Cpr.discrete}: {Address} ➜ {AsBool}",
+			ModBusType.HoldingRegister => $"{Cpr.holding}: {Address} ➜ {ByteHi:X02} {ByteLo:X02} | {Register}",
+			ModBusType.InputRegister => $"{Cpr.input}: {Address} ➜ {ByteHi:X02} {ByteLo:X02} | {Register}",
 			_ => base.ToString(),
 		};
 
@@ -88,7 +88,7 @@ public class ModBusObject
 /// </summary>
 public class ModBusCoil : ModBusObject
 {
-	public override ModBusObjectType Type => ModBusObjectType.Coil;
+	public override ModBusType Type => ModBusType.Coil;
 }
 
 /// <summary>
@@ -96,7 +96,7 @@ public class ModBusCoil : ModBusObject
 /// </summary>
 public class ModBusDiscreteInput : ModBusObject
 {
-	public override ModBusObjectType Type => ModBusObjectType.DiscreteInput;
+	public override ModBusType Type => ModBusType.DiscreteInput;
 }
 
 /// <summary>
@@ -105,7 +105,7 @@ public class ModBusDiscreteInput : ModBusObject
 public class ModBusRegister : ModBusObject
 {
 	#region 모드 지정 만들기
-	public static ModBusObject New(byte value, int address, ModBusObjectType type)
+	public static ModBusObject New(byte value, int address, ModBusType type)
 		=> new ModBusRegister()
 		{
 			Type = type,
@@ -113,7 +113,7 @@ public class ModBusRegister : ModBusObject
 			Register = value,
 		};
 
-	public static ModBusObject New(ushort value, int address, ModBusObjectType type)
+	public static ModBusObject New(ushort value, int address, ModBusType type)
 		=> new ModBusRegister()
 		{
 			Type = type,
@@ -121,7 +121,7 @@ public class ModBusRegister : ModBusObject
 			Register = value,
 		};
 
-	public static List<ModBusObject> New(uint value, int address, ModBusObjectType type)
+	public static List<ModBusObject> New(uint value, int address, ModBusType type)
 	{
 		if (address + 1 > MaxAddress)
 			throw new ArgumentOutOfRangeException(nameof(address));
@@ -144,7 +144,7 @@ public class ModBusRegister : ModBusObject
 		return os;
 	}
 
-	public static List<ModBusObject> New(ulong value, int address, ModBusObjectType type)
+	public static List<ModBusObject> New(ulong value, int address, ModBusType type)
 	{
 		if (address + 3 > MaxAddress)
 			throw new ArgumentOutOfRangeException(nameof(address));
@@ -167,7 +167,7 @@ public class ModBusRegister : ModBusObject
 		return os;
 	}
 
-	public static ModBusObject New(sbyte value, int address, ModBusObjectType type)
+	public static ModBusObject New(sbyte value, int address, ModBusType type)
 		=> new ModBusRegister()
 		{
 			Type = type,
@@ -175,7 +175,7 @@ public class ModBusRegister : ModBusObject
 			Register = (ushort)value
 		};
 
-	public static ModBusObject New(short value, int address, ModBusObjectType type)
+	public static ModBusObject New(short value, int address, ModBusType type)
 	{
 		var bs = BitConverter.GetBytes(value).TestLittleEndian();
 		return new ModBusRegister
@@ -187,7 +187,7 @@ public class ModBusRegister : ModBusObject
 		};
 	}
 
-	public static List<ModBusObject> New(int value, int address, ModBusObjectType type)
+	public static List<ModBusObject> New(int value, int address, ModBusType type)
 	{
 		if (address + 1 > MaxAddress)
 			throw new ArgumentOutOfRangeException(nameof(address));
@@ -210,7 +210,7 @@ public class ModBusRegister : ModBusObject
 		return os;
 	}
 
-	public static List<ModBusObject> New(long value, int address, ModBusObjectType type)
+	public static List<ModBusObject> New(long value, int address, ModBusType type)
 	{
 		if (address + 3 > MaxAddress)
 			throw new ArgumentOutOfRangeException(nameof(address));
@@ -233,7 +233,7 @@ public class ModBusRegister : ModBusObject
 		return os;
 	}
 
-	public static List<ModBusObject> New(float value, int address, ModBusObjectType type)
+	public static List<ModBusObject> New(float value, int address, ModBusType type)
 	{
 		if (address + 1 > MaxAddress)
 			throw new ArgumentOutOfRangeException(nameof(address));
@@ -256,7 +256,7 @@ public class ModBusRegister : ModBusObject
 		return os;
 	}
 
-	public static List<ModBusObject> New(double value, int address, ModBusObjectType type)
+	public static List<ModBusObject> New(double value, int address, ModBusType type)
 	{
 		if (address + 3 > MaxAddress)
 			throw new ArgumentOutOfRangeException(nameof(address));
@@ -279,7 +279,7 @@ public class ModBusRegister : ModBusObject
 		return os;
 	}
 
-	public static List<ModBusObject> New(string str, int address, Encoding encoding, ModBusObjectType type)
+	public static List<ModBusObject> New(string str, int address, Encoding encoding, ModBusType type)
 	{
 		var bs = encoding.GetBytes(str);
 		var len = (int)Math.Ceiling(bs.Length / 2.0);
@@ -316,45 +316,45 @@ public class ModBusRegister : ModBusObject
 		return os;
 	}
 
-	public static List<ModBusObject> New(string str, int address, ModBusObjectType type)
+	public static List<ModBusObject> New(string str, int address, ModBusType type)
 		=> New(str, address, ModBusConfig.DefaultEncoding, type);
 	#endregion
 
 	#region 기본 모드로 만들기
 	public static ModBusObject New(byte value, int address)
-	=> New(value, address, ModBusConfig.DefaultObject);
+	=> New(value, address, ModBusConfig.Default);
 
 	public static ModBusObject New(ushort value, int address)
-		=> New(value, address, ModBusConfig.DefaultObject);
+		=> New(value, address, ModBusConfig.Default);
 
 	public static List<ModBusObject> New(uint value, int address)
-		=> New(value, address, ModBusConfig.DefaultObject);
+		=> New(value, address, ModBusConfig.Default);
 
 	public static List<ModBusObject> New(ulong value, int address)
-		=> New(value, address, ModBusConfig.DefaultObject);
+		=> New(value, address, ModBusConfig.Default);
 
 	public static ModBusObject New(sbyte value, int address)
-		=> New(value, address, ModBusConfig.DefaultObject);
+		=> New(value, address, ModBusConfig.Default);
 
 	public static ModBusObject New(short value, int address)
-		=> New(value, address, ModBusConfig.DefaultObject);
+		=> New(value, address, ModBusConfig.Default);
 
 	public static List<ModBusObject> New(int value, int address)
-		=> New(value, address, ModBusConfig.DefaultObject);
+		=> New(value, address, ModBusConfig.Default);
 
 	public static List<ModBusObject> New(long value, int address)
-		=> New(value, address, ModBusConfig.DefaultObject);
+		=> New(value, address, ModBusConfig.Default);
 
 	public static List<ModBusObject> New(float value, int address)
-		=> New(value, address, ModBusConfig.DefaultObject);
+		=> New(value, address, ModBusConfig.Default);
 
 	public static List<ModBusObject> New(double value, int address)
-		=> New(value, address, ModBusConfig.DefaultObject);
+		=> New(value, address, ModBusConfig.Default);
 
 	public static List<ModBusObject> New(string str, int address, Encoding encoding)
-		=> New(str, address, encoding, ModBusConfig.DefaultObject);
+		=> New(str, address, encoding, ModBusConfig.Default);
 
 	public static List<ModBusObject> New(string str, int address) =>
-		New(str, address, ModBusConfig.DefaultEncoding, ModBusConfig.DefaultObject);
+		New(str, address, ModBusConfig.DefaultEncoding, ModBusConfig.Default);
 	#endregion
 }

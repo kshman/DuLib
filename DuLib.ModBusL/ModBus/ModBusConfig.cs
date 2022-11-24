@@ -6,6 +6,6 @@
 public static class ModBusConfig
 {
 	public static Encoding DefaultEncoding { get; set; } = Encoding.UTF8;
-	public static ModBusObjectType DefaultObject { get; set; } = ModBusObjectType.HoldingRegister;
+	public static ModBusType Default { get; set; } = ModBusType.HoldingRegister;
 }
 

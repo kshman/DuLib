@@ -21,7 +21,7 @@ public class Request
         set => Data = new DataBuffer(value);
     }
 
-    public ModBusMeiType MeiType { get; set; }
+    public ModBusMei Mei { get; set; }
 
     public ModBusDevIdCategory MeiCategory { get; set; }
 
@@ -72,15 +72,15 @@ public class Request
                 break;
 
             case ModBusFunctionCode.EncapsulatedInterface:
-                buffer.AddByte((byte)MeiType);
-                switch (MeiType)
+                buffer.AddByte((byte)Mei);
+                switch (Mei)
                 {
-                    case ModBusMeiType.CanOpenGeneralReference:
+                    case ModBusMei.CanOpenGeneralReference:
                         if (Data?.Length > 0)
                             buffer.AddBytes(Data.Buffer);
                         break;
 
-                    case ModBusMeiType.ReadDeviceInformation:
+                    case ModBusMei.ReadDeviceInformation:
                         buffer.AddByte((byte)MeiCategory);
                         buffer.AddByte((byte)MeiObject);
                         break;
@@ -147,20 +147,20 @@ public class Request
                 break;
 
             case ModBusFunctionCode.EncapsulatedInterface:
-                MeiType = (ModBusMeiType)buffer.GetByte(8);
-                switch (MeiType)
+                Mei = (ModBusMei)buffer.GetByte(8);
+                switch (Mei)
                 {
-                    case ModBusMeiType.CanOpenGeneralReference:
+                    case ModBusMei.CanOpenGeneralReference:
                         Data = new DataBuffer(buffer.Buffer.Skip(9));
                         break;
 
-                    case ModBusMeiType.ReadDeviceInformation:
+                    case ModBusMei.ReadDeviceInformation:
                         MeiCategory = (ModBusDevIdCategory)buffer.GetByte(9);
                         MeiObject = (ModBusDevIdObject)buffer.GetByte(10);
                         break;
 
                     default:
-                        throw new NotImplementedException(Cpr.ex_unk_mei_with + MeiType);
+                        throw new NotImplementedException(Cpr.ex_unk_mei_with + Mei);
                 }
                 break;
             default:

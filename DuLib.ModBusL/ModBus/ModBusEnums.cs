@@ -3,7 +3,7 @@
 /// <summary>
 /// 모드버스 메시지 타입
 /// </summary>
-public enum ModBusMessageType
+public enum ModBusMessage
 {
 	Unset,
 	Read,
@@ -30,7 +30,7 @@ public enum ModBusFunctionCode
 /// <summary>
 /// 모드버스 MEI 타입
 /// </summary>
-public enum ModBusMeiType : byte
+public enum ModBusMei : byte
 {
 	CanOpenGeneralReference = 13,
 	ReadDeviceInformation = 14,
@@ -93,7 +93,7 @@ public enum ModBusErrorCode : byte
 /// <summary>
 /// 모드버스 오브젝트 타입
 /// </summary>
-public enum ModBusObjectType
+public enum ModBusType
 {
 	Unknown,
 	Coil,

@@ -482,7 +482,7 @@ public class ModBusTcpClient : IModBusClient
 				{
 					DeviceId = deviceId,
 					Function = ModBusFunctionCode.EncapsulatedInterface,
-					MeiType = ModBusMeiType.ReadDeviceInformation,
+					Mei = ModBusMei.ReadDeviceInformation,
 					MeiCategory = categoryId,
 					MeiObject = objectId
 				};
@@ -552,7 +552,7 @@ public class ModBusTcpClient : IModBusClient
 		{
 			_lg?.LogTrace(Cpr.log_method_enter, "ModBusTcpClient.WriteSingleCoil");
 
-			if (coil.Type != ModBusObjectType.Coil)
+			if (coil.Type != ModBusType.Coil)
 				throw new ArgumentException(Cpr.ex_invalid_coil_type);
 			if (coil.Address is < ModBusObject.MinAddress or > ModBusObject.MaxAddress)
 				throw new ArgumentOutOfRangeException(nameof(coil), nameof(coil.Address));
@@ -617,7 +617,7 @@ public class ModBusTcpClient : IModBusClient
 		{
 			_lg?.LogTrace(Cpr.log_method_enter, "ModBusTcpClient.WriteSingleRegister");
 
-			if (register.Type != ModBusObjectType.HoldingRegister)
+			if (register.Type != ModBusType.HoldingRegister)
 				throw new ArgumentException(Cpr.ex_invalid_register_type);
 			if (register.Address is < ModBusObject.MinAddress or > ModBusObject.MaxAddress)
 				throw new ArgumentOutOfRangeException(nameof(register), nameof(register.Address));
@@ -684,7 +684,7 @@ public class ModBusTcpClient : IModBusClient
 
 			if (coils.Any() != true)
 				throw new ArgumentNullException(nameof(coilsArray));
-			if (coils.Any(c => c.Type != ModBusObjectType.Coil))
+			if (coils.Any(c => c.Type != ModBusType.Coil))
 				throw new ArgumentException(Cpr.ex_invalid_coil_type);
 
 			var orderedList = coils.OrderBy(c => c.Address).ToList();
@@ -774,7 +774,7 @@ public class ModBusTcpClient : IModBusClient
 
 			if (registers.Any() != true)
 				throw new ArgumentNullException(nameof(registersArray));
-			if (registers.Any(r => r.Type != ModBusObjectType.HoldingRegister))
+			if (registers.Any(r => r.Type != ModBusType.HoldingRegister))
 				throw new ArgumentException(Cpr.ex_invalid_register_type);
 
 			var orderedList = registers.OrderBy(c => c.Address).ToList();

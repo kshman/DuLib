@@ -9,8 +9,8 @@ public static class ModBusConverter
 	#region 기본 타입으로 변환
 	private static void InternalCheckType(ModBusObject obj)
 	{
-		if (obj.Type != ModBusObjectType.HoldingRegister &&
-			obj.Type != ModBusObjectType.InputRegister)
+		if (obj.Type != ModBusType.HoldingRegister &&
+			obj.Type != ModBusType.InputRegister)
 			throw new ArgumentException(Cpr.ex_invalid_register_type);
 	}
 
@@ -23,8 +23,8 @@ public static class ModBusConverter
 		if (startIndex < 0 || count < startIndex + takeRegisters)
 			throw new ArgumentOutOfRangeException(nameof(startIndex));
 
-		if (objs.Any(r => r.Type != ModBusObjectType.HoldingRegister) &&
-			objs.Any(r => r.Type != ModBusObjectType.InputRegister))
+		if (objs.Any(r => r.Type != ModBusType.HoldingRegister) &&
+			objs.Any(r => r.Type != ModBusType.InputRegister))
 			throw new ArgumentException(Cpr.ex_invalid_register_type);
 	}
 
@@ -187,7 +187,7 @@ public static class ModBusConverter
 	public static ModBusObject ToModBusRegister(this bool value, int address)
 		=> new ModBusRegister()
 		{
-			Type = ModBusObjectType.HoldingRegister,
+			Type = ModBusType.HoldingRegister,
 			Address = address,
 			Register = (ushort)(value ? 1 : 0)
 		};
@@ -195,7 +195,7 @@ public static class ModBusConverter
 	public static ModBusObject ToModBusRegister(this byte value, int address)
 		=> new ModBusRegister()
 		{
-			Type = ModBusObjectType.HoldingRegister,
+			Type = ModBusType.HoldingRegister,
 			Address = address,
 			Register = value
 		};
@@ -203,7 +203,7 @@ public static class ModBusConverter
 	public static ModBusObject ToModBusRegister(this ushort value, int address)
 		=> new ModBusRegister()
 		{
-			Type = ModBusObjectType.HoldingRegister,
+			Type = ModBusType.HoldingRegister,
 			Address = address,
 			Register = value
 		};
@@ -220,7 +220,7 @@ public static class ModBusConverter
 			{
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = (ushort)(sa - i),
 					ByteHi = bs[i * 2],
 					ByteLo = bs[i * 2 + 1]
@@ -233,7 +233,7 @@ public static class ModBusConverter
 			{
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = address + i,
 					ByteHi = bs[i * 2],
 					ByteLo = bs[i * 2 + 1]
@@ -257,7 +257,7 @@ public static class ModBusConverter
 			{
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = (ushort)(sa - i),
 					ByteHi = bs[i * 2],
 					ByteLo = bs[i * 2 + 1]
@@ -270,7 +270,7 @@ public static class ModBusConverter
 			{
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = address + i,
 					ByteHi = bs[i * 2],
 					ByteLo = bs[i * 2 + 1]
@@ -284,7 +284,7 @@ public static class ModBusConverter
 	public static ModBusObject ToModBusRegister(this sbyte value, int address)
 		=> new ModBusRegister()
 		{
-			Type = ModBusObjectType.HoldingRegister,
+			Type = ModBusType.HoldingRegister,
 			Address = address,
 			Register = (ushort)value
 		};
@@ -292,7 +292,7 @@ public static class ModBusConverter
 	public static ModBusObject ToModBusRegister(this short value, int address)
 		=> new ModBusRegister()
 		{
-			Type = ModBusObjectType.HoldingRegister,
+			Type = ModBusType.HoldingRegister,
 			Address = address,
 			Register = (ushort)value
 		};
@@ -309,7 +309,7 @@ public static class ModBusConverter
 			{
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = (ushort)(sa - i),
 					ByteHi = bs[i * 2],
 					ByteLo = bs[i * 2 + 1]
@@ -322,7 +322,7 @@ public static class ModBusConverter
 			{
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = address + i,
 					ByteHi = bs[i * 2],
 					ByteLo = bs[i * 2 + 1]
@@ -345,7 +345,7 @@ public static class ModBusConverter
 			{
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = (ushort)(sa - i),
 					ByteHi = bs[i * 2],
 					ByteLo = bs[i * 2 + 1]
@@ -358,7 +358,7 @@ public static class ModBusConverter
 			{
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = address + i,
 					ByteHi = bs[i * 2],
 					ByteLo = bs[i * 2 + 1]
@@ -381,7 +381,7 @@ public static class ModBusConverter
 			{
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = (ushort)(sa - i),
 					ByteHi = bs[i * 2],
 					ByteLo = bs[i * 2 + 1]
@@ -394,7 +394,7 @@ public static class ModBusConverter
 			{
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = address + i,
 					ByteHi = bs[i * 2],
 					ByteLo = bs[i * 2 + 1]
@@ -417,7 +417,7 @@ public static class ModBusConverter
 			{
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = (ushort)(sa - i),
 					ByteHi = bs[i * 2],
 					ByteLo = bs[i * 2 + 1]
@@ -430,7 +430,7 @@ public static class ModBusConverter
 			{
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = address + i,
 					ByteHi = bs[i * 2],
 					ByteLo = bs[i * 2 + 1]
@@ -459,7 +459,7 @@ public static class ModBusConverter
 
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = address + i,
 					ByteHi = hi,
 					ByteLo = lo
@@ -475,7 +475,7 @@ public static class ModBusConverter
 
 				rs[i] = new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = address + i,
 					ByteHi = hi,
 					ByteLo = lo

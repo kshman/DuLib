@@ -86,7 +86,7 @@ public class ModbusDevice
 			{
 				return new ModBusRegister
 				{
-					Type = ModBusObjectType.InputRegister,
+					Type = ModBusType.InputRegister,
 					Address = address,
 					Register = value,
 				};
@@ -95,7 +95,7 @@ public class ModbusDevice
 
 		return new ModBusRegister
 		{
-			Type = ModBusObjectType.InputRegister,
+			Type = ModBusType.InputRegister,
 			Address = address,
 		};
 	}
@@ -119,7 +119,7 @@ public class ModbusDevice
 			{
 				return new ModBusRegister
 				{
-					Type = ModBusObjectType.HoldingRegister,
+					Type = ModBusType.HoldingRegister,
 					Address = address,
 					Register = value,
 				};
@@ -128,7 +128,7 @@ public class ModbusDevice
 
 		return new ModBusRegister
 		{
-			Type = ModBusObjectType.HoldingRegister,
+			Type = ModBusType.HoldingRegister,
 			Address = address
 		};
 	}
