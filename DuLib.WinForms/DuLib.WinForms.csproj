@@ -9,8 +9,19 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <UseWindowsForms>true</UseWindowsForms>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>DuLib.WinForms</Title>
+    <Version>1.1.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+
+    <Title>DuLib.WinForms</Title>
+    <PackageId>DuLib.WinForms</PackageId>
+    <Product>DuLib.WinForms</Product>
+    <Description>DuLib WinForms</Description>    
+    <Authors>kshman</Authors>
+    <PackageProjectUrl>https://github.com/kshman/DuLib</PackageProjectUrl>
+    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,6 +41,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

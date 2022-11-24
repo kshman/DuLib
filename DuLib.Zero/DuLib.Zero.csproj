@@ -8,8 +8,25 @@
     <RepositoryUrl>https://github.com/kshman/DuLib</RepositoryUrl>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>1.1.0</Version>
+
     <Title>DuLib.Zero</Title>
-    <Description>DuLib Zero</Description>
+    <PackageId>DuLib.Zero</PackageId>
+    <Product>DuLib.Zero</Product>
+    <Description>DuLib Zero</Description>    
+    <Authors>kshman</Authors>
+    <PackageProjectUrl>https://github.com/kshman/DuLib</PackageProjectUrl>
+    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

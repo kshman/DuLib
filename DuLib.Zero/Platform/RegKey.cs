@@ -15,46 +15,46 @@ public class RegKey : IDisposable
 	/// <summary>
 	/// 열기
 	/// </summary>
-	/// <param name="keyname"></param>
-	/// <param name="createnew"></param>
-	public RegKey(string keyname, bool createnew = false)
-		: this(keyname, Registry.CurrentUser, createnew)
+	/// <param name="key_name"></param>
+	/// <param name="create_new"></param>
+	public RegKey(string key_name, bool create_new = false)
+		: this(key_name, Registry.CurrentUser, create_new)
 	{
 	}
 
 	/// <summary>
 	/// 열기
 	/// </summary>
-	/// <param name="keyname"></param>
-	/// <param name="highkey"></param>
-	/// <param name="createnew"></param>
-	public RegKey(string keyname, RegistryKey highkey, bool createnew = false)
+	/// <param name="key_name"></param>
+	/// <param name="high_key"></param>
+	/// <param name="create_new"></param>
+	public RegKey(string key_name, RegistryKey high_key, bool create_new = false)
 	{
-		OpenKey(keyname, highkey, createnew);
+		OpenKey(key_name, high_key, create_new);
 	}
 
 	/// <summary>
 	/// 열기
 	/// </summary>
-	/// <param name="basekey"></param>
-	/// <param name="keyname"></param>
-	/// <param name="createnew"></param>
-	public RegKey(string basekey, string keyname, bool createnew = false)
-		: this(basekey, keyname, Registry.CurrentUser, createnew)
+	/// <param name="base_key"></param>
+	/// <param name="key_name"></param>
+	/// <param name="create_new"></param>
+	public RegKey(string base_key, string key_name, bool create_new = false)
+		: this(base_key, key_name, Registry.CurrentUser, create_new)
 	{
 	}
 
 	/// <summary>
 	/// 열기
 	/// </summary>
-	/// <param name="basekey"></param>
-	/// <param name="keyname"></param>
-	/// <param name="highkey"></param>
-	/// <param name="createnew"></param>
-	public RegKey(string basekey, string keyname, RegistryKey highkey, bool createnew = false)
+	/// <param name="base_key"></param>
+	/// <param name="key_name"></param>
+	/// <param name="high_key"></param>
+	/// <param name="create_new"></param>
+	public RegKey(string base_key, string key_name, RegistryKey high_key, bool create_new = false)
 	{
-		BaseKey = basekey;
-		OpenKey(keyname, highkey, createnew);
+		BaseKey = base_key;
+		OpenKey(key_name, high_key, create_new);
 	}
 
 	//
@@ -64,13 +64,13 @@ public class RegKey : IDisposable
 	}
 
 	//
-	private void OpenKey(string keyname, RegistryKey highkey, bool createnew)
+	private void OpenKey(string key_name, RegistryKey high_key, bool create_new)
 	{
-		var key = BaseKey + "\\" + keyname;
+		var key = BaseKey + "\\" + key_name;
 
-		_rk = highkey.OpenSubKey(key, true);
-		if (_rk == null && createnew)
-			_rk = highkey.CreateSubKey(key);
+		_rk = high_key.OpenSubKey(key, true);
+		if (_rk == null && create_new)
+			_rk = high_key.CreateSubKey(key);
 	}
 
 	/// <summary>
@@ -111,11 +111,11 @@ public class RegKey : IDisposable
 	/// <summary>
 	/// 하부키를 만듭니다
 	/// </summary>
-	/// <param name="keyname"></param>
+	/// <param name="key_name"></param>
 	/// <returns></returns>
-	public RegKey? CreateKey(string keyname)
+	public RegKey? CreateKey(string key_name)
 	{
-		return _rk == null ? null : new RegKey(_rk.CreateSubKey(keyname));
+		return _rk == null ? null : new RegKey(_rk.CreateSubKey(key_name));
 	}
 
 	/// <summary>
@@ -136,7 +136,7 @@ public class RegKey : IDisposable
 	/// <returns></returns>
 	public string? GetString(string name, string? failret = null)
 	{
-		return _rk?.GetValue(name) is string value ? value : failret;
+		return _rk?.GetValue(name) as string ?? failret;
 	}
 
 	/// <summary>
@@ -179,7 +179,7 @@ public class RegKey : IDisposable
 	/// <returns></returns>
 	public byte[]? GetBytes(string name)
 	{
-		return _rk?.GetValue(name) is byte[] value ? value : null;
+		return _rk?.GetValue(name) as byte[];
 	}
 
 	/// <summary>
@@ -190,14 +190,11 @@ public class RegKey : IDisposable
 	/// <returns></returns>
 	public string? GetDecodingString(string name, string? failret = null)
 	{
-		if (_rk?.GetValue(name) is string value)
-		{
-			var s = Converter.DecodingString(value);
-			if (!string.IsNullOrEmpty(s))
-				return s;
-		}
+		if (_rk?.GetValue(name) is not string value) 
+			return failret;
 
-		return failret;
+		var s = Converter.DecodingString(value);
+		return !string.IsNullOrEmpty(s) ? s : failret;
 	}
 
 	/// <summary>
@@ -208,14 +205,11 @@ public class RegKey : IDisposable
 	/// <returns></returns>
 	public string? GetDecompressString(string name, string? failret = null)
 	{
-		if (_rk?.GetValue(name) is string value)
-		{
-			var s = Converter.DecompressString(value);
-			if (!string.IsNullOrEmpty(s))
-				return s;
-		}
+		if (_rk?.GetValue(name) is not string value) 
+			return failret;
 
-		return failret;
+		var s = Converter.DecompressString(value);
+		return !string.IsNullOrEmpty(s) ? s : failret;
 	}
 
 	/// <summary>
@@ -285,11 +279,11 @@ public class RegKey : IDisposable
 	/// <param name="value"></param>
 	public void SetEncodingString(string? name, string value)
 	{
-		if (_rk != null)
-		{
-			var s = Converter.EncodingString(value);
-			_rk.SetValue(name, s, RegistryValueKind.String);
-		}
+		if (_rk == null) 
+			return;
+
+		var s = Converter.EncodingString(value);
+		_rk.SetValue(name, s, RegistryValueKind.String);
 	}
 
 	/// <summary>
@@ -299,20 +293,20 @@ public class RegKey : IDisposable
 	/// <param name="value"></param>
 	public void SetCompressString(string? name, string value)
 	{
-		if (_rk != null)
-		{
-			var s = Converter.CompressString(value);
-			_rk.SetValue(name, s, RegistryValueKind.String);
-		}
+		if (_rk == null) 
+			return;
+
+		var s = Converter.CompressString(value);
+		_rk.SetValue(name, s, RegistryValueKind.String);
 	}
 
 	/// <summary>
 	/// 지정한 키를 지우기
 	/// </summary>
-	/// <param name="keyname"></param>
+	/// <param name="key_name"></param>
 	/// <param name="also_delete_tree">안에 있는 키 전부 지우려면 참</param>
 	/// <returns></returns>
-	public bool DeleteKey(string keyname, bool also_delete_tree = false)
+	public bool DeleteKey(string key_name, bool also_delete_tree = false)
 	{
 		if (_rk == null)
 			return false;
@@ -320,9 +314,9 @@ public class RegKey : IDisposable
 		try
 		{
 			if (also_delete_tree)
-				_rk.DeleteSubKeyTree(keyname);
+				_rk.DeleteSubKeyTree(key_name);
 			else
-				_rk.DeleteSubKey(keyname);
+				_rk.DeleteSubKey(key_name);
 			return true;
 		}
 		catch { return false; }
@@ -352,10 +346,10 @@ public class RegKey : IDisposable
 	/// <param name="extension">확장자 (".testext")</param>
 	/// <param name="type">확장자 형식 ("Test.testext")</param>
 	/// <param name="description">확장자 설명</param>
-	/// <param name="executepath">이 확장자로 실행할 프로그램 전체경로</param>
-	/// <param name="friendlyname">그냥 부를 이름 (없어도됨)</param>
+	/// <param name="execute_path">이 확장자로 실행할 프로그램 전체경로</param>
+	/// <param name="friendly_name">그냥 부를 이름 (없어도됨)</param>
 	/// <returns></returns>
-	public static bool RegisterExtension(string extension, string type, string description, string executepath, string? friendlyname = null)
+	public static bool RegisterExtension(string extension, string type, string description, string execute_path, string? friendly_name = null)
 	{
 		// (".testext", "Test.testext", "Test extension register", "c:\test.exe", "테스트프로그램")
 
@@ -372,11 +366,11 @@ public class RegKey : IDisposable
 				using var rs = rt?.CreateKey("shell");
 
 				using var ro = rs?.CreateKey("open");
-				if (!string.IsNullOrEmpty(friendlyname))
-					rc.SetString("FriendlyAppName", friendlyname);
+				if (!string.IsNullOrEmpty(friendly_name))
+					rc.SetString("FriendlyAppName", friendly_name);
 
 				using var rn = ro?.CreateKey("command");
-				rn?.SetString(null, $"\"{executepath}\" \"%1\"");
+				rn?.SetString(null, $"\"{execute_path}\" \"%1\"");
 			}
 
 			return true;
@@ -396,11 +390,9 @@ public class RegKey : IDisposable
 
 		try
 		{
-			using (var rc = new RegKey("Classes"))
-			{
-				rc.DeleteKey(extension);
-				rc.DeleteKey(type, true);
-			}
+			using var rc = new RegKey("Classes");
+			rc.DeleteKey(extension);
+			rc.DeleteKey(type, true);
 
 			return true;
 		}

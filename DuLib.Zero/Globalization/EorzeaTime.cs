@@ -5,6 +5,10 @@
 /// </summary>
 public class EorzeaTime
 {
+	private const int c_tz_delta = -9; // JST/KST UTC-9;
+	private static readonly DateTime s_base_datetime = new(2010, 6 + 1, 12, 0, 0, 0, DateTimeKind.Utc);
+	private static readonly double s_base_epoch = ConvertEpoch(s_base_datetime) + c_tz_delta * 60 * 60 * 1000;
+
 	/// <summary>
 	/// 시간
 	/// </summary>
@@ -18,21 +22,17 @@ public class EorzeaTime
 	/// <summary>
 	/// 지역 시간에 맞춘 델타값 (일본표준시간기준 UTC-9)
 	/// </summary>
-	public static int TimeZoneDelta => _tz_delta;
+	public static int TimeZoneDelta => c_tz_delta;
 
 	/// <summary>
 	/// 에오르제아 기준값 (2010년 7월 12일 UTC)
 	/// </summary>
-	public static DateTime BaseDateTime => _base_datetime;
+	public static DateTime BaseDateTime => s_base_datetime;
 
 	/// <summary>
 	/// 기준 계산값 (epoch)
 	/// </summary>
-	public static double BaseEpoch => _base_epoch;
-
-	private static readonly int _tz_delta = -9;   // JST/KST UTC-9;
-	private static readonly DateTime _base_datetime = new(2010, 6 + 1, 12, 0, 0, 0, DateTimeKind.Utc);
-	private static readonly double _base_epoch = ConvertEpoch(_base_datetime) + _tz_delta * 60 * 60 * 1000;
+	public static double BaseEpoch => s_base_epoch;
 
 	/// <summary>
 	/// 0시 0분으로 하여 만듦
@@ -74,7 +74,7 @@ public class EorzeaTime
 	{
 		get
 		{
-			double now = ((ConvertEpoch(DateTime.UtcNow) - _base_epoch) / 1000 - 90000) * (1440.0 / 70.0);
+			double now = ((ConvertEpoch(DateTime.UtcNow) - s_base_epoch) / 1000 - 90000) * (1440.0 / 70.0);
 			return now;
 		}
 	}

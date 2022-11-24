@@ -5,12 +5,12 @@
 /// </summary>
 public static class UnixTime
 {
-	private static readonly DateTime _base_datetime = new(1970, 1, 1, 0, 0, 0);
+	private static readonly DateTime s_base_datetime = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
 	/// <summary>
 	/// 유닉스시간 기준값 (1970년 1월 1일 0시)
 	/// </summary>
-	public static DateTime BaseDateTime => _base_datetime;
+	public static DateTime BaseDateTime => s_base_datetime;
 
 	/// <summary>
 	/// 유닉스 현재 시간 틱 (=epoch)
@@ -19,7 +19,7 @@ public static class UnixTime
 	{
 		get
 		{
-			var timespan = (DateTime.Now - _base_datetime);
+			var timespan = (DateTime.Now - s_base_datetime);
 			return (long)timespan.TotalMilliseconds;
 		}
 	}

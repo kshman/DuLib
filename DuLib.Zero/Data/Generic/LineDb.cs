@@ -7,7 +7,7 @@ namespace Du.Data.Generic;
 /// </summary>
 /// <typeparam name="TKey">키형식</typeparam>
 /// <typeparam name="TValue">값형식</typeparam>
-public class LineDb<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>, IEnumerable, IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : notnull
+public class LineDb<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>> where TKey : notnull
 {
 	/// <summary>
 	/// 데이터 사전
@@ -68,14 +68,8 @@ public class LineDb<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>, IEn
 	/// <returns></returns>
 	public TValue this[TKey key]
 	{
-		get
-		{
-			return Db[key];
-		}
-		set
-		{
-			Db[key] = value;
-		}
+		get => Db[key];
+		set => Db[key] = value;
 	}
 
 	IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
@@ -102,11 +96,11 @@ public class LineDb<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>, IEn
 	/// 값 얻기
 	/// </summary>
 	/// <param name="key"></param>
-	/// <param name="defvalue"></param>
+	/// <param name="default_value"></param>
 	/// <returns></returns>
-	public TValue Get(TKey key, TValue defvalue)
+	public TValue Get(TKey key, TValue default_value)
 	{
-		return Db.TryGetValue(key, out TValue? value) ? value : defvalue;
+		return Db.TryGetValue(key, out var value) ? value : default_value;
 	}
 
 	/// <summary>
@@ -116,7 +110,7 @@ public class LineDb<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>, IEn
 	/// <returns></returns>
 	public TValue? Get(TKey key)
 	{
-		return Db.TryGetValue(key, out TValue? value) ? value : default;
+		return Db.TryGetValue(key, out var value) ? value : default;
 	}
 
 	/// <summary>
@@ -158,17 +152,12 @@ public class LineDb<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>, IEn
 	/// <returns></returns>
 	public bool TryParse(TKey key, out int value)
 	{
-		if (!Db.TryGetValue(key, out var v))
-		{
-			value = 0;
-			return false;
-		}
-		else
-		{
-			if (!int.TryParse(v?.ToString(), out value))
-				return false;
-			return true;
-		}
+		if (Db.TryGetValue(key, out var v))
+			return int.TryParse(v?.ToString(), out value);
+
+		value = 0;
+		return false;
+
 	}
 
 	/// <summary>
@@ -179,17 +168,12 @@ public class LineDb<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>, IEn
 	/// <returns></returns>
 	public bool TryParse(TKey key, out ushort value)
 	{
-		if (!Db.TryGetValue(key, out var v))
-		{
-			value = 0;
-			return false;
-		}
-		else
-		{
-			if (!ushort.TryParse(v?.ToString(), out value))
-				return false;
-			return true;
-		}
+		if (Db.TryGetValue(key, out var v)) 
+			return ushort.TryParse(v?.ToString(), out value);
+
+		value = 0;
+		return false;
+
 	}
 
 	/// <summary>
@@ -282,7 +266,10 @@ public class LineDb<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>, IEn
 				return true;
 			}
 		}
-		catch { }
+		catch
+		{
+			// 무시
+		}
 
 		return false;
 	}

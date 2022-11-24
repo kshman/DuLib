@@ -10,16 +10,8 @@ public static class TestEnv
 	/// <summary>
 	/// 관리자로 실행중인가!
 	/// </summary>
-	public static bool IsAdministrator
-	{
-		get
-		{
-			if (OperatingSystem.IsWindows())
-				return WindowsIsAdministrator();
-			else
-				return false;
-		}
-	}
+	public static bool IsAdministrator => 
+		OperatingSystem.IsWindows() && WindowsIsAdministrator();
 
 	[SupportedOSPlatform("windows")]
 	private static bool WindowsIsAdministrator()

@@ -12,75 +12,75 @@ public static class Converter
 	/// 문자열을 긴정수로
 	/// </summary>
 	/// <param name="s">문자열</param>
-	/// <param name="failret">실패시 반환값</param>
+	/// <param name="fail_ret">실패시 반환값</param>
 	/// <returns></returns>
-	public static long ToLong(string? s, long failret = 0)
+	public static long ToLong(string? s, long fail_ret = 0)
 	{
-		return long.TryParse(s, out var ret) ? ret : failret;
+		return long.TryParse(s, out var ret) ? ret : fail_ret;
 	}
 
 	/// <summary>
 	/// 문자열을 정수로
 	/// </summary>
 	/// <param name="s"></param>
-	/// <param name="failret"></param>
+	/// <param name="fail_ret"></param>
 	/// <returns></returns>
-	public static int ToInt(string? s, int failret = 0)
+	public static int ToInt(string? s, int fail_ret = 0)
 	{
-		return int.TryParse(s, out var ret) ? ret : failret;
+		return int.TryParse(s, out var ret) ? ret : fail_ret;
 	}
 
 	/// <summary>
 	/// 문자열을 짧은정수로
 	/// </summary>
 	/// <param name="s"></param>
-	/// <param name="failret"></param>
+	/// <param name="fail_ret"></param>
 	/// <returns></returns>
-	public static short ToShort(string? s, short failret = 0)
+	public static short ToShort(string? s, short fail_ret = 0)
 	{
-		return short.TryParse(s, out var ret) ? ret : failret;
+		return short.TryParse(s, out var ret) ? ret : fail_ret;
 	}
 
 	/// <summary>
 	/// 문자열을 부호없는 짧은정수로
 	/// </summary>
 	/// <param name="s"></param>
-	/// <param name="failret"></param>
+	/// <param name="fail_ret"></param>
 	/// <returns></returns>
-	public static ushort ToUshort(string? s, ushort failret = 0)
+	public static ushort ToUshort(string? s, ushort fail_ret = 0)
 	{
-		return ushort.TryParse(s, out var ret) ? ret : failret;
+		return ushort.TryParse(s, out var ret) ? ret : fail_ret;
 	}
 
 	/// <summary>
 	/// 문자열을 불로
 	/// </summary>
 	/// <param name="s"></param>
-	/// <param name="failret"></param>
+	/// <param name="fail_ret"></param>
 	/// <returns></returns>
-	public static bool ToBool(string? s, bool failret = false)
+	public static bool ToBool(string? s, bool fail_ret = false)
 	{
-		return string.IsNullOrEmpty(s) ? failret : s.ToUpper().Equals("TRUE");
+		return string.IsNullOrEmpty(s) ? fail_ret : s.ToUpper().Equals("TRUE");
 	}
 
 	/// <summary>
 	/// 문자열을 단실수로
 	/// </summary>
 	/// <param name="s"></param>
-	/// <param name="failret"></param>
+	/// <param name="fail_ret"></param>
 	/// <returns></returns>
-	public static float ToFloat(string? s, float failret = 0.0f)
+	public static float ToFloat(string? s, float fail_ret = 0.0f)
 	{
-		return float.TryParse(s, out float v) ? v : failret;
+		return float.TryParse(s, out float v) ? v : fail_ret;
 	}
 
 	/// <summary>
 	/// AARRGGBB 문자열을 색깔로
 	/// </summary>
 	/// <param name="s"></param>
-	/// <param name="failret"></param>
+	/// <param name="fail_ret"></param>
 	/// <returns></returns>
-	public static Color ToColorArgb(string? s, Color failret)
+	public static Color ToColorArgb(string? s, Color fail_ret)
 	{
 		try
 		{
@@ -90,7 +90,7 @@ public static class Converter
 		}
 		catch
 		{
-			return failret;
+			return fail_ret;
 		}
 	}
 
@@ -109,26 +109,29 @@ public static class Converter
 	/// </summary>
 	/// <param name="ipstr"></param>
 	/// <returns></returns>
-	public static IPAddress ToIPAddressFromIPV4(string? ipstr)
+	public static IPAddress ToIpAddressFromIpv4(string? ipstr)
 	{
-		if (!string.IsNullOrEmpty(ipstr))
+		if (string.IsNullOrEmpty(ipstr)) 
+			return IPAddress.None;
+
+		try
 		{
-			try
+			var sa = ipstr.Trim().Split('.');
+			if (sa.Length == 4)
 			{
-				var sa = ipstr.Trim().Split('.');
-				if (sa.Length == 4)
-				{
-					if (sa[3].Contains(':'))
-						sa[3] = sa[3][..sa[3].IndexOf(":")];
+				if (sa[3].Contains(':'))
+					sa[3] = sa[3][..sa[3].IndexOf(":", StringComparison.Ordinal)];
 
-					var ivs = new byte[4];
-					for (var i = 0; i < 4; i++)
-						ivs[i] = byte.Parse(sa[i]);
+				var ivs = new byte[4];
+				for (var i = 0; i < 4; i++)
+					ivs[i] = byte.Parse(sa[i]);
 
-					return new IPAddress(ivs);
-				}
+				return new IPAddress(ivs);
 			}
-			catch { }
+		}
+		catch
+		{
+			// 무시
 		}
 
 		return IPAddress.None;
@@ -137,11 +140,11 @@ public static class Converter
 	/// <summary>
 	/// 문자열을 수치로 바꾼 문자열로
 	/// </summary>
-	/// <param name="readblestring"></param>
+	/// <param name="readable_string"></param>
 	/// <returns></returns>
-	public static string EncodingString(string readblestring)
+	public static string EncodingString(string readable_string)
 	{
-		var bs = Encoding.UTF8.GetBytes(readblestring);
+		var bs = Encoding.UTF8.GetBytes(readable_string);
 
 		var sb = new StringBuilder();
 		foreach (var b in bs)
@@ -153,10 +156,10 @@ public static class Converter
 	private static byte HexCharToByte(char ch)
 	{
 		var b = ch - '0';
-		if (b >= 0 && b <= 9)
+		if (b is >= 0 and <= 9)
 			return (byte)b;
 		b = ch - 'A' + 10;
-		if (b >= 10 && b <= 15)
+		if (b is >= 10 and <= 15)
 			return (byte)b;
 		return 0;
 	}
@@ -164,18 +167,18 @@ public static class Converter
 	/// <summary>
 	/// 수치로 바꾼 문자열을 문자열로
 	/// </summary>
-	/// <param name="rawstring"></param>
+	/// <param name="raw_string"></param>
 	/// <returns></returns>
-	public static string? DecodingString(string rawstring)
+	public static string? DecodingString(string raw_string)
 	{
-		if ((rawstring.Length % 2) != 0)
+		if ((raw_string.Length % 2) != 0)
 			return null;
 
-		var bs = new byte[rawstring.Length / 2];
+		var bs = new byte[raw_string.Length / 2];
 
-		for (int i = 0, u = 0; i < rawstring.Length; i += 2, u++)
+		for (int i = 0, u = 0; i < raw_string.Length; i += 2, u++)
 		{
-			var b = HexCharToByte(rawstring[i]) * 16 + HexCharToByte(rawstring[i + 1]);
+			var b = HexCharToByte(raw_string[i]) * 16 + HexCharToByte(raw_string[i + 1]);
 			bs[u] = (byte)b;
 		}
 
@@ -185,35 +188,35 @@ public static class Converter
 	/// <summary>
 	/// BASE64로 인코딩
 	/// </summary>
-	/// <param name="rawstring">원본</param>
+	/// <param name="raw_string">원본</param>
 	/// <returns>BASE64로 바뀐 문자열</returns>
-	public static string EncodingBase64(string rawstring)
+	public static string EncodingBase64(string raw_string)
 	{
-		byte[] bytes= Encoding.UTF8.GetBytes(rawstring);
-		string base64 = Convert.ToBase64String(bytes);
+		var bytes= Encoding.UTF8.GetBytes(raw_string);
+		var base64 = Convert.ToBase64String(bytes);
 		return base64;
 	}
 
 	/// <summary>
 	/// BASE64를 디코딩
 	/// </summary>
-	/// <param name="base64string">BASE64 문자열</param>
+	/// <param name="base64_string">BASE64 문자열</param>
 	/// <returns>변환된 원본 문자열</returns>
-	public static string DecodingBase64(string base64string)
+	public static string DecodingBase64(string base64_string)
 	{
-		byte[] bytes = Convert.FromBase64String(base64string);
-		string rawstring = Encoding.UTF8.GetString(bytes);
-		return rawstring;
+		var bytes = Convert.FromBase64String(base64_string);
+		var raw_string = Encoding.UTF8.GetString(bytes);
+		return raw_string;
 	}
 
 	/// <summary>
 	/// GZIP 으로 압축한 문자열
 	/// </summary>
-	/// <param name="rawstring"></param>
+	/// <param name="raw_string"></param>
 	/// <returns></returns>
-	public static string CompressString(string rawstring)
+	public static string CompressString(string raw_string)
 	{
-		var raw = Encoding.UTF8.GetBytes(rawstring);
+		var raw = Encoding.UTF8.GetBytes(raw_string);
 		var mst = new MemoryStream();
 
 		using (var gzip = new GZipStream(mst, CompressionMode.Compress, true))
@@ -222,7 +225,7 @@ public static class Converter
 		mst.Position = 0;
 
 		var buf = new byte[mst.Length];
-		mst.Read(buf, 0, buf.Length);
+		_ = mst.Read(buf, 0, buf.Length);
 
 		var bs = new byte[buf.Length + 4];
 		Buffer.BlockCopy(buf, 0, bs, 4, buf.Length);
@@ -238,18 +241,18 @@ public static class Converter
 	/// <summary>
 	/// GZIP 으로 압축한 문자열을 풀기
 	/// </summary>
-	/// <param name="compressedstring"></param>
+	/// <param name="compressed_string"></param>
 	/// <returns></returns>
-	public static string? DecompressString(string compressedstring)
+	public static string? DecompressString(string compressed_string)
 	{
-		if ((compressedstring.Length % 2) != 0)
+		if ((compressed_string.Length % 2) != 0)
 			return null;
 
-		var bs = new byte[compressedstring.Length / 2];
+		var bs = new byte[compressed_string.Length / 2];
 
-		for (int i = 0, u = 0; i < compressedstring.Length; i += 2, u++)
+		for (int i = 0, u = 0; i < compressed_string.Length; i += 2, u++)
 		{
-			var b = HexCharToByte(compressedstring[i]) * 16 + HexCharToByte(compressedstring[i + 1]);
+			var b = HexCharToByte(compressed_string[i]) * 16 + HexCharToByte(compressed_string[i + 1]);
 			bs[u] = (byte)b;
 		}
 
@@ -262,7 +265,7 @@ public static class Converter
 		mst.Position = 0;
 
 		using (var gzip = new GZipStream(mst, CompressionMode.Decompress))
-			gzip.Read(bs, 0, bs.Length);
+			_ = gzip.Read(bs, 0, bs.Length);
 
 		return Encoding.UTF8.GetString(bs);
 	}

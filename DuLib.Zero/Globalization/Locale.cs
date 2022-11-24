@@ -8,7 +8,7 @@ namespace Du.Globalization;
 public static class Locale
 {
 	private static readonly LineDbV3 s_db = LineDbV3.Empty();
-	private static readonly Dictionary<string, string> s_langs = new();
+	private static readonly Dictionary<string, string> s_dic = new();
 
 	/// <summary>
 	/// 현재 로캘을 얻는다
@@ -21,7 +21,7 @@ public static class Locale
 	/// <returns>로켈 목록</returns>
 	public static IEnumerable<string> GetLocaleList()
 	{
-		return s_langs.Keys.ToArray();
+		return s_dic.Keys.ToArray();
 	}
 
 	/// <summary>
@@ -33,11 +33,11 @@ public static class Locale
 	public static void AddLocale(string name, string context_or_filename, bool isfile = false)
 	{
 		if (!isfile)
-			s_langs[name] = context_or_filename;
+			s_dic[name] = context_or_filename;
 		else
 		{
 			var s = $"FILE:{context_or_filename}";
-			s_langs[name] = s;
+			s_dic[name] = s;
 		}
 	}
 
@@ -47,13 +47,12 @@ public static class Locale
 	/// <param name="name"></param>
 	public static bool SetLocale(string name)
 	{
-		if (name != CurrentLocale)
-		{
-			if (!s_langs.TryGetValue(name, out var context))
-				return false;
+		if (name == CurrentLocale) 
+			return true;
+		if (!s_dic.TryGetValue(name, out var context))
+			return false;
 
-			InternalSetLocale(name, context);
-		}
+		InternalSetLocale(name, context);
 
 		return true;
 	}
@@ -64,10 +63,10 @@ public static class Locale
 	/// <returns></returns>
 	public static bool SetDefaultLocale()
 	{
-		if (s_langs.Count == 0)
+		if (s_dic.Count == 0)
 			return false;
 
-		var first = s_langs.First();
+		var first = s_dic.First();
 		if (first.Key != CurrentLocale)
 			InternalSetLocale(first.Key, first.Value);
 
@@ -99,7 +98,7 @@ public static class Locale
 	/// <returns></returns>
 	public static bool HasLocale(string name)
 	{
-		return s_langs.ContainsKey(name);
+		return s_dic.ContainsKey(name);
 	}
 
 	/// <summary>
@@ -130,7 +129,7 @@ public static class Locale
 	/// <returns>얻은 값</returns>
 	public static string Text(int key)
 	{
-		return s_db.Try(key, out string? v) && v != null ? v : $"{{{key}}}";
+		return s_db.Try(key, out var v) && v != null ? v : $"{{{key}}}";
 	}
 
 	/// <summary>
@@ -141,7 +140,7 @@ public static class Locale
 	/// <returns>만들어진 값</returns>
 	public static string Text(int key, params object[] prms)
 	{
-		return s_db.Try(key, out string? v) && v != null ? string.Format(v, prms) : $"{{{key}}}";
+		return s_db.Try(key, out var v) && v != null ? string.Format(v, prms) : $"{{{key}}}";
 	}
 
 	/// <summary>

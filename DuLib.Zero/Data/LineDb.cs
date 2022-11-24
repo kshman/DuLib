@@ -98,7 +98,10 @@ public class LineStringDb<T> : Generic.LineDb<string, T>
 				return true;
 			}
 		}
-		catch { }
+		catch
+		{
+			// 무시
+		}
 
 		return false;
 	}
@@ -154,7 +157,7 @@ public class LineIntDb<T> : Generic.LineDb<int, T>
 
 	private void InternalParseLines(string ctx, Generic.IStringConverter<T> converter)
 	{
-		var ss = ctx.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+		var ss = ctx.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 		foreach (var v in ss)
 		{
 			string l = v.TrimStart();
@@ -191,7 +194,10 @@ public class LineIntDb<T> : Generic.LineDb<int, T>
 				return true;
 			}
 		}
-		catch { }
+		catch
+		{
+			// 무시
+		}
 
 		return false;
 	}
@@ -244,11 +250,11 @@ public class LineDb : Generic.LineDb<string, string>
 
 	private void InternalParseLines(string ctx)
 	{
-		var ss = ctx.Split(new char[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+		var ss = ctx.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 		foreach (var v in ss)
 		{
-			string l = v.TrimStart();
-			if (LineToKeyValue(l, out var key, out var value) && key != null)
+			var l = v.TrimStart();
+			if (LineToKeyValue(l, out var key, out var value))
 				Db[key] = value;
 		}
 	}
@@ -279,7 +285,10 @@ public class LineDb : Generic.LineDb<string, string>
 				return true;
 			}
 		}
-		catch { }
+		catch
+		{
+			// 무시
+		}
 
 		return false;
 	}
@@ -365,7 +374,10 @@ public class LineDbV3
 			var context = File.ReadAllText(filename, encoding);
 			ParseLines(context, useintdb);
 		}
-		catch { }
+		catch
+		{
+			// 무시
+		}
 	}
 
 	/// <summary>
@@ -398,16 +410,16 @@ public class LineDbV3
 		return true;
 	}
 
-	private static readonly char[] _ParseSplitChars = new char[] { '\n', '\r' };
+	private static readonly char[] s_parse_split_chars = new char[] { '\n', '\r' };
 
 	/// <summary>
 	/// 문자열 분석
 	/// </summary>
 	/// <param name="ctx"></param>
-	/// <param name="useintdb"></param>
-	protected void ParseLines(string ctx, bool useintdb)
+	/// <param name="use_int_db"></param>
+	protected void ParseLines(string ctx, bool use_int_db)
 	{
-		var ss = ctx.Split(_ParseSplitChars, StringSplitOptions.RemoveEmptyEntries);
+		var ss = ctx.Split(s_parse_split_chars, StringSplitOptions.RemoveEmptyEntries);
 
 		foreach (var v in ss)
 		{
@@ -446,7 +458,7 @@ public class LineDbV3
 				value = l[(div + 1)..].Trim();
 			}
 
-			if (!useintdb)
+			if (!use_int_db)
 				StringDb[name] = value;
 			else
 			{
@@ -502,26 +514,22 @@ public class LineDbV3
 	/// 얻기
 	/// </summary>
 	/// <param name="name"></param>
-	/// <param name="defvalue"></param>
+	/// <param name="default_value"></param>
 	/// <returns></returns>
-	public string Get(string name, string defvalue)
+	public string Get(string name, string default_value)
 	{
-		if (!StringDb.TryGetValue(name, out string? value))
-			return defvalue;
-		return value;
+		return !StringDb.TryGetValue(name, out var value) ? default_value : value;
 	}
 
 	/// <summary>
 	/// 얻기
 	/// </summary>
 	/// <param name="key"></param>
-	/// <param name="defvalue"></param>
+	/// <param name="default_value"></param>
 	/// <returns></returns>
-	public string Get(int key, string defvalue)
+	public string Get(int key, string default_value)
 	{
-		if (!IntDb.TryGetValue(key, out string? value))
-			return defvalue;
-		return value;
+		return !IntDb.TryGetValue(key, out var value) ? default_value : value;
 	}
 
 	/// <summary>
@@ -554,17 +562,12 @@ public class LineDbV3
 	/// <returns></returns>
 	public bool Try(string name, out int value)
 	{
-		if (!StringDb.TryGetValue(name, out string? v))
-		{
-			value = 0;
-			return false;
-		}
-		else
-		{
-			if (!int.TryParse(v, out value))
-				return false;
-			return true;
-		}
+		if (StringDb.TryGetValue(name, out var v))
+			return int.TryParse(v, out value);
+
+		value = 0;
+		return false;
+
 	}
 
 	/// <summary>
@@ -575,17 +578,12 @@ public class LineDbV3
 	/// <returns></returns>
 	public bool Try(string name, out ushort value)
 	{
-		if (!StringDb.TryGetValue(name, out string? v))
-		{
-			value = 0;
-			return false;
-		}
-		else
-		{
-			if (!ushort.TryParse(v, out value))
-				return false;
-			return true;
-		}
+		if (StringDb.TryGetValue(name, out var v)) 
+			return ushort.TryParse(v, out value);
+
+		value = 0;
+		return false;
+
 	}
 
 	/// <summary>
