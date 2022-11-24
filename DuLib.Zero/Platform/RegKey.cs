@@ -8,53 +8,53 @@ namespace Du.Platform;
 [SupportedOSPlatform("windows")]
 public class RegKey : IDisposable
 {
-	private readonly string BaseKey = "Software";
+	private readonly string s_base_key = "Software";
 
 	private RegistryKey? _rk;
 
 	/// <summary>
 	/// 열기
 	/// </summary>
-	/// <param name="key_name"></param>
-	/// <param name="create_new"></param>
-	public RegKey(string key_name, bool create_new = false)
-		: this(key_name, Registry.CurrentUser, create_new)
+	/// <param name="keyName"></param>
+	/// <param name="createNew"></param>
+	public RegKey(string keyName, bool createNew = false)
+		: this(keyName, Registry.CurrentUser, createNew)
 	{
 	}
 
 	/// <summary>
 	/// 열기
 	/// </summary>
-	/// <param name="key_name"></param>
-	/// <param name="high_key"></param>
-	/// <param name="create_new"></param>
-	public RegKey(string key_name, RegistryKey high_key, bool create_new = false)
+	/// <param name="keyName"></param>
+	/// <param name="highKey"></param>
+	/// <param name="createNew"></param>
+	public RegKey(string keyName, RegistryKey highKey, bool createNew = false)
 	{
-		OpenKey(key_name, high_key, create_new);
+		OpenKey(keyName, highKey, createNew);
 	}
 
 	/// <summary>
 	/// 열기
 	/// </summary>
-	/// <param name="base_key"></param>
-	/// <param name="key_name"></param>
-	/// <param name="create_new"></param>
-	public RegKey(string base_key, string key_name, bool create_new = false)
-		: this(base_key, key_name, Registry.CurrentUser, create_new)
+	/// <param name="baseKey"></param>
+	/// <param name="keyName"></param>
+	/// <param name="createNew"></param>
+	public RegKey(string baseKey, string keyName, bool createNew = false)
+		: this(baseKey, keyName, Registry.CurrentUser, createNew)
 	{
 	}
 
 	/// <summary>
 	/// 열기
 	/// </summary>
-	/// <param name="base_key"></param>
-	/// <param name="key_name"></param>
-	/// <param name="high_key"></param>
-	/// <param name="create_new"></param>
-	public RegKey(string base_key, string key_name, RegistryKey high_key, bool create_new = false)
+	/// <param name="baseKey"></param>
+	/// <param name="keyName"></param>
+	/// <param name="highKey"></param>
+	/// <param name="createNew"></param>
+	public RegKey(string baseKey, string keyName, RegistryKey highKey, bool createNew = false)
 	{
-		BaseKey = base_key;
-		OpenKey(key_name, high_key, create_new);
+		s_base_key = baseKey;
+		OpenKey(keyName, highKey, createNew);
 	}
 
 	//
@@ -64,13 +64,13 @@ public class RegKey : IDisposable
 	}
 
 	//
-	private void OpenKey(string key_name, RegistryKey high_key, bool create_new)
+	private void OpenKey(string keyName, RegistryKey highKey, bool createNew)
 	{
-		var key = BaseKey + "\\" + key_name;
+		var key = s_base_key + "\\" + keyName;
 
-		_rk = high_key.OpenSubKey(key, true);
-		if (_rk == null && create_new)
-			_rk = high_key.CreateSubKey(key);
+		_rk = highKey.OpenSubKey(key, true);
+		if (_rk == null && createNew)
+			_rk = highKey.CreateSubKey(key);
 	}
 
 	/// <summary>
@@ -111,11 +111,11 @@ public class RegKey : IDisposable
 	/// <summary>
 	/// 하부키를 만듭니다
 	/// </summary>
-	/// <param name="key_name"></param>
+	/// <param name="keyName"></param>
 	/// <returns></returns>
-	public RegKey? CreateKey(string key_name)
+	public RegKey? CreateKey(string keyName)
 	{
-		return _rk == null ? null : new RegKey(_rk.CreateSubKey(key_name));
+		return _rk == null ? null : new RegKey(_rk.CreateSubKey(keyName));
 	}
 
 	/// <summary>
@@ -132,44 +132,44 @@ public class RegKey : IDisposable
 	/// 문자열 얻기
 	/// </summary>
 	/// <param name="name"></param>
-	/// <param name="failret"></param>
+	/// <param name="failRet"></param>
 	/// <returns></returns>
-	public string? GetString(string name, string? failret = null)
+	public string? GetString(string name, string? failRet = null)
 	{
-		return _rk?.GetValue(name) as string ?? failret;
+		return _rk?.GetValue(name) as string ?? failRet;
 	}
 
 	/// <summary>
 	/// 정수 얻기
 	/// </summary>
 	/// <param name="name"></param>
-	/// <param name="failret"></param>
+	/// <param name="failRet"></param>
 	/// <returns></returns>
-	public int GetInt(string name, int failret = -1)
+	public int GetInt(string name, int failRet = -1)
 	{
-		return _rk?.GetValue(name) is int value ? value : failret;
+		return _rk?.GetValue(name) is int value ? value : failRet;
 	}
 
 	/// <summary>
 	/// 긴정수 얻기
 	/// </summary>
 	/// <param name="name"></param>
-	/// <param name="failret"></param>
+	/// <param name="failRet"></param>
 	/// <returns></returns>
-	public long GetLong(string name, long failret = -1)
+	public long GetLong(string name, long failRet = -1)
 	{
-		return _rk?.GetValue(name) is long value ? value : failret;
+		return _rk?.GetValue(name) is long value ? value : failRet;
 	}
 
 	/// <summary>
 	/// 불 얻기
 	/// </summary>
 	/// <param name="name"></param>
-	/// <param name="failret"></param>
+	/// <param name="failRet"></param>
 	/// <returns></returns>
-	public bool GetBool(string name, bool failret = false)
+	public bool GetBool(string name, bool failRet = false)
 	{
-		return _rk?.GetValue(name) is int value ? value != 0 : failret;
+		return _rk?.GetValue(name) is int value ? value != 0 : failRet;
 	}
 
 	/// <summary>
@@ -186,30 +186,30 @@ public class RegKey : IDisposable
 	/// 디코딩한 문자열 얻기
 	/// </summary>
 	/// <param name="name"></param>
-	/// <param name="failret"></param>
+	/// <param name="failRet"></param>
 	/// <returns></returns>
-	public string? GetDecodingString(string name, string? failret = null)
+	public string? GetDecodingString(string name, string? failRet = null)
 	{
 		if (_rk?.GetValue(name) is not string value) 
-			return failret;
+			return failRet;
 
 		var s = Converter.DecodingString(value);
-		return !string.IsNullOrEmpty(s) ? s : failret;
+		return !string.IsNullOrEmpty(s) ? s : failRet;
 	}
 
 	/// <summary>
 	/// 압축 해제한 문자열 얻기
 	/// </summary>
 	/// <param name="name"></param>
-	/// <param name="failret"></param>
+	/// <param name="failRet"></param>
 	/// <returns></returns>
-	public string? GetDecompressString(string name, string? failret = null)
+	public string? GetDecompressString(string name, string? failRet = null)
 	{
 		if (_rk?.GetValue(name) is not string value) 
-			return failret;
+			return failRet;
 
 		var s = Converter.DecompressString(value);
-		return !string.IsNullOrEmpty(s) ? s : failret;
+		return !string.IsNullOrEmpty(s) ? s : failRet;
 	}
 
 	/// <summary>
@@ -303,20 +303,20 @@ public class RegKey : IDisposable
 	/// <summary>
 	/// 지정한 키를 지우기
 	/// </summary>
-	/// <param name="key_name"></param>
-	/// <param name="also_delete_tree">안에 있는 키 전부 지우려면 참</param>
+	/// <param name="keyName"></param>
+	/// <param name="alsoDeleteTree">안에 있는 키 전부 지우려면 참</param>
 	/// <returns></returns>
-	public bool DeleteKey(string key_name, bool also_delete_tree = false)
+	public bool DeleteKey(string keyName, bool alsoDeleteTree = false)
 	{
 		if (_rk == null)
 			return false;
 
 		try
 		{
-			if (also_delete_tree)
-				_rk.DeleteSubKeyTree(key_name);
+			if (alsoDeleteTree)
+				_rk.DeleteSubKeyTree(keyName);
 			else
-				_rk.DeleteSubKey(key_name);
+				_rk.DeleteSubKey(keyName);
 			return true;
 		}
 		catch { return false; }
@@ -346,10 +346,10 @@ public class RegKey : IDisposable
 	/// <param name="extension">확장자 (".testext")</param>
 	/// <param name="type">확장자 형식 ("Test.testext")</param>
 	/// <param name="description">확장자 설명</param>
-	/// <param name="execute_path">이 확장자로 실행할 프로그램 전체경로</param>
-	/// <param name="friendly_name">그냥 부를 이름 (없어도됨)</param>
+	/// <param name="executePath">이 확장자로 실행할 프로그램 전체경로</param>
+	/// <param name="friendlyName">그냥 부를 이름 (없어도됨)</param>
 	/// <returns></returns>
-	public static bool RegisterExtension(string extension, string type, string description, string execute_path, string? friendly_name = null)
+	public static bool RegisterExtension(string extension, string type, string description, string executePath, string? friendlyName = null)
 	{
 		// (".testext", "Test.testext", "Test extension register", "c:\test.exe", "테스트프로그램")
 
@@ -366,11 +366,11 @@ public class RegKey : IDisposable
 				using var rs = rt?.CreateKey("shell");
 
 				using var ro = rs?.CreateKey("open");
-				if (!string.IsNullOrEmpty(friendly_name))
-					rc.SetString("FriendlyAppName", friendly_name);
+				if (!string.IsNullOrEmpty(friendlyName))
+					rc.SetString("FriendlyAppName", friendlyName);
 
 				using var rn = ro?.CreateKey("command");
-				rn?.SetString(null, $"\"{execute_path}\" \"%1\"");
+				rn?.SetString(null, $"\"{executePath}\" \"%1\"");
 			}
 
 			return true;

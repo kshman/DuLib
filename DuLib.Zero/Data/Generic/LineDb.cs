@@ -96,11 +96,11 @@ public class LineDb<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValu
 	/// 값 얻기
 	/// </summary>
 	/// <param name="key"></param>
-	/// <param name="default_value"></param>
+	/// <param name="defaultValue"></param>
 	/// <returns></returns>
-	public TValue Get(TKey key, TValue default_value)
+	public TValue Get(TKey key, TValue defaultValue)
 	{
-		return Db.TryGetValue(key, out var value) ? value : default_value;
+		return Db.TryGetValue(key, out var value) ? value : defaultValue;
 	}
 
 	/// <summary>

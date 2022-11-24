@@ -28,15 +28,15 @@ public static class Locale
 	/// 로캘을 추가한다
 	/// </summary>
 	/// <param name="name"></param>
-	/// <param name="context_or_filename"></param>
+	/// <param name="contextOrFilename"></param>
 	/// <param name="isfile"></param>
-	public static void AddLocale(string name, string context_or_filename, bool isfile = false)
+	public static void AddLocale(string name, string contextOrFilename, bool isfile = false)
 	{
 		if (!isfile)
-			s_dic[name] = context_or_filename;
+			s_dic[name] = contextOrFilename;
 		else
 		{
-			var s = $"FILE:{context_or_filename}";
+			var s = $"FILE:{contextOrFilename}";
 			s_dic[name] = s;
 		}
 	}

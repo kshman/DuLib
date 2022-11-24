@@ -119,10 +119,10 @@ public class StringAsNumericComparer : IComparer<string>
 		return 1;
 	}
 
-	private static (int start, int end) InternalNumberScanEnd(string s, int start_position)
+	private static (int start, int end) InternalNumberScanEnd(string s, int startPosition)
 	{
-		var start = start_position;
-		var end = start_position;
+		var start = startPosition;
+		var end = startPosition;
 		var zero = true;
 		while (char.IsDigit(s, end))
 		{

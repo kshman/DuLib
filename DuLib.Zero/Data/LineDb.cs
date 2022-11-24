@@ -416,8 +416,8 @@ public class LineDbV3
 	/// 문자열 분석
 	/// </summary>
 	/// <param name="ctx"></param>
-	/// <param name="use_int_db"></param>
-	protected void ParseLines(string ctx, bool use_int_db)
+	/// <param name="useIntDb"></param>
+	protected void ParseLines(string ctx, bool useIntDb)
 	{
 		var ss = ctx.Split(s_parse_split_chars, StringSplitOptions.RemoveEmptyEntries);
 
@@ -458,7 +458,7 @@ public class LineDbV3
 				value = l[(div + 1)..].Trim();
 			}
 
-			if (!use_int_db)
+			if (!useIntDb)
 				StringDb[name] = value;
 			else
 			{
@@ -514,22 +514,22 @@ public class LineDbV3
 	/// 얻기
 	/// </summary>
 	/// <param name="name"></param>
-	/// <param name="default_value"></param>
+	/// <param name="defaultValue"></param>
 	/// <returns></returns>
-	public string Get(string name, string default_value)
+	public string Get(string name, string defaultValue)
 	{
-		return !StringDb.TryGetValue(name, out var value) ? default_value : value;
+		return !StringDb.TryGetValue(name, out var value) ? defaultValue : value;
 	}
 
 	/// <summary>
 	/// 얻기
 	/// </summary>
 	/// <param name="key"></param>
-	/// <param name="default_value"></param>
+	/// <param name="defaultValue"></param>
 	/// <returns></returns>
-	public string Get(int key, string default_value)
+	public string Get(int key, string defaultValue)
 	{
-		return !IntDb.TryGetValue(key, out var value) ? default_value : value;
+		return !IntDb.TryGetValue(key, out var value) ? defaultValue : value;
 	}
 
 	/// <summary>

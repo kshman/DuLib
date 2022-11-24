@@ -83,5 +83,5 @@ internal class Cpr
     internal const string log_send_error_ex = "보내다가 오류({name})가 났어요: {ex}";
 
     // 판단형
-    internal static string GetConnDesc(bool was_conn) => was_conn ? reconn : conn;
+    internal static string GetConnDesc(bool wasConn) => wasConn ? reconn : conn;
 }

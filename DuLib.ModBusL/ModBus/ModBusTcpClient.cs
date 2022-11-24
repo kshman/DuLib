@@ -1227,10 +1227,10 @@ public class ModBusTcpClient : IModBusClient
 		}
 	}
 
-	private Task InternalGetReconnectTask(bool already_locked = false)
+	private Task InternalGetReconnectTask(bool alreadyLocked = false)
 	{
 		Task task;
-		if (already_locked)
+		if (alreadyLocked)
 		{
 			_tcs_recon ??= new TaskCompletionSource<bool>();
 			task = _tcs_recon.Task;
