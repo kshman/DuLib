@@ -219,7 +219,7 @@ public class LineDb : Generic.LineDb<string, string>
 	/// 빈거 만들기
 	/// </summary>
 	/// <returns></returns>
-	public static new LineDb Empty()
+	public new static LineDb Empty()
 	{
 		return new LineDb();
 	}
