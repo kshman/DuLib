@@ -138,6 +138,36 @@ public static class Converter
 	}
 
 	/// <summary>
+	/// 문자열을 포인트로
+	/// </summary>
+	/// <param name="x"></param>
+	/// <param name="y"></param>
+	/// <param name="failRet"></param>
+	/// <returns></returns>
+	public static Point ToPoint(string? x, string? y, Point failRet)
+	{
+		var pt =new Point(
+			ToInt(x, failRet.X), 
+			ToInt(y, failRet.Y));
+		return pt;
+	}
+
+	/// <summary>
+	/// 문자열을 사이즈로
+	/// </summary>
+	/// <param name="width"></param>
+	/// <param name="height"></param>
+	/// <param name="failRet"></param>
+	/// <returns></returns>
+	public static Size ToSize(string? width, string? height, Size failRet)
+	{
+		var sz = new Size(
+			ToInt(width, failRet.Width),
+			ToInt(height, failRet.Height));
+		return sz;
+	}
+
+	/// <summary>
 	/// 문자열을 수치로 바꾼 문자열로
 	/// </summary>
 	/// <param name="readableString"></param>

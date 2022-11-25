@@ -8,9 +8,14 @@ namespace Du.Platform;
 [SupportedOSPlatform("windows")]
 public class RegKey : IDisposable
 {
-	private readonly string s_base_key = "Software";
+	private readonly string _base_key = "Software";
 
 	private RegistryKey? _rk;
+
+	/// <summary>
+	/// 값이 비어있으면 해당 항목을 그냥 지웁니다
+	/// </summary>
+	public bool DeleteOnEmptyString { get; set; } = true;
 
 	/// <summary>
 	/// 열기
@@ -53,7 +58,7 @@ public class RegKey : IDisposable
 	/// <param name="createNew"></param>
 	public RegKey(string baseKey, string keyName, RegistryKey highKey, bool createNew = false)
 	{
-		s_base_key = baseKey;
+		_base_key = baseKey;
 		OpenKey(keyName, highKey, createNew);
 	}
 
@@ -66,7 +71,7 @@ public class RegKey : IDisposable
 	//
 	private void OpenKey(string keyName, RegistryKey highKey, bool createNew)
 	{
-		var key = s_base_key + "\\" + keyName;
+		var key = _base_key + "\\" + keyName;
 
 		_rk = highKey.OpenSubKey(key, true);
 		if (_rk == null && createNew)
@@ -229,7 +234,13 @@ public class RegKey : IDisposable
 	/// <param name="value"></param>
 	public void SetString(string? name, string value)
 	{
-		_rk?.SetValue(name, value, RegistryValueKind.String);
+		if (_rk == null)
+			return;
+
+		if (DeleteOnEmptyString && name != null && string.IsNullOrWhiteSpace(value))
+			_rk.DeleteValue(name, false);
+
+		_rk.SetValue(name, value, RegistryValueKind.String);
 	}
 
 	/// <summary>
@@ -282,6 +293,9 @@ public class RegKey : IDisposable
 		if (_rk == null) 
 			return;
 
+		if (DeleteOnEmptyString && name != null && string.IsNullOrWhiteSpace(value))
+			_rk.DeleteValue(name, false);
+
 		var s = Converter.EncodingString(value);
 		_rk.SetValue(name, s, RegistryValueKind.String);
 	}
@@ -295,6 +309,9 @@ public class RegKey : IDisposable
 	{
 		if (_rk == null) 
 			return;
+
+		if (DeleteOnEmptyString && name != null && string.IsNullOrWhiteSpace(value))
+			_rk.DeleteValue(name, false);
 
 		var s = Converter.CompressString(value);
 		_rk.SetValue(name, s, RegistryValueKind.String);
@@ -355,23 +372,22 @@ public class RegKey : IDisposable
 
 		try
 		{
-			using (var rc = new RegKey("Classes"))
-			{
-				using (var re = rc.CreateKey(extension))
-					re?.SetString(null, type);
+			using var rc = new RegKey("Classes");
 
-				using var rt = rc.CreateKey(type);
-				rt?.SetString(null, description);
+			using (var re = rc.CreateKey(extension))
+				re?.SetString(null, type);
 
-				using var rs = rt?.CreateKey("shell");
+			using var rt = rc.CreateKey(type);
+			rt?.SetString(null, description);
 
-				using var ro = rs?.CreateKey("open");
-				if (!string.IsNullOrEmpty(friendlyName))
-					rc.SetString("FriendlyAppName", friendlyName);
+			using var rs = rt?.CreateKey("shell");
 
-				using var rn = ro?.CreateKey("command");
-				rn?.SetString(null, $"\"{executePath}\" \"%1\"");
-			}
+			using var ro = rs?.CreateKey("open");
+			if (!string.IsNullOrEmpty(friendlyName))
+				rc.SetString("FriendlyAppName", friendlyName);
+
+			using var rn = ro?.CreateKey("command");
+			rn?.SetString(null, $"\"{executePath}\" \"%1\"");
 
 			return true;
 		}

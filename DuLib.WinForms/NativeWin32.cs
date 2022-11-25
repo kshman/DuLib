@@ -9,7 +9,7 @@ internal partial class NativeWin32
 	internal const int SW_RESTORE = 9;
 
 	[LibraryImport("user32.dll")]
-	internal static partial int SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, ref WmCopyData lParam);
+	internal static partial int SendMessage(IntPtr hWnd, int msg, IntPtr wParam, ref WmCopyData lParam);
 
 	[LibraryImport("user32.dll")]
 	[return: MarshalAs(UnmanagedType.Bool)]
@@ -32,27 +32,27 @@ internal partial class NativeWin32
 	//
 	internal struct WmCopyData : IDisposable
 	{
-		public IntPtr dwData;
-		public int cbData;
-		public IntPtr lpData;
+		public IntPtr DwData;
+		public int CbData;
+		public IntPtr LpData;
 
 		public void Dispose()
 		{
-			if (lpData != IntPtr.Zero)
-			{
-				LocalFree(lpData);
-				lpData = IntPtr.Zero;
-			}
+			if (LpData == IntPtr.Zero) 
+				return;
+
+			LocalFree(LpData);
+			LpData = IntPtr.Zero;
 		}
 
 		public void SetString(string value)
 		{
 			Dispose();
 
-			cbData = (value.Length + 1) * 2;
-			lpData = LocalAlloc(0x40, cbData);
-			Marshal.Copy(value.ToCharArray(), 0, lpData, value.Length);
-			dwData = (IntPtr)1;
+			CbData = (value.Length + 1) * 2;
+			LpData = LocalAlloc(0x40, CbData);
+			Marshal.Copy(value.ToCharArray(), 0, LpData, value.Length);
+			DwData = (IntPtr)1;
 		}
 
 		public void Send(IntPtr handle)
@@ -68,7 +68,7 @@ internal partial class NativeWin32
 		public static string? Receive(IntPtr lparam)
 		{
 			var s = FromLParam(lparam);
-			var v = Marshal.PtrToStringUni(s.lpData);
+			var v = Marshal.PtrToStringUni(s.LpData);
 			return v;
 		}
 	}
