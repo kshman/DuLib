@@ -195,7 +195,7 @@ public class RegKey : IDisposable
 	/// <returns></returns>
 	public string? GetDecodingString(string name, string? failRet = null)
 	{
-		if (_rk?.GetValue(name) is not string value) 
+		if (_rk?.GetValue(name) is not string value)
 			return failRet;
 
 		var s = Converter.DecodingString(value);
@@ -210,7 +210,7 @@ public class RegKey : IDisposable
 	/// <returns></returns>
 	public string? GetDecompressString(string name, string? failRet = null)
 	{
-		if (_rk?.GetValue(name) is not string value) 
+		if (_rk?.GetValue(name) is not string value)
 			return failRet;
 
 		var s = Converter.DecompressString(value);
@@ -290,7 +290,7 @@ public class RegKey : IDisposable
 	/// <param name="value"></param>
 	public void SetEncodingString(string? name, string value)
 	{
-		if (_rk == null) 
+		if (_rk == null)
 			return;
 
 		if (DeleteOnEmptyString && name != null && string.IsNullOrWhiteSpace(value))
@@ -307,7 +307,7 @@ public class RegKey : IDisposable
 	/// <param name="value"></param>
 	public void SetCompressString(string? name, string value)
 	{
-		if (_rk == null) 
+		if (_rk == null)
 			return;
 
 		if (DeleteOnEmptyString && name != null && string.IsNullOrWhiteSpace(value))
@@ -388,6 +388,50 @@ public class RegKey : IDisposable
 
 			using var rn = ro?.CreateKey("command");
 			rn?.SetString(null, $"\"{executePath}\" \"%1\"");
+
+			return true;
+		}
+		catch { return false; }
+	}
+
+	/// <summary>
+	/// 확장자 등록하기
+	/// </summary>
+	/// <param name="extension">확장자 (".testext")</param>
+	/// <param name="type">확장자 형식 ("Test.testext")</param>
+	/// <param name="description">확장자 설명</param>
+	/// <param name="executePath">이 확장자로 실행할 프로그램 전체경로</param>
+	/// <param name="prefix">인수 앞에 붙일 문장</param>
+	/// <param name="suffix">인수 뒤에 붙일 문장</param>
+	/// <param name="friendlyName">그냥 부를 이름 (없어도됨)</param>
+	/// <returns></returns>
+	public static bool RegisterExtensionWith(string extension, string type, string description, string executePath, string? prefix, string? suffix, string? friendlyName = null)
+	{
+		StringBuilder sb = new();
+		if (!string.IsNullOrWhiteSpace(prefix))
+			sb.Append(prefix);
+		sb.Append("\"%1\"");
+		if (!string.IsNullOrWhiteSpace(suffix))
+			sb.Append(suffix);
+
+		try
+		{
+			using var rc = new RegKey("Classes");
+
+			using (var re = rc.CreateKey(extension))
+				re?.SetString(null, type);
+
+			using var rt = rc.CreateKey(type);
+			rt?.SetString(null, description);
+
+			using var rs = rt?.CreateKey("shell");
+
+			using var ro = rs?.CreateKey("open");
+			if (!string.IsNullOrEmpty(friendlyName))
+				rc.SetString("FriendlyAppName", friendlyName);
+
+			using var rn = ro?.CreateKey("command");
+			rn?.SetString(null, $"\"{executePath}\" {sb}");
 
 			return true;
 		}
