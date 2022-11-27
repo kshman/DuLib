@@ -15,7 +15,7 @@ internal partial class NativeWin32
 	[DllImport("user32.dll", SetLastError = true)]
 	internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 	[DllImport("user32.dll", SetLastError = true)]
-	internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, ref WmCopyData lParam);
+	private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, ref WmCopyData lParam);
 
 	[LibraryImport("user32.dll")]
 	[return: MarshalAs(UnmanagedType.Bool)]

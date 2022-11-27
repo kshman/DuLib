@@ -62,6 +62,33 @@ public class RegKey : IDisposable
 		OpenKey(keyName, highKey, createNew);
 	}
 
+	/// <summary>
+	/// 열기
+	/// </summary>
+	/// <param name="basekey"></param>
+	/// <param name="keyname"></param>
+	/// <param name="highkey"></param>
+	/// <param name="createNew"></param>
+	/// <exception cref="ArgumentException"></exception>
+	public RegKey(string basekey, string keyname, string highkey, bool createNew = false)
+	{
+		RegistryKey? rk = highkey.ToLower() switch
+		{
+			"cu" or "currentuser" => Registry.CurrentUser,
+			"lm" or "localmachine" => Registry.LocalMachine,
+			"cr" or "classesroot" => Registry.ClassesRoot,
+			"us" or "users" => Registry.Users,
+			"pd" or "performancedata" => Registry.PerformanceData,
+			"cc" or "currentconfig" => Registry.CurrentConfig,
+			_ => null,
+		};
+		if (rk == null)
+			throw new ArgumentException("invalid key name", nameof(highkey));
+
+		_base_key = basekey;
+		OpenKey(keyname, rk, createNew);
+	}
+
 	//
 	private RegKey(RegistryKey rk)
 	{
