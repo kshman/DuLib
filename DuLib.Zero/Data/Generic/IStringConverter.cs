@@ -4,7 +4,7 @@
 /// StringConvert 함수 구현
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public interface IStringConverter<T>
+public interface IStringConverter<out T>
 {
 	/// <summary>
 	/// 문자열 변환
@@ -17,7 +17,7 @@ public interface IStringConverter<T>
 /// <summary>
 /// 키/값 변환
 /// </summary>
-public interface IKeyValueStringConverter<TKey, TValue>
+public interface IKeyValueStringConverter<out TKey, out TValue>
 {
 	/// <summary>
 	/// 키 문자열 변환

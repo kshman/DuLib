@@ -5,11 +5,17 @@ internal partial class NativeWin32
 {
 	internal const int WM_COPYDATA = 0x004A;
 	internal const int WM_WINDOWPOSCHANGING = 0x0046;
+	internal const int WM_HSCROLL = 0x114;
+	internal const int WM_VSCROLL = 0x115;
+	internal const int WM_SIZE = 0x05;
+	internal const int WM_NOTIFY = 0x4E;
 
 	internal const int SW_RESTORE = 9;
 
-	[LibraryImport("user32.dll")]
-	internal static partial int SendMessage(IntPtr hWnd, int msg, IntPtr wParam, ref WmCopyData lParam);
+	[DllImport("user32.dll", SetLastError = true)]
+	internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+	[DllImport("user32.dll", SetLastError = true)]
+	internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, ref WmCopyData lParam);
 
 	[LibraryImport("user32.dll")]
 	[return: MarshalAs(UnmanagedType.Bool)]
