@@ -433,8 +433,6 @@ public class BadakListView : ListView
 				ctrl.Text = "";
 				ctrl.Visible = false;
 				ctrl.Location = Point.Empty;
-				if (Parent != null)
-					ctrl.Font = Parent.Font;
 
 				Controls.Add(ctrl);
 				_edit_collection.Add(collection, ctrl);
