@@ -10,13 +10,17 @@ public class BadakButton : Button
 	/// <summary>
 	/// 활성화 모양
 	/// </summary>
-	[DefaultValue(false), Browsable(true), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+	[DefaultValue(false), Browsable(true), 
+	 DesignerSerializationVisibility(DesignerSerializationVisibility.Visible), 
+	 Description("활성화 모양을 설정합니다. 활성화일 때는 ActiveColor에 지정한 색깔이 모서리에 나옵니다")]
 	public bool ActiveStyle { get; set; }
 
 	/// <summary>
 	/// 활성화 모양일 때 색깔
 	/// </summary>
-	[Browsable(true), DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+	[Browsable(true), 
+	 DesignerSerializationVisibility(DesignerSerializationVisibility.Visible), 
+	 Description("활성화 모양일 때 표시할 색깔입니다")]
 	public Color ActiveColor { get; set; } = Color.Aquamarine;
 
 	/// <summary>
