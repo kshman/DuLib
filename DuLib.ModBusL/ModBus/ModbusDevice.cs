@@ -1,9 +1,11 @@
-﻿namespace Du.ModBus;
+﻿using Du.ModBus.Supp;
+
+namespace Du.ModBus;
 
 /// <summary>
 /// 모드버스 디바이스
 /// </summary>
-public class ModbusDevice
+public class ModBusDevice
 {
 	private readonly ReaderWriterLockSlim _lock_coils = new();
 	private readonly ReaderWriterLockSlim _lock_discrete_inputs = new();
@@ -17,7 +19,7 @@ public class ModbusDevice
 
 	public byte DeviceId { get; }
 
-	public ModbusDevice(byte id)
+	public ModBusDevice(byte id)
 	{
 		DeviceId = id;
 	}

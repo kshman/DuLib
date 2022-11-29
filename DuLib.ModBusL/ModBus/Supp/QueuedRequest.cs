@@ -1,4 +1,6 @@
-﻿namespace Du.ModBus.Supp;
+﻿using Du.ModBus.Protocol;
+
+namespace Du.ModBus.Supp;
 
 /// <summary>
 /// 리퀘스트 큐

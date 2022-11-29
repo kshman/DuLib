@@ -2,6 +2,9 @@
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
+using Du.ModBus.Interface;
+using Du.ModBus.Protocol;
+using Du.ModBus.Supp;
 
 namespace Du.ModBus;
 
@@ -150,14 +153,14 @@ public class ModBusTcpClient : IModBusClient
 
 			await Task.WhenAny(ConnectingTask, Task.Delay(Timeout.Infinite, cancellationToken));
 
-			_nst?.Dispose();
+			_nst?.DisposeAsync().ValueTaskAwait();
 			_tcp?.Dispose();
 
 			_is_work = false;
 			_lg?.LogInformation(Cpr.log_stopped, Cpr.modbus_client);
 
 			if (connected)
-				Task.Run(() => Disconnected?.Invoke(this, EventArgs.Empty), cancellationToken).Forget();
+				Task.Run(() => Disconnected?.Invoke(this, EventArgs.Empty), cancellationToken).TaskAwait();
 		}
 		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
 		{ }
@@ -862,10 +865,10 @@ public class ModBusTcpClient : IModBusClient
 			if (_was_conn)
 			{
 				_cts_recv.Cancel();
-				await _task_recv;
+				_task_recv.TaskAwait();
 				_cts_recv = new CancellationTokenSource();
 				_task_recv = Task.CompletedTask;
-				Task.Run(() => Disconnected?.Invoke(this, EventArgs.Empty)).Forget();
+				Task.Run(() => Disconnected?.Invoke(this, EventArgs.Empty)).TaskAwait();
 			}
 
 			var timeout = TimeSpan.FromSeconds(2);
@@ -876,7 +879,7 @@ public class ModBusTcpClient : IModBusClient
 			{
 				try
 				{
-					_nst?.Dispose();
+					_nst?.DisposeAsync().ValueTaskAwait();
 					_nst = null;
 
 					_tcp?.Dispose();
@@ -888,7 +891,7 @@ public class ModBusTcpClient : IModBusClient
 						InternalSetKeepAlive();
 						_nst = _tcp.GetStream();
 
-						_cts_recv = new();
+						_cts_recv = new CancellationTokenSource();
 						_task_recv = Task.Run(async () => await InternalReceiveLoop());
 
 						lock (_lock_recon)
@@ -897,7 +900,7 @@ public class ModBusTcpClient : IModBusClient
 							_was_conn = true;
 
 							_tcs_recon?.TrySetResult(true);
-							Task.Run(() => Connected?.Invoke(this, EventArgs.Empty)).Forget();
+							Task.Run(() => Connected?.Invoke(this, EventArgs.Empty)).TaskAwait();
 						}
 
 						_lg?.LogInformation(Cpr.log_conn_success_with, Cpr.GetConnDesc(_was_conn));
@@ -1017,7 +1020,7 @@ public class ModBusTcpClient : IModBusClient
 
 								if (qreq != null)
 								{
-									qreq.Registration.Dispose();
+									qreq.Registration.DisposeAsync().ValueTaskAwait();
 									_awaiting_responses.Remove(qreq);
 								}
 							}
@@ -1074,7 +1077,7 @@ public class ModBusTcpClient : IModBusClient
 			{
 				foreach (var queuedItem in _awaiting_responses)
 				{
-					queuedItem.Registration.Dispose();
+					queuedItem.Registration.DisposeAsync().ValueTaskAwait();
 					queuedItem.CancellationTokenSource?.Dispose();
 					queuedItem.TaskCompletionSource?.TrySetCanceled();
 					queuedItem.TimeoutCancellationTokenSource?.Dispose();
@@ -1212,7 +1215,7 @@ public class ModBusTcpClient : IModBusClient
 			{
 				_awaiting_responses.Remove(item);
 				item.CancellationTokenSource?.Dispose();
-				item.Registration.Dispose();
+				item.Registration.DisposeAsync().ValueTaskAwait();
 				item.TaskCompletionSource?.TrySetCanceled();
 				item.TimeoutCancellationTokenSource?.Dispose();
 			}
@@ -1244,7 +1247,7 @@ public class ModBusTcpClient : IModBusClient
 			}
 		}
 
-		Task.Run(async () => await InternalReconnect()).Forget();
+		Task.Run(async () => await InternalReconnect()).TaskAwait();
 		return task;
 	}
 

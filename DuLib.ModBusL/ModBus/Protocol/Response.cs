@@ -1,4 +1,6 @@
-﻿namespace Du.ModBus.Protocol;
+﻿using Du.ModBus.Supp;
+
+namespace Du.ModBus.Protocol;
 
 /// <summary>
 /// 응답

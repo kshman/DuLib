@@ -1,4 +1,6 @@
-﻿namespace Du.ModBus;
+﻿using Du.ModBus.Supp;
+
+namespace Du.ModBus;
 
 /// <summary>
 /// 모드버스 타입 변환기

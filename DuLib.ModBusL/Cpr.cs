@@ -17,6 +17,7 @@ internal class Cpr
     internal const string holding = "홀딩";
     internal const string input = "인풋";
     internal const string connected = "연결되어 있어요";
+    internal const string unkversion = "알 수 없는 버전";
 
 	// 임무	
 	internal const string task_read_coil = "코일 읽기";
@@ -28,6 +29,7 @@ internal class Cpr
     internal const string task_write_regi = "레지스터 쓰기";
 
     // 예외
+    internal const string ex_argument = "인수를 확인 하세요";
     internal const string ex_enter_read = "읽기 잠금에 들어가려 했네요";
     internal const string ex_enter_upgradable_read = "업그레드 읽기 잠금에 들어가려 했네요";
     internal const string ex_enter_write = "쓰기 잠금에 들어가려 했네요";
@@ -35,6 +37,7 @@ internal class Cpr
     internal const string ex_not_match_with = "매치가 안되요: ";
     internal const string ex_invalid_register_type = "잘못된 레지스터 형식이예요";
     internal const string ex_invalid_coil_type = "잘못된 코일 형식이예요";
+    internal const string ex_invalid_input_type = "잘못된 인풋 형식이예요";
     internal const string ex_no_address_gap_within_request = "요청에는 주소 차이가 허용되지 않아요";
     internal const string ex_no_host_found = "호스트를 찾을 수 없어요";
     internal const string ex_client_no_conn = "클라이언트가 연결되어 있지 않아요";
@@ -47,6 +50,7 @@ internal class Cpr
     internal const string ex_no_data = "데이터가 없어요";
     internal const string ex_no_payload = "페이로드가 없어요";
     internal const string ex_need_reg_at_least = "레지스터는 적어도 다음 이상은 필요해요: ";
+    internal const string ex_no_device_exist = "장치가 없어요";
 
 	// logger용 메시지
 	internal const string log_method_enter = "{method} 들어왔어요";
@@ -81,6 +85,11 @@ internal class Cpr
     internal const string log_sending_req = "요청을 보내고 있어요: {request}";
     internal const string log_tr_send_req = "#{transactionId} 트랜젝션의 요청을 보냈어요";
     internal const string log_send_error_ex = "보내다가 오류({name})가 났어요: {ex}";
+    internal const string log_tcp_server_stared = "모드버스 서버를 시작했어요: {ListenAddress}:{Port}/tcp에서 리슨 중이예요";
+    internal const string log_tcp_client_connected = "클라이언트가 연결됐어요: {Address}";
+    internal const string log_tcp_client_disconnected = "클라이언트 연결이 끊겼어요: {Address}";
+    internal const string log_tcp_recv_invalid_data = "{Address}에서 잘못된 데이터를 받았어요: {ex}";
+    internal const string log_unexcepted_error_on = "{Name}에 예상치 못한 오류가 났어요: {ex}";
 
     // 판단형
     internal static string GetConnDesc(bool wasConn) => wasConn ? reconn : conn;

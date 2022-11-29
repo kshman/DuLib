@@ -1,9 +1,7 @@
 ﻿global using System.ComponentModel;
 global using System.Diagnostics.CodeAnalysis;
 global using System.Text;
-global using Du.ModBus.Interface;
-global using Du.ModBus.Protocol;
-global using Du.ModBus.Supp;
+global using Du.Data;
 
 namespace Du;
 

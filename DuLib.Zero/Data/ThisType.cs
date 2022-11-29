@@ -42,9 +42,7 @@ public static class ThisType
 	/// <param name="e"></param>
 	/// <returns></returns>
 	public static string GetDescription(this Enum e)
-	{
-		return GetDescription<Enum>(e);
-	}
+		=> GetDescription<Enum>(e);
 
 	/// <summary>
 	/// 예외에서 InnerException이나 그냥 메시지를 가져온다
@@ -53,4 +51,53 @@ public static class ThisType
 	/// <returns></returns>
 	public static string GetMessage(this Exception exception)
 		=> exception.InnerException?.Message ?? exception.Message;
+
+	/// <summary>
+	/// Task 기다리기
+	/// </summary>
+	/// <param name="task"></param>
+	public static async void TaskAwait(this Task task)
+	{
+		try
+		{
+			await task;
+		}
+		catch
+		{
+			// 무시
+		}
+	}
+
+	/// <summary>
+	/// ValueTask 기다리기
+	/// </summary>
+	/// <param name="valueTask"></param>
+	public static async void ValueTaskAwait(this ValueTask valueTask)
+	{
+		try
+		{
+			await valueTask;
+		}
+		catch
+		{
+			// 무시
+		}
+	}
+
+	/// <summary>
+	/// ValueTask 기다리기
+	/// </summary>
+	/// <param name="valueTask"></param>
+	/// <param name="continueOnCapturedContext"></param>
+	public static async void ValueTaskAwait(this ValueTask valueTask, bool continueOnCapturedContext)
+	{
+		try
+		{
+			await valueTask.ConfigureAwait(continueOnCapturedContext);
+		}
+		catch
+		{
+			// 무시
+		}
+	}
 }

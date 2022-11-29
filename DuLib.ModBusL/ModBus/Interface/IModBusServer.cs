@@ -1,6 +1,6 @@
 ﻿namespace Du.ModBus.Interface;
 
-public interface IModBusServer
+public interface IModBusServer : IDisposable
 {
 	event EventHandler<ModBusWriteEventArgs> InputWritten;
 	event EventHandler<ModBusWriteEventArgs> RegisterWritten;
@@ -33,15 +33,17 @@ public interface IModBusServer
 	bool RemoveDevice(byte deviceId);
 }
 
+[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 public class ModBusWriteEventArgs : EventArgs
 {
-	public byte DeviceId { get; private set; }
-	public List<ModBusObject> Objects { get; private set; }
+	public byte DeviceId { get; }
+	public List<ModBusObject> Objects { get; }
 
 	public ModBusWriteEventArgs(byte deviceId, ModBusCoil coil)
 	{
 		DeviceId = deviceId;
-		Objects = new() { coil };
+		Objects = new List<ModBusObject> { coil };
 	}
 
 	public ModBusWriteEventArgs(byte deviceId, List<ModBusCoil> coils)
@@ -53,7 +55,7 @@ public class ModBusWriteEventArgs : EventArgs
 	public ModBusWriteEventArgs(byte deviceId, ModBusRegister register)
 	{
 		DeviceId = deviceId;
-		Objects = new() { register };
+		Objects = new List<ModBusObject> { register };
 	}
 
 	public ModBusWriteEventArgs(byte deviceId, List<ModBusRegister> registers)
