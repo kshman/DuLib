@@ -172,6 +172,16 @@ public class RegKey : IDisposable
 	}
 
 	/// <summary>
+	/// 문자열 얻기
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	public string? GetString(string name)
+	{
+		return _rk?.GetValue(name) as string ?? null;
+	}
+
+	/// <summary>
 	/// 정수 얻기
 	/// </summary>
 	/// <param name="name"></param>
@@ -315,16 +325,20 @@ public class RegKey : IDisposable
 	/// </summary>
 	/// <param name="name"></param>
 	/// <param name="value"></param>
-	public void SetEncodingString(string? name, string value)
+	public bool SetEncodingString(string? name, string value)
 	{
 		if (_rk == null)
-			return;
+			return false;
 
 		if (DeleteOnEmptyString && name != null && string.IsNullOrWhiteSpace(value))
 			_rk.DeleteValue(name, false);
 
 		var s = Converter.EncodingString(value);
+		if (s == null)
+			return false;
+
 		_rk.SetValue(name, s, RegistryValueKind.String);
+		return true;
 	}
 
 	/// <summary>
@@ -332,16 +346,20 @@ public class RegKey : IDisposable
 	/// </summary>
 	/// <param name="name"></param>
 	/// <param name="value"></param>
-	public void SetCompressString(string? name, string value)
+	public bool SetCompressString(string? name, string value)
 	{
 		if (_rk == null)
-			return;
+			return false;
 
 		if (DeleteOnEmptyString && name != null && string.IsNullOrWhiteSpace(value))
 			_rk.DeleteValue(name, false);
 
 		var s = Converter.CompressString(value);
+		if (s == null)
+			return false;
+
 		_rk.SetValue(name, s, RegistryValueKind.String);
+		return true;
 	}
 
 	/// <summary>

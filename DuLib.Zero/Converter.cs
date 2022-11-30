@@ -111,7 +111,7 @@ public static class Converter
 	/// <returns></returns>
 	public static IPAddress ToIpAddressFromIpv4(string? ipstr)
 	{
-		if (string.IsNullOrEmpty(ipstr)) 
+		if (string.IsNullOrEmpty(ipstr))
 			return IPAddress.None;
 
 		try
@@ -146,8 +146,8 @@ public static class Converter
 	/// <returns></returns>
 	public static Point ToPoint(string? x, string? y, Point failRet)
 	{
-		var pt =new Point(
-			ToInt(x, failRet.X), 
+		var pt = new Point(
+			ToInt(x, failRet.X),
 			ToInt(y, failRet.Y));
 		return pt;
 	}
@@ -172,8 +172,11 @@ public static class Converter
 	/// </summary>
 	/// <param name="readableString"></param>
 	/// <returns></returns>
-	public static string EncodingString(string readableString)
+	public static string? EncodingString(string readableString)
 	{
+		if (string.IsNullOrEmpty(readableString))
+			return null;
+
 		var bs = Encoding.UTF8.GetBytes(readableString);
 
 		var sb = new StringBuilder();
@@ -201,7 +204,7 @@ public static class Converter
 	/// <returns></returns>
 	public static string? DecodingString(string rawString)
 	{
-		if ((rawString.Length % 2) != 0)
+		if (string.IsNullOrEmpty(rawString) || (rawString.Length % 2) != 0)
 			return null;
 
 		var bs = new byte[rawString.Length / 2];
@@ -220,9 +223,12 @@ public static class Converter
 	/// </summary>
 	/// <param name="rawString">원본</param>
 	/// <returns>BASE64로 바뀐 문자열</returns>
-	public static string EncodingBase64(string rawString)
+	public static string? EncodingBase64(string rawString)
 	{
-		var bytes= Encoding.UTF8.GetBytes(rawString);
+		if (string.IsNullOrEmpty(rawString))
+			return null;
+
+		var bytes = Encoding.UTF8.GetBytes(rawString);
 		var base64 = Convert.ToBase64String(bytes);
 		return base64;
 	}
@@ -232,8 +238,11 @@ public static class Converter
 	/// </summary>
 	/// <param name="base64String">BASE64 문자열</param>
 	/// <returns>변환된 원본 문자열</returns>
-	public static string DecodingBase64(string base64String)
+	public static string? DecodingBase64(string base64String)
 	{
+		if (string.IsNullOrEmpty(base64String))
+			return null;
+
 		var bytes = Convert.FromBase64String(base64String);
 		var raw_string = Encoding.UTF8.GetString(bytes);
 		return raw_string;
@@ -244,8 +253,11 @@ public static class Converter
 	/// </summary>
 	/// <param name="rawString"></param>
 	/// <returns></returns>
-	public static string CompressString(string rawString)
+	public static string? CompressString(string rawString)
 	{
+		if (string.IsNullOrEmpty(rawString))
+			return null;
+
 		var raw = Encoding.UTF8.GetBytes(rawString);
 		var mst = new MemoryStream();
 
@@ -275,7 +287,7 @@ public static class Converter
 	/// <returns></returns>
 	public static string? DecompressString(string compressedString)
 	{
-		if ((compressedString.Length % 2) != 0)
+		if (string.IsNullOrEmpty(compressedString) || (compressedString.Length % 2) != 0)
 			return null;
 
 		var bs = new byte[compressedString.Length / 2];
