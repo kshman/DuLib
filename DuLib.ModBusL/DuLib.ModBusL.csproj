@@ -13,7 +13,8 @@
     <Title>DuLib.ModBusL</Title>
     <PackageId>DuLib.ModBusL</PackageId>
     <Product>DuLib.ModBusL</Product>
-    <Description>Limited version of ModBus. DuLib.ModBusL</Description>
+    <Description>Limited version of Andreas Mueller's ModBus.
+DuLib.ModBusL</Description>
     <Authors>kshman</Authors>
     <PackageProjectUrl>https://github.com/kshman/DuLib</PackageProjectUrl>
     <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>

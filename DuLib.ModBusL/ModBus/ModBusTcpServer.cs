@@ -667,7 +667,7 @@ public class ModBusTcpServer : IModBusServer
 		return rsp;
 	}
 
-	private Response? HandleEncapsulatedInterface(Request req)
+	private static Response? HandleEncapsulatedInterface(Request req)
 	{
 		var rsp = new Response(req);
 		if (req.Mei != ModBusMei.ReadDeviceInformation)
@@ -688,10 +688,6 @@ public class ModBusTcpServer : IModBusServer
 			return rsp;
 		}
 
-		var attribute = Assembly.GetAssembly(GetType()) // typeof(ModBusTcpServer)
-			?.GetCustomAttribute<AssemblyInformationalVersionAttribute>();
-		var version = attribute != null ? attribute.InformationalVersion : Cpr.unkversion;
-
 		rsp.Mei = req.Mei;
 		rsp.MeiCategory = req.MeiCategory;
 
@@ -703,31 +699,31 @@ public class ModBusTcpServer : IModBusServer
 				{
 					case ModBusDevIdObject.VendorName:
 						rsp.ConformityLevel = 0x81;
-						dict.Add(ModBusDevIdObject.VendorName, "DULIB");
+						dict.Add(ModBusDevIdObject.VendorName, ModBusConfig.DevIdVendorName);
 						break;
 					case ModBusDevIdObject.ProductCode:
 						rsp.ConformityLevel = 0x81;
-						dict.Add(ModBusDevIdObject.ProductCode, "DULIB.MODBUS-TCP");
+						dict.Add(ModBusDevIdObject.ProductCode, ModBusConfig.DevIdProductCode);
 						break;
 					case ModBusDevIdObject.MajorMinorRevision:
 						rsp.ConformityLevel = 0x81;
-						dict.Add(ModBusDevIdObject.MajorMinorRevision, version);
+						dict.Add(ModBusDevIdObject.MajorMinorRevision, ModBusConfig.DevIdVersion);
 						break;
 					case ModBusDevIdObject.VendorUrl:
 						rsp.ConformityLevel = 0x82;
-						dict.Add(ModBusDevIdObject.VendorUrl, "https://github.com/kshman/DuLib");
+						dict.Add(ModBusDevIdObject.VendorUrl, ModBusConfig.DevIdVendorUrl);
 						break;
 					case ModBusDevIdObject.ProductName:
 						rsp.ConformityLevel = 0x82;
-						dict.Add(ModBusDevIdObject.ProductName, "DuLib.ModBus");
+						dict.Add(ModBusDevIdObject.ProductName, ModBusConfig.DevIdProductName);
 						break;
 					case ModBusDevIdObject.ModelName:
 						rsp.ConformityLevel = 0x82;
-						dict.Add(ModBusDevIdObject.ModelName, "TCP Server");
+						dict.Add(ModBusDevIdObject.ModelName, ModBusConfig.DevIdModelName);
 						break;
 					case ModBusDevIdObject.UserApplicationName:
 						rsp.ConformityLevel = 0x82;
-						dict.Add(ModBusDevIdObject.UserApplicationName, "ModBus TCP Server");
+						dict.Add(ModBusDevIdObject.UserApplicationName, ModBusConfig.DevIdApplicationName);
 						break;
 					default:
 						rsp.ConformityLevel = 0x83;
@@ -738,31 +734,31 @@ public class ModBusTcpServer : IModBusServer
 
 			case ModBusDevIdCategory.Extended:
 				rsp.ConformityLevel = 0x03;
-				dict.Add(ModBusDevIdObject.VendorName, "DULIB");
-				dict.Add(ModBusDevIdObject.ProductCode, "DULIB.MODBUS-TCP");
-				dict.Add(ModBusDevIdObject.MajorMinorRevision, version);
-				dict.Add(ModBusDevIdObject.VendorUrl, "https://github.com/kshman/DuLib");
-				dict.Add(ModBusDevIdObject.ProductName, "DuLib.ModBus");
-				dict.Add(ModBusDevIdObject.ModelName, "TCP Server");
-				dict.Add(ModBusDevIdObject.UserApplicationName, "ModBus TCP Server");
+				dict.Add(ModBusDevIdObject.VendorName, ModBusConfig.DevIdVendorName);
+				dict.Add(ModBusDevIdObject.ProductCode, ModBusConfig.DevIdProductCode);
+				dict.Add(ModBusDevIdObject.MajorMinorRevision, ModBusConfig.DevIdVersion);
+				dict.Add(ModBusDevIdObject.VendorUrl, ModBusConfig.DevIdVendorUrl);
+				dict.Add(ModBusDevIdObject.ProductName, ModBusConfig.DevIdProductName);
+				dict.Add(ModBusDevIdObject.ModelName, ModBusConfig.DevIdModelName);
+				dict.Add(ModBusDevIdObject.UserApplicationName, ModBusConfig.DevIdApplicationName);
 				break;
 
 			case ModBusDevIdCategory.Regular:
 				rsp.ConformityLevel = 0x02;
-				dict.Add(ModBusDevIdObject.VendorName, "DULIB");
-				dict.Add(ModBusDevIdObject.ProductCode, "DULIB.MODBUS-TCP");
-				dict.Add(ModBusDevIdObject.MajorMinorRevision, version);
-				dict.Add(ModBusDevIdObject.VendorUrl, "https://github.com/kshman/DuLib");
-				dict.Add(ModBusDevIdObject.ProductName, "DuLib.ModBus");
-				dict.Add(ModBusDevIdObject.ModelName, "TCP Server");
-				dict.Add(ModBusDevIdObject.UserApplicationName, "ModBus TCP Server");
+				dict.Add(ModBusDevIdObject.VendorName, ModBusConfig.DevIdVendorName);
+				dict.Add(ModBusDevIdObject.ProductCode, ModBusConfig.DevIdProductCode);
+				dict.Add(ModBusDevIdObject.MajorMinorRevision, ModBusConfig.DevIdVersion);
+				dict.Add(ModBusDevIdObject.VendorUrl, ModBusConfig.DevIdVendorUrl);
+				dict.Add(ModBusDevIdObject.ProductName, ModBusConfig.DevIdProductName);
+				dict.Add(ModBusDevIdObject.ModelName, ModBusConfig.DevIdModelName);
+				dict.Add(ModBusDevIdObject.UserApplicationName, ModBusConfig.DevIdApplicationName);
 				break;
 
 			case ModBusDevIdCategory.Basic:
 				rsp.ConformityLevel = 0x01;
-				dict.Add(ModBusDevIdObject.VendorName, "DULIB");
-				dict.Add(ModBusDevIdObject.ProductCode, "DULIB.MODBUS-TCP");
-				dict.Add(ModBusDevIdObject.MajorMinorRevision, version);
+				dict.Add(ModBusDevIdObject.VendorName, ModBusConfig.DevIdVendorName);
+				dict.Add(ModBusDevIdObject.ProductCode, ModBusConfig.DevIdProductCode);
+				dict.Add(ModBusDevIdObject.MajorMinorRevision, ModBusConfig.DevIdVersion);
 				break;
 
 			default:

@@ -324,39 +324,39 @@ public class ModBusRegister : ModBusObject
 
 	#region 기본 모드로 만들기
 	public static ModBusObject New(byte value, int address)
-	=> New(value, address, ModBusConfig.Default);
+	=> New(value, address, ModBusConfig.DefaultType);
 
 	public static ModBusObject New(ushort value, int address)
-		=> New(value, address, ModBusConfig.Default);
+		=> New(value, address, ModBusConfig.DefaultType);
 
 	public static List<ModBusObject> New(uint value, int address)
-		=> New(value, address, ModBusConfig.Default);
+		=> New(value, address, ModBusConfig.DefaultType);
 
 	public static List<ModBusObject> New(ulong value, int address)
-		=> New(value, address, ModBusConfig.Default);
+		=> New(value, address, ModBusConfig.DefaultType);
 
 	public static ModBusObject New(sbyte value, int address)
-		=> New(value, address, ModBusConfig.Default);
+		=> New(value, address, ModBusConfig.DefaultType);
 
 	public static ModBusObject New(short value, int address)
-		=> New(value, address, ModBusConfig.Default);
+		=> New(value, address, ModBusConfig.DefaultType);
 
 	public static List<ModBusObject> New(int value, int address)
-		=> New(value, address, ModBusConfig.Default);
+		=> New(value, address, ModBusConfig.DefaultType);
 
 	public static List<ModBusObject> New(long value, int address)
-		=> New(value, address, ModBusConfig.Default);
+		=> New(value, address, ModBusConfig.DefaultType);
 
 	public static List<ModBusObject> New(float value, int address)
-		=> New(value, address, ModBusConfig.Default);
+		=> New(value, address, ModBusConfig.DefaultType);
 
 	public static List<ModBusObject> New(double value, int address)
-		=> New(value, address, ModBusConfig.Default);
+		=> New(value, address, ModBusConfig.DefaultType);
 
 	public static List<ModBusObject> New(string str, int address, Encoding encoding)
-		=> New(str, address, encoding, ModBusConfig.Default);
+		=> New(str, address, encoding, ModBusConfig.DefaultType);
 
 	public static List<ModBusObject> New(string str, int address) =>
-		New(str, address, ModBusConfig.DefaultEncoding, ModBusConfig.Default);
+		New(str, address, ModBusConfig.DefaultEncoding, ModBusConfig.DefaultType);
 	#endregion
 }

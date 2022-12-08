@@ -8,7 +8,7 @@
     <RepositoryUrl>https://github.com/kshman/DuLib</RepositoryUrl>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
 
     <Title>DuLib.Zero</Title>
     <PackageId>DuLib.Zero</PackageId>
