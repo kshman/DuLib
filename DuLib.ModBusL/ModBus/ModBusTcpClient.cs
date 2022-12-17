@@ -694,22 +694,22 @@ public class ModBusTcpClient : IModBusClient
 
 			var coils = coilsArray as ModBusObject[] ?? coilsArray.ToArray();
 
-			if (coils.Any() != true)
+			if (!coils.Any())
 				throw new ArgumentNullException(nameof(coilsArray));
 			if (coils.Any(c => c.Type != ModBusType.Coil))
 				throw new ArgumentException(Cpr.ex_invalid_coil_type);
 
 			var orderedList = coils.OrderBy(c => c.Address).ToList();
 			if (orderedList.Count is < ModBusObject.MinCount or > ModBusObject.MaxCoilCountWrite)
-				throw new IndexOutOfRangeException(Cpr.count);
-
+				throw new ArgumentOutOfRangeException(nameof(coilsArray), Cpr.count);
+			
 			var firstAddress = orderedList.First().Address;
 			var lastAddress = orderedList.Last().Address;
 
 			if (firstAddress + orderedList.Count - 1 != lastAddress)
 				throw new ArgumentException(Cpr.ex_no_address_gap_within_request);
 			if (firstAddress < ModBusObject.MinAddress || ModBusObject.MaxAddress < lastAddress)
-				throw new IndexOutOfRangeException(Cpr.address);
+				throw new ArgumentOutOfRangeException(nameof(coilsArray), Cpr.address);
 
 			_lg?.LogDebug(Cpr.log_dev_wr_coil_cnt, deviceId, firstAddress, orderedList.Count);
 
@@ -784,7 +784,7 @@ public class ModBusTcpClient : IModBusClient
 
 			var registers = registersArray as ModBusObject[] ?? registersArray.ToArray();
 
-			if (registers.Any() != true)
+			if (!registers.Any())
 				throw new ArgumentNullException(nameof(registersArray));
 			if (registers.Any(r => r.Type != ModBusType.HoldingRegister))
 				throw new ArgumentException(Cpr.ex_invalid_register_type);
@@ -799,7 +799,7 @@ public class ModBusTcpClient : IModBusClient
 			if (firstAddress + orderedList.Count - 1 != lastAddress)
 				throw new ArgumentException(Cpr.ex_no_address_gap_within_request);
 			if (firstAddress < ModBusObject.MinAddress || ModBusObject.MaxAddress < lastAddress)
-				throw new IndexOutOfRangeException(Cpr.address);
+				throw new ArgumentOutOfRangeException(nameof(registersArray), Cpr.address);
 
 			_lg?.LogDebug(Cpr.log_dev_wr_regi_cnt, deviceId, firstAddress, orderedList.Count);
 
