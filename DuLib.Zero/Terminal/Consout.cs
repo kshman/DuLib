@@ -176,6 +176,91 @@ public static class Consout
 		}
 	}
 
+	/// <summary>
+	/// 리포트, 메시지만
+	/// </summary>
+	/// <param name="message"></param>
+	/// <param name="align"></param>
+	public static void Report(string message, ConsAlign align = ConsAlign.Left) =>
+		Report(message, ReportActive, align);
+
+	/// <summary>
+	/// 리포트, 메시만 +데코
+	/// </summary>
+	/// <param name="message"></param>
+	/// <param name="decoration"></param>
+	/// <param name="align"></param>
+	public static void Report(string message, string decoration, ConsAlign align = ConsAlign.Left)
+	{
+		if (Console.IsOutputRedirected)
+		{
+			WriteLine(message);
+			return;
+		}
+
+		var width = Console.WindowWidth;
+		var length = InternalStringLength(message); // 2바이트 문자 계산용
+
+		var sb = new StringBuilder(message.Length < width ? message : message[..width]); // 2바이트 문자는... 계산 안됨
+
+		if (width > length)
+		{
+			var left = width - length;
+			if (align == ConsAlign.Center)
+			{
+				var half = left / 2;
+				sb.Append(' ', half);
+				sb.Insert(0, new string(' ', left - half));
+			}
+			else
+			{
+				if (align == ConsAlign.Left)
+					sb.Append(' ', left);
+				else
+					sb.Insert(0, new string(' ', left));
+			}
+		}
+
+		sb.Insert(0, decoration);
+		sb.Append(TermAnsi.Reset);
+
+		lock (s_lock)
+		{
+			Console.CursorVisible = false;
+			var (sx, sy) = Console.GetCursorPosition();
+
+			Console.SetCursorPosition(0, InternalRealReportLocation);
+			Console.Write(sb.ToString());
+
+			Console.SetCursorPosition(sx, sy);
+			Console.CursorVisible = true;
+		}
+	}
+
+	/// <summary>
+	/// 리포트 영역을 지운다
+	/// </summary>
+	public static void Report()
+	{
+		if (Console.IsOutputRedirected)
+			return;
+
+		var sb = new StringBuilder(TermAnsi.Reset);
+		sb.Append(' ', Console.WindowWidth);
+
+		lock (s_lock)
+		{
+			Console.CursorVisible = false;
+			var (sx, sy) = Console.GetCursorPosition();
+
+			Console.SetCursorPosition(0, InternalRealReportLocation);
+			Console.Write(sb.ToString());
+
+			Console.SetCursorPosition(sx, sy);
+			Console.CursorVisible = true;
+		}
+	}
+
 	//
 	private static (int len, int left) InternalStringLength(string input, int progress)
 	{
@@ -196,6 +281,20 @@ public static class Consout
 	}
 
 	//
+	private static int InternalStringLength(string input)
+	{
+		var len = 0;
+		for (var i = 0; i < input.Length; i++)
+		{
+			if (char.IsAscii(input[i]))
+				len++;
+			else
+				len += 2;
+		}
+		return len;
+	}
+
+	//
 	private static int InternalRealReportLocation
 	{
 		get
@@ -210,3 +309,21 @@ public static class Consout
 	#endregion
 }
 
+/// <summary>
+/// 콘솔 정렬
+/// </summary>
+public enum ConsAlign
+{
+	/// <summary>
+	/// 왼쪽
+	/// </summary>
+	Left,
+	/// <summary>
+	/// 가운데
+	/// </summary>
+	Center,
+	/// <summary>
+	/// 오른쪽
+	/// </summary>
+	Right,
+}
