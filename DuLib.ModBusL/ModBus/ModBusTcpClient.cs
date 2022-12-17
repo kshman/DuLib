@@ -119,7 +119,9 @@ public class ModBusTcpClient : IModBusClient
 			await Task.WhenAny(ConnectingTask, cancelTask);
 		}
 		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-		{ }
+		{
+			// 무시
+		}
 		finally
 		{
 			if (cancelTask.Status != TaskStatus.WaitingForActivation)
@@ -128,7 +130,7 @@ public class ModBusTcpClient : IModBusClient
 		}
 	}
 
-	public async Task Close(CancellationToken cancellationToken = default)
+	private async Task InternalClose(int timeout, CancellationToken cancellationToken = default)
 	{
 		try
 		{
@@ -151,7 +153,7 @@ public class ModBusTcpClient : IModBusClient
 				_was_conn = false;
 			}
 
-			await Task.WhenAny(ConnectingTask, Task.Delay(Timeout.Infinite, cancellationToken));
+			await Task.WhenAny(ConnectingTask, Task.Delay(timeout, cancellationToken));
 
 			_nst?.DisposeAsync().ValueTaskAwait();
 			_tcp?.Dispose();
@@ -163,11 +165,18 @@ public class ModBusTcpClient : IModBusClient
 				Task.Run(() => Disconnected?.Invoke(this, EventArgs.Empty), cancellationToken).TaskAwait();
 		}
 		catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-		{ }
+		{
+			//
+		}
 		finally
 		{
 			_lg?.LogTrace(Cpr.log_method_leave, "ModBusTcpClient.Close");
 		}
+	}
+
+	public async Task Close(CancellationToken cancellationToken = default)
+	{
+		await InternalClose(Timeout.Infinite, cancellationToken);
 	}
 
 	public async Task<List<ModBusCoil>?> ReadCoils(byte deviceId, int startAddress, int count, CancellationToken cancellationToken = default)
@@ -1247,7 +1256,7 @@ public class ModBusTcpClient : IModBusClient
 			}
 		}
 
-		Task.Run(async () => await InternalReconnect()).TaskAwait();
+		Task.Run(InternalReconnect).TaskAwait();
 		return task;
 	}
 
@@ -1294,14 +1303,14 @@ public class ModBusTcpClient : IModBusClient
 	{
 		if (disposing)
 		{
-			if (!_is_disposed)
-			{
-				Close().
-					ConfigureAwait(false).
-					GetAwaiter().
-					GetResult();
-				_is_disposed = true;
-			}
+			if (_is_disposed)
+				return;
+
+			InternalClose(1000).
+				ConfigureAwait(false).
+				GetAwaiter().
+				GetResult();
+			_is_disposed = true;
 		}
 	}
 
