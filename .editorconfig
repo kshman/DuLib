@@ -1,11 +1,7 @@
 # editorconfig
 
-# top-most EditorConfig file
 root = true
 
-# Default settings:
-# A newline ending every file
-# Use spaces as indentation
 [*]
 insert_final_newline = true
 indent_size = 4
@@ -15,6 +11,3 @@ tab_width = 4
 [*.{js,json,cjs,mjs,ts,yml,yaml}]
 indent_size = 2
 quote_type = single
-
-[*.{cs,vb}]
-dotnet_diagnostic.IDE0079.severity = none
