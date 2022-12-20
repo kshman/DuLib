@@ -3,13 +3,16 @@ global using System.ComponentModel;
 global using System.Drawing;
 global using System.Windows.Forms;
 global using System.Reflection;
+using Du.Properties;
 
 namespace Du;
 
-internal static class WhatsWinForms
+/// <summary>DuLib.WinForms 란?</summary>
+public static class WhatsWinForms
 {
-	public static string Name()
-	{
-		return "DuLib.WinForms";
-	}
+	/// <summary>이름</summary>
+	public static string Name => Resources.WhatsWinForms;
+
+	/// <summary>아이디</summary>
+	public static int Id => 100;
 }
