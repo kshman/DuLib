@@ -54,11 +54,11 @@ public static class ThisType
 	/// Task 기다리기
 	/// </summary>
 	/// <param name="task"></param>
-	public static async void TaskAwait(this Task task)
+	public static void TaskAwait(this Task task)
 	{
 		try
 		{
-			await task;
+			task.Wait();
 		}
 		catch
 		{
@@ -70,8 +70,9 @@ public static class ThisType
 	/// ValueTask 기다리기
 	/// </summary>
 	/// <param name="valueTask"></param>
-	public static async void ValueTaskAwait(this ValueTask valueTask)
+	public static void ValueTaskAwait(this ValueTask valueTask)
 	{
+		/*
 		try
 		{
 			await valueTask;
@@ -80,6 +81,8 @@ public static class ThisType
 		{
 			// 무시
 		}
+		*/
+		throw new NotImplementedException();
 	}
 
 	/// <summary>
@@ -87,8 +90,9 @@ public static class ThisType
 	/// </summary>
 	/// <param name="valueTask"></param>
 	/// <param name="continueOnCapturedContext"></param>
-	public static async void ValueTaskAwait(this ValueTask valueTask, bool continueOnCapturedContext)
+	public static void ValueTaskAwait(this ValueTask valueTask, bool continueOnCapturedContext)
 	{
+		/*
 		try
 		{
 			await valueTask.ConfigureAwait(continueOnCapturedContext);
@@ -97,5 +101,23 @@ public static class ThisType
 		{
 			// 무시
 		}
+		*/
+		throw new NotImplementedException();
+	}
+
+	/// <summary>
+	/// 배열 복수
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="array"></param>
+	/// <param name="index"></param>
+	/// <param name="length"></param>
+	/// <returns></returns>
+	public static T[] SubArray<T>(this T[] array, int index, int length)
+	{
+		// 오류 검사 넣어야 함
+		T[] ret = new T[length];
+		Array.Copy(array, index, ret, 0, length);
+		return ret;
 	}
 }
