@@ -19,8 +19,7 @@ public static class ThisType
 		where TT : class, Enum
 	{
 		var fld = type.GetType().GetField(type.ToString());
-		var attr = fld?.GetCustomAttributes(typeof(TA), false) as TA[];
-		return attr?.FirstOrDefault();
+		return (fld?.GetCustomAttributes(typeof(TA), false) as TA[])?.FirstOrDefault();
 	}
 
 	/// <summary>
@@ -32,8 +31,7 @@ public static class ThisType
 	public static string GetDescription<T>(this T type) where T : class, Enum
 	{
 		var attr = type.GetAttribute<DescriptionAttribute, T>();
-		var desc = attr?.Description;
-		return desc ?? type.ToString();
+		return attr?.Description ?? type.ToString();
 	}
 
 	/// <summary>
