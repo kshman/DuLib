@@ -54,15 +54,27 @@ public static class ThisType
 	/// Task 기다리기
 	/// </summary>
 	/// <param name="task"></param>
-	public static void TaskAwait(this Task task)
+	/// <param name="throwException"></param>
+	public static void TaskAwait(this Task task, bool throwException = false)
 	{
 		try
 		{
 			task.Wait();
 		}
+		catch (AggregateException ex)
+		{
+			// 이게 온다 원래
+			if (throwException)
+			{
+				if (ex.InnerException != null)
+					throw ex.InnerException;
+				throw;
+			}
+		}
 		catch
 		{
-			// 무시
+			if (throwException)
+				throw;
 		}
 	}
 
