@@ -5,83 +5,69 @@
 /// </summary>
 public class EorzeaTime
 {
-	private const int c_tz_delta = -9; // JST/KST UTC-9;
-	private static readonly DateTime s_base_datetime = new(2010, 6 + 1, 12, 0, 0, 0, DateTimeKind.Utc);
-	private static readonly double s_base_epoch = ConvertEpoch(s_base_datetime) + c_tz_delta * 60 * 60 * 1000;
+    /// <summary>
+    /// 에오르제아 기준값 (2010년 7월 12일 UTC)
+    /// </summary>
+    public static DateTime Epoch => new(2010, 6 + 1, 12, 0, 0, 0, DateTimeKind.Utc);
 
-	/// <summary>
-	/// 시간
-	/// </summary>
-	public int Hour { get; set; }
+    /// <summary>
+    /// 시간
+    /// </summary>
+    public int Hour { get; set; }
 
-	/// <summary>
-	/// 분
-	/// </summary>
-	public int Minute { get; set; }
+    /// <summary>
+    /// 분
+    /// </summary>
+    public int Minute { get; set; }
 
-	/// <summary>
-	/// 지역 시간에 맞춘 델타값 (일본표준시간기준 UTC-9)
-	/// </summary>
-	public static int TimeZoneDelta => c_tz_delta;
+    /// <summary>
+    /// 0시 0분으로 하여 만듦
+    /// </summary>
+    public EorzeaTime()
+        : this(0, 0)
+    {
+    }
 
-	/// <summary>
-	/// 에오르제아 기준값 (2010년 7월 12일 UTC)
-	/// </summary>
-	public static DateTime BaseDateTime => s_base_datetime;
+    /// <summary>
+    /// 시/분을 지정하여 만듦
+    /// </summary>
+    /// <param name="hour">시</param>
+    /// <param name="minute">분</param>
+    public EorzeaTime(int hour, int minute)
+    {
+        Hour = hour;
+        Minute = minute;
+    }
 
-	/// <summary>
-	/// 기준 계산값 (epoch)
-	/// </summary>
-	public static double BaseEpoch => s_base_epoch;
+    /// <summary>
+    /// 현재 시간 
+    /// </summary>
+    public static EorzeaTime Now
+    {
+        get
+        {
+            var now = Current;
+            var h = (int)((now % (3600 * 24)) / 3600.0);
+            var m = (int)((now % 3600) / 60.0);
+            return new EorzeaTime(h, m);
+        }
+    }
 
-	/// <summary>
-	/// 0시 0분으로 하여 만듦
-	/// </summary>
-	public EorzeaTime()
-		: this(0, 0)
-	{
-	}
+    /// <summary>
+    /// 현재시간 틱 (=epoch)
+    /// </summary>
+    public static double Current
+    {
+        get
+        {
+            // 기준
+            const long org = 1278860400000; // GetTick(Epoch) + (-9/*개발사 타임존, 즉 JST*/) * 60 * 60 * 1000;
+            // 현재
+            return ((GetTick(DateTime.UtcNow) - org) / 1000 - 90000) * (1440.0 / 70.0);
+        }
+    }
 
-	/// <summary>
-	/// 시/분을 지정하여 만듦
-	/// </summary>
-	/// <param name="hour">시</param>
-	/// <param name="minute">분</param>
-	public EorzeaTime(int hour, int minute)
-	{
-		Hour = hour;
-		Minute = minute;
-	}
-
-	/// <summary>
-	/// 현재 시간 
-	/// </summary>
-	public static EorzeaTime Now
-	{
-		get
-		{
-			var now = Epoch;
-			var h = (int)((now % (3600 * 24)) / 3600.0);
-			var m = (int)((now % 3600) / 60.0);
-			return new EorzeaTime(h, m);
-		}
-	}
-
-	/// <summary>
-	/// 현재시간 틱 (=epoch)
-	/// </summary>
-	public static double Epoch
-	{
-		get
-		{
-			double now = ((ConvertEpoch(DateTime.UtcNow) - s_base_epoch) / 1000 - 90000) * (1440.0 / 70.0);
-			return now;
-		}
-	}
-
-	//
-	private static long ConvertEpoch(DateTime dt)
-	{
-		return (dt.Ticks - 621355968000000000) / TimeSpan.TicksPerMillisecond;
-	}
+    //
+    private static long GetTick(DateTime dt)
+        => (dt.Ticks - 621355968000000000) / TimeSpan.TicksPerMillisecond;
 }
