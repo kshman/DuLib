@@ -5,6 +5,8 @@ VisualStudioVersion = 17.1.31911.260
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DuLib.Zero", "DuLib.Zero\DuLib.Zero.csproj", "{48D9D136-DED3-4544-9B33-E6F7CBA58838}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DuLib.Zero.Test", "Test\DuLib.Zero.Test\DuLib.Zero.Test.csproj", "{8473270A-FDEF-435D-96D3-A1A84B59E7B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{48D9D136-DED3-4544-9B33-E6F7CBA58838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48D9D136-DED3-4544-9B33-E6F7CBA58838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48D9D136-DED3-4544-9B33-E6F7CBA58838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8473270A-FDEF-435D-96D3-A1A84B59E7B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8473270A-FDEF-435D-96D3-A1A84B59E7B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8473270A-FDEF-435D-96D3-A1A84B59E7B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8473270A-FDEF-435D-96D3-A1A84B59E7B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

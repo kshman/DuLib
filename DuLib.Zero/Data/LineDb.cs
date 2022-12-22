@@ -28,7 +28,7 @@ public class LineStringDb<T> : Generic.LineDb<string, T>
 	/// 빈거 만들기
 	/// </summary>
 	/// <returns></returns>
-	public static new LineStringDb<T> Empty()
+	public new static LineStringDb<T> Empty()
 	{
 		return new LineStringDb<T>();
 	}
@@ -124,7 +124,7 @@ public class LineIntDb<T> : Generic.LineDb<int, T>
 	/// 빈거 만들기
 	/// </summary>
 	/// <returns></returns>
-	public static new LineIntDb<T> Empty()
+	public new static LineIntDb<T> Empty()
 	{
 		return new LineIntDb<T>();
 	}
