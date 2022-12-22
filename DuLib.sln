@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.31911.260
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DuLib.Zero", "DuLib.Zero\DuLib.Zero.csproj", "{48D9D136-DED3-4544-9B33-E6F7CBA58838}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DuLib.Zero.Test", "Test\DuLib.Zero.Test\DuLib.Zero.Test.csproj", "{8473270A-FDEF-435D-96D3-A1A84B59E7B3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{5390401C-EF6C-46BD-B5C9-DDD40172ACCC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DuLib.WinForms", "DuLib.WinForms\DuLib.WinForms.csproj", "{3EB2AA42-396A-4F4B-966C-AC16664DCCB2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DuLib.ModBusQ", "DuLib.ModBusQ\DuLib.ModBusQ.csproj", "{FFFCBA64-0A55-4A1A-969C-CE82A29A22E6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DuLib.NCrontab", "DuLib.NCrontab\DuLib.NCrontab.csproj", "{6850E295-81B8-4E2E-8FA7-D275550F96EA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DuLib.NCrontab.Test", "Test\DuLib.NCrontab.Test\DuLib.NCrontab.Test.csproj", "{385F0B9D-95E8-4DC9-8E53-FC9AA1A25498}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48D9D136-DED3-4544-9B33-E6F7CBA58838}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48D9D136-DED3-4544-9B33-E6F7CBA58838}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48D9D136-DED3-4544-9B33-E6F7CBA58838}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48D9D136-DED3-4544-9B33-E6F7CBA58838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8473270A-FDEF-435D-96D3-A1A84B59E7B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8473270A-FDEF-435D-96D3-A1A84B59E7B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8473270A-FDEF-435D-96D3-A1A84B59E7B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8473270A-FDEF-435D-96D3-A1A84B59E7B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EB2AA42-396A-4F4B-966C-AC16664DCCB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EB2AA42-396A-4F4B-966C-AC16664DCCB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EB2AA42-396A-4F4B-966C-AC16664DCCB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EB2AA42-396A-4F4B-966C-AC16664DCCB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFFCBA64-0A55-4A1A-969C-CE82A29A22E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFFCBA64-0A55-4A1A-969C-CE82A29A22E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFFCBA64-0A55-4A1A-969C-CE82A29A22E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFFCBA64-0A55-4A1A-969C-CE82A29A22E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6850E295-81B8-4E2E-8FA7-D275550F96EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6850E295-81B8-4E2E-8FA7-D275550F96EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6850E295-81B8-4E2E-8FA7-D275550F96EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6850E295-81B8-4E2E-8FA7-D275550F96EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{385F0B9D-95E8-4DC9-8E53-FC9AA1A25498}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{385F0B9D-95E8-4DC9-8E53-FC9AA1A25498}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{385F0B9D-95E8-4DC9-8E53-FC9AA1A25498}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{385F0B9D-95E8-4DC9-8E53-FC9AA1A25498}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8473270A-FDEF-435D-96D3-A1A84B59E7B3} = {5390401C-EF6C-46BD-B5C9-DDD40172ACCC}
+		{385F0B9D-95E8-4DC9-8E53-FC9AA1A25498} = {5390401C-EF6C-46BD-B5C9-DDD40172ACCC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5232318B-A1C5-4DEA-BC7A-67AA7D3C16C8}
+	EndGlobalSection
+EndGlobal
