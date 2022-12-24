@@ -55,124 +55,77 @@ public static class Consout
             Console.WriteLine();
     }
 
-    /// <summary>
-    /// 콘솔 출력: 시간 + 메시지
-    /// </summary>
-    /// <param name="message"></param>
-    public static void TimedWrite(string message)
-    {
-        lock (Lock)
-            Console.Write($@"{OpenBracket}{TimedTermColor}{DateTime.Now:O}{TermAnsi.Reset}{CloseBracket} {message}");
-    }
+	/// <summary>
+	/// 콘솔 출력: 시간 + 메시지
+	/// </summary>
+	/// <param name="message"></param>
+	public static void TimedWrite(string message)
+		=> TimedWrite(DateTime.Now, message);
 
-    /// <summary>
-    /// 콘솔 출력 + 새줄: 시간 + 메시지
-    /// </summary>
-    /// <param name="message"></param>
-    public static void TimedWriteLine(string message)
-    {
-        lock (Lock)
-            Console.WriteLine($@"{OpenBracket}{TimedTermColor}{DateTime.Now:O}{TermAnsi.Reset}{CloseBracket} {message}");
-    }
-    #endregion
+	/// <summary>
+	/// 콘솔 출력: 시간 + 메시지
+	/// </summary>
+	/// <param name="dateTime"></param>
+	/// <param name="message"></param>
+	public static void TimedWrite(DateTime dateTime, string message)
+	{
+		lock (Lock)
+			Console.Write($@"{OpenBracket}{TimedTermColor}{dateTime:O}{TermAnsi.Reset}{CloseBracket} {message}");
+	}
 
-    #region 탑 텍스트
-    /// <summary>
-    /// 리포트 활성 색깔
-    /// </summary>
-    public static string ReportActive { get; set; } = $"{TermAnsi.Yellow}{TermAnsi.BgDarkCyan}";
+	/// <summary>
+	/// 콘솔 출력 + 새줄: 시간 + 메시지
+	/// </summary>
+	/// <param name="message"></param>
+	public static void TimedWriteLine(string message)
+		=> TimedWriteLine(DateTime.Now, message);
+
+	/// <summary>
+	/// 콘솔 출력 + 새줄: 시간 + 메시지
+	/// </summary>
+	/// <param name="dateTime"></param>
+	/// <param name="message"></param>
+	public static void TimedWriteLine(DateTime dateTime, string message)
+	{
+		lock (Lock)
+			Console.WriteLine($@"{OpenBracket}{TimedTermColor}{dateTime:O}{TermAnsi.Reset}{CloseBracket} {message}");
+	}
+	#endregion
+
+	#region 탑 텍스트
+	/// <summary>
+	/// 리포트 활성 색깔
+	/// </summary>
+	public static string ReportAttributeActive { get; set; } = $"{TermAnsi.Yellow}{TermAnsi.BgDarkCyan}";
     /// <summary>
     /// 리포트 남은 색깔
     /// </summary>
-    public static string ReportLeft { get; set; } = $"{TermAnsi.Gray}{TermAnsi.BgDarkGray}";
+    public static string ReportAttributeLeft { get; set; } = $"{TermAnsi.Gray}{TermAnsi.BgDarkGray}";
     /// <summary>
     /// 리포트 위치
     /// 이 값이 0보다 작으면 화면 아래부터 시작한다
     /// </summary>
-    public static int ReportLocation { get; set; } = 0;
+    public static int ReportLine { get; set; } = 0;
     /// <summary>
     /// 리포트에 퍼센트를 붙여요
     /// </summary>
-    public static bool ReportShowPercent { get; set; } = true;
+    public static bool ReportAddPercent { get; set; } = true;
+	/// <summary>
+	/// 진행바 표시
+	/// </summary>
+	/// <param name="value"></param>
+	/// <param name="message"></param>
+	public static void Report(double value, string? message = null) =>
+		InternalReport(value, message ?? string.Empty);
 
-    /// <summary>
-    /// 진행바 표시
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="message"></param>
-    public static void Report(double value, string? message = null) =>
-        InternalReport(value, message ?? string.Empty);
-
-    /// <summary>
-    /// 진행바 표시
-    /// </summary>
-    /// <param name="value"></param>
-    /// <param name="max"></param>
-    /// <param name="message"></param>
-    public static void Report(int value, int max, string? message = null) =>
+	/// <summary>
+	/// 진행바 표시
+	/// </summary>
+	/// <param name="value"></param>
+	/// <param name="max"></param>
+	/// <param name="message"></param>
+	public static void Report(int value, int max, string? message = null) =>
         InternalReport((double)value / max, message ?? string.Empty);
-
-    //
-    private static void InternalReport(double value, string message)
-    {
-        value = Math.Clamp(value, 0, 1);
-        StringBuilder sb;
-
-        if (Console.IsOutputRedirected)
-        {
-            if (!ReportShowPercent)
-                WriteLine(message);
-            else
-            {
-                sb = new StringBuilder(message);
-                sb.Append((int)(value * 100)).Append('%');
-                WriteLine(sb.ToString());
-            }
-            return;
-        }
-
-        var width = Console.WindowWidth;
-        sb = new StringBuilder(message.Length < width ? message : message[..width]); // 2바이트 문자는... 계산 안됨
-
-        var progress = Math.Clamp((int)(value * width), 0, width);
-        var (length, left) = InternalStringLength(message, progress); // 2바이트 문자 계산용
-
-        if (!ReportShowPercent)
-        {
-            if (width > length)
-                sb.Append(' ', width - length);
-        }
-        else
-        {
-            if (width > length - 5)
-            {
-                sb.Append(' ', width - length - 5);
-                sb.AppendFormat("{0,3}% ", (int)(value * 100));
-            }
-            else
-            {
-                // 아니 이건 %붙일 자리가 없네
-                if (width > length)
-                    sb.Append(' ', width - length);
-            }
-        }
-
-        sb.Insert(progress - left, ReportLeft);
-        sb.Insert(0, ReportActive);
-        sb.Append(TermAnsi.Reset);
-
-        lock (Lock)
-        {
-            Console.CursorVisible = false;
-            var (sx, sy) = Console.GetCursorPosition();
-
-            Console.SetCursorPosition(0, InternalRealReportLocation);
-            Console.Write(sb.ToString());
-
-            Console.SetCursorPosition(sx, sy);
-            Console.CursorVisible = true;
-        }
-    }
 
     /// <summary>
     /// 리포트, 메시지만
@@ -180,7 +133,7 @@ public static class Consout
     /// <param name="message"></param>
     /// <param name="align"></param>
     public static void Report(string message, ConsAlign align = ConsAlign.Left) =>
-        Report(message, ReportActive, align);
+        Report(message, ReportAttributeActive, align);
 
     /// <summary>
     /// 리포트, 메시만 +데코
@@ -254,10 +207,72 @@ public static class Consout
             Console.SetCursorPosition(sx, sy);
             Console.CursorVisible = true;
         }
-    }
+	}
 
-    //
-    private static (int len, int left) InternalStringLength(string input, int progress)
+	//
+	private static void InternalReport(double value, string message)
+	{
+		value = Math.Clamp(value, 0, 1);
+		StringBuilder sb;
+
+		if (Console.IsOutputRedirected)
+		{
+			if (!ReportAddPercent)
+				WriteLine(message);
+			else
+			{
+				sb = new StringBuilder(message);
+				sb.Append((int)(value * 100)).Append('%');
+				WriteLine(sb.ToString());
+			}
+			return;
+		}
+
+		var width = Console.WindowWidth;
+		sb = new StringBuilder(message.Length < width ? message : message[..width]); // 2바이트 문자는... 계산 안됨
+
+		var progress = Math.Clamp((int)(value * width), 0, width);
+		var (length, left) = InternalStringLength(message, progress); // 2바이트 문자 계산용
+
+		if (!ReportAddPercent)
+		{
+			if (width > length)
+				sb.Append(' ', width - length);
+		}
+		else
+		{
+			if (width > length - 5)
+			{
+				sb.Append(' ', width - length - 5);
+				sb.AppendFormat("{0,3}% ", (int)(value * 100));
+			}
+			else
+			{
+				// 아니 이건 %붙일 자리가 없네
+				if (width > length)
+					sb.Append(' ', width - length);
+			}
+		}
+
+		sb.Insert(progress - left, ReportAttributeLeft);
+		sb.Insert(0, ReportAttributeActive);
+		sb.Append(TermAnsi.Reset);
+
+		lock (Lock)
+		{
+			Console.CursorVisible = false;
+			var (sx, sy) = Console.GetCursorPosition();
+
+			Console.SetCursorPosition(0, InternalRealReportLocation);
+			Console.Write(sb.ToString());
+
+			Console.SetCursorPosition(sx, sy);
+			Console.CursorVisible = true;
+		}
+	}
+
+	//
+	private static (int len, int left) InternalStringLength(string input, int progress)
     {
         var left = 0;
         var len = 0;
@@ -294,11 +309,11 @@ public static class Consout
     {
         get
         {
-            if (ReportLocation >= 0)
-                return ReportLocation;
+            if (ReportLine >= 0)
+                return ReportLine;
 
             int height = Console.WindowHeight;
-            return height + ReportLocation;
+            return height + ReportLine;
         }
     }
     #endregion
