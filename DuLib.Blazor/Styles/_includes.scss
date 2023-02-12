@@ -1,0 +1,25 @@
+﻿:root {
+	--du-spsc-factor: 0.5rem;
+	--du-serif: "Malgun Gothic","Segoe UI","Apple SD Gothic Neo","Helvetica Neue","Noto Sans",Helvetica,Arial,sans-serif,"Segoe UI Emoji","Segoe UI Symbol","Apple Color Emoji","Noto Color Emoji";
+	--du-font-name: var(--du-serif);
+}
+
+$du-spscf: var(--du-spsc-factor);
+$du-font-name: var(--du-font);
+$du-font-size: 1rem;
+
+@function strip($value) {
+	@return $value / ($value * 0 + 1);
+}
+
+@function em($px, $font-size: $du-font-size) {
+	@return #{ strip($px) / strip($font-size) }em;
+}
+
+@function rem($px) {
+	@return #{ strip($px) / strip($du-font-size) }rem;
+}
+
+@function spacing($space) {
+	@return calc(#{ $du-spscf } * #{ $space });
+}

@@ -1,0 +1,7 @@
+[
+  {
+	"outputFile": "wwwroot/dulib.blazor.css",
+	"inputFile": "Styles/_styles.scss",
+	"style": "Compressed"
+  }
+]

@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<IsTrimmable>true</IsTrimmable>
+		<PublishTrimmed>true</PublishTrimmed>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Styles\bootstrap\**" />
+	  <Content Remove="Styles\bootstrap\**" />
+	  <EmbeddedResource Remove="Styles\bootstrap\**" />
+	  <None Remove="Styles\bootstrap\**" />
+	  <Compile Remove="Suppliment\**" />
+	  <EmbeddedResource Remove="Suppliment\**" />
+	  <None Remove="Suppliment\**" />
+	  <Content Remove="Suppliment\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Remove="sassconfig.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="sassconfig.json" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
+	</ItemGroup>
+
+</Project>

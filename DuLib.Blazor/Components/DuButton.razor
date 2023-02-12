@@ -1,0 +1,50 @@
+﻿@namespace DuLib.Blazor
+@inherits DuButtonBase
+
+@if (Href.IsHave())
+{
+    <a @ref="RootElement"
+   @attributes="UserAttributes"
+   style="@CssStyle.Result"
+   class="@CssClass.Result"
+   title="@Title"
+   target="@Target"
+   href="@Href"
+   id="@Id">
+        @ChildContent
+    </a>
+}
+else
+{
+    <button @ref="RootElement"
+        @attributes="UserAttributes"
+        style="@CssStyle.Result"
+        class="@CssClass.Result"
+        type="@GetTypeHtml()"
+        title="@Title"
+        target="@Target"
+        id="@Id"
+        @onclick="HandleOnClick">
+        @ChildContent
+    </button>
+}
+
+@code {
+    /// <summary>타이틀 지정.</summary>
+    [Parameter] public string? Title { get; set; }
+    /// <summary>URL 링크 지정.</summary>
+    [Parameter] public string? Href { get; set; }
+    /// <summary>타겟 지정.</summary>
+    [Parameter] public string? Target { get; set; }
+
+    protected override string RootClass => "btn";
+
+    //
+    protected override void OnCssClass()
+    {
+        CssClass
+            .Add(GetColorCss())
+            .Add(Size.ToCss(RootClass));
+    }
+
+}

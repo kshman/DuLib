@@ -1,0 +1,107 @@
+﻿@namespace DuLib.Blazor
+@inherits DuGroupBase
+
+<div @ref="RootElement"
+     @attributes="UserAttributes"
+     style="@CssStyle.Result"
+     class="@CssClass.Result"
+     role="toolbar"
+     aria-label="@AriaLabel"
+     id="@Id">
+    <CascadingValue Value="this" IsFixed="true">
+        <div class="hdr" role="tablist">
+            @ChildContent
+        </div>
+    </CascadingValue>
+    @if (HeaderOnly is false)
+    {
+        <div class="ctx"
+         role="tabpanel"
+         aria-hidden="false"
+         aria-labelledby="@Id">
+            @(_selected?.Content ?? _selected?.ChildContent)
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public bool Flat { get; set; }
+    [Parameter] public bool HeaderOnly { get; set; }
+    [Parameter] public ComponentSize Size { get; set; }
+    [Parameter] public ComponentOverflow OverflowBehavior { get; set; }
+    [Parameter] public ComponentPosition Position { get; set; }
+
+    [Parameter] public string? AriaLabel { get; set; }
+
+    [Parameter] public EventCallback<TabChangeEvent> OnTabChange { get; set; }
+
+    protected override string RootClass => "tab";
+
+    private List<DuTab> _tabs = new();
+    private DuTab? _selected;
+
+    //
+    protected override void OnCssClass()
+    {
+        CssClass
+            .Add(Size == ComponentSize.Large ? "tab-lg" : "tab-nm")
+            .Add(Flat ? "tab-lnk" : "tab-box")
+            .Add(OverflowBehavior == ComponentOverflow.Scroll, "tab-scrl")
+            .Add(Position switch
+            {
+                ComponentPosition.Top => "flex-flow-column",
+                ComponentPosition.Right => "flex-flow-row-reverse",
+                ComponentPosition.Bottom => "flex-flow-column-reverse",
+                ComponentPosition.Left => "flex-flow-row",
+                _ => null
+            });
+        ;
+    }
+
+    //
+    public void AddTab(DuTab tab)
+    {
+        if (Enabled is false)
+            tab.Enabled = false;
+
+        if (_selected is null)
+        {
+            tab.SetSelected(true);
+
+            _selected = tab;
+            StateHasChanged();
+        }
+
+        _tabs.Add(tab);
+    }
+
+    //
+    public void RemoveTab(DuTab tab)
+    {
+        // 근데 이거 해야함? 어짜피 dispose인데
+        _tabs.Remove(tab);
+    }
+
+    //
+    public async void SelectTab(DuTab tab)
+    {
+        var prev = _selected;
+
+        _selected?.SetSelected(false);
+        tab.SetSelected(true);
+
+        _selected = tab;
+
+        StateHasChanged();
+
+        await InvokeOnLinkClick(new TabChangeEvent
+            {
+                Tab = tab,
+                Previous = prev,
+            });
+    }
+
+    //
+    protected virtual Task InvokeOnLinkClick(TabChangeEvent tab) =>
+        OnTabChange.InvokeAsync(tab);
+}

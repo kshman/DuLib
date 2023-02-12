@@ -1,0 +1,85 @@
+﻿@namespace DuLib.Blazor
+@inherits DuComponentParent
+
+<div @ref="RootElement"
+     @attributes="UserAttributes"
+     style="@CssStyle.Result"
+     class="@CssClass.Result">
+    <h2 class="accordion-header">
+        <div class="@(Expanded ? "accordion-button" : "accordion-button collapsed")"
+             role="button"
+             data-bs-toggle="collapse"
+             data-bs-target="#@_id"
+             aria-expanded="@(Expanded ? "true" : "false")"
+             aria-controls="#@_id"
+             @onclick="HandleOnClick">
+            @if (Template != null)
+            {
+                @Template(Expanded)
+            }
+            else
+            {
+                <span>@Title</span>
+            }
+        </div>
+    </h2>
+    @if (Group?.Id == null || Group is not DuGroupAccordion ga || ga.Separated)
+    {
+        <div id="@_id"
+         class="accordion-collapse collapse @(Expanded ? "show" : string.Empty)">
+            <div class="accordion-body">
+                @ChildContent
+            </div>
+        </div>
+    }
+    else
+    {
+        <div id="@_id"
+         class="accordion-collapse collapse @(Expanded ? "show" : string.Empty)"
+         data-bs-parent="#@Group.Id">
+            <div class="accordion-body">
+                @ChildContent
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [CascadingParameter] public DuGroupBase? Group { get; set; }
+
+    /// <summary></summary>
+    [Parameter] public RenderFragment<bool>? Template { get; set; }
+    /// <summary></summary>
+    [Parameter] public string? Title { get; set; }
+    /// <summary></summary>
+    [Parameter] public bool Expanded { get; set; }
+
+    /// <summary></summary>
+    [Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+    /// <summary></summary>
+    [Parameter] public EventCallback<bool> OnExpandedChanged { get; set; }
+
+    protected override string RootClass => "accordion-item";
+
+    private string _id = $"D_ACD_{TypeSupp.Increment}";
+    private bool _internal_expanded;
+
+    //
+    protected override void OnParametersSet()
+    {
+        _internal_expanded = Expanded;
+    }
+
+    //
+    private async Task HandleOnClick(MouseEventArgs e)
+    {
+        if (!Enabled)
+            return;
+
+        await OnClick.InvokeAsync(e);
+
+        _internal_expanded = !_internal_expanded;
+        await OnExpandedChanged.InvokeAsync(_internal_expanded);
+    }
+
+}

@@ -1,0 +1,188 @@
+﻿@namespace DuLib.Blazor
+@inherits DuGroupBase
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<div @ref="RootElement"
+     @attributes="UserAttributes"
+     style="@CssStyle.Result"
+     class="@CssClass.Result"
+     data-bs-interval="@(Interval is null ? "false" : Interval)"
+     data-bs-touch="@(Touch ? "true" : "false")"
+     id="@Id">
+
+    @if (Indicators && _items.Count > 0)
+    {
+        <div class="carousel-indicators">
+            @for (var i = 0; i < _items.Count; i++)
+            {
+                <button type="button"
+                class="@(_items[i].Active ? "active" : null)"
+                data-bs-target="#@Id"
+                data-bs-slide-to="@i"
+                aria-label="Slide @i"
+                aria-current="@(_items[i].Active ? "true" : null)"
+                @key="i">
+                </button>
+            }
+        </div>
+    }
+
+    <div class="carousel-inner">
+        <CascadingValue Value="this" IsFixed="true">
+            @ChildContent
+        </CascadingValue>
+    </div>
+
+    @if (Controls)
+    {
+        <button class="carousel-control-prev" type="button" data-bs-target="#@Id" data-bs-slide="prev" id="@($"{Id}_prev")">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#@Id" data-bs-slide="next" id="@($"{Id}_next")">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter] public bool Dark { get; set; }
+    [Parameter] public bool Fade { get; set; }
+    [Parameter] public bool Indicators { get; set; }
+    [Parameter] public bool Controls { get; set; } = true;
+
+    [Parameter] public int? Interval { get; set; } = 5000;
+    [Parameter] public bool Touch { get; set; } = true;
+    [Parameter] public CarouselPlay Play { get; set; } = CarouselPlay.Auto;
+    [Parameter] public CarouselPause Pause { get; set; } = CarouselPause.Hover;
+
+    [Parameter] public EventCallback<CarouselSlideEvent> OnBeginSlide { get; set; }
+
+    [Parameter] public EventCallback<CarouselSlideEvent> OnEndSlide { get; set; }
+
+    protected override string RootClass => "carousel slide";
+
+    private List<DuCarousel> _items = new();
+
+    private DotNetObjectReference<DuGroupCarousel>? _objref;
+    private bool _disposed;
+
+    //
+    protected override void OnCssClass()
+    {
+        CssClass
+            .Add(Dark, "carousel-dark")
+            .Add(Fade, "carousel-fade");
+    }
+
+    //
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (!firstRender || _disposed)
+            return;
+
+        var options = new Dictionary<string, object>
+            {
+                ["ride"] = Play switch
+                {
+                    CarouselPlay.Auto => "carousel",
+                    CarouselPlay.True => true,
+                    _ => false
+                },
+                ["pause"] = Pause == CarouselPause.Hover ? "hover" : false
+            };
+
+        _objref ??= DotNetObjectReference.Create(this);
+        await JS.InvokeVoidAsync("DUCARS.init", RootElement, _objref, options);
+    }
+
+    //
+    public void AddItem(DuCarousel item)
+    {
+        _items.Add(item);
+
+        StateHasChanged();
+    }
+
+    //
+    public void RemoveItem(DuCarousel item)
+    {
+        _items.Remove(item);
+
+        if (!_disposed)
+            StateHasChanged();
+    }
+
+    //
+    public virtual Task InvokeOnBeginSlide(CarouselSlideEvent e) =>
+        OnBeginSlide.InvokeAsync(e);
+
+    //
+    public virtual Task InvokeOnEndSlide(CarouselSlideEvent e) =>
+        OnEndSlide.InvokeAsync(e);
+
+    //
+    [JSInvokable("invoke_cars_bs")]
+    public async Task HandleBeginSlide(int from, int to, bool isLeft)
+    {
+        await InvokeOnBeginSlide(new CarouselSlideEvent
+            {
+                From = from,
+                To = to,
+                IsLeft = isLeft,
+            });
+    }
+
+    //
+    [JSInvokable("invoke_cars_es")]
+    public async Task HandleEndSlide(int from, int to, bool isLeft)
+    {
+        await InvokeOnEndSlide(new CarouselSlideEvent
+            {
+                From = from,
+                To = to,
+                IsLeft = isLeft,
+            });
+    }
+
+    //
+    public async Task MoveToAsync(int index) =>
+        await JS.InvokeVoidAsync("DUCARS.to", RootElement, index);
+
+    //
+    public async Task MovePreviousAsync() =>
+        await JS.InvokeVoidAsync("DUCARS.prev", RootElement);
+
+    //
+    public async Task MoveNextAsync() =>
+        await JS.InvokeVoidAsync("DUCARS.next", RootElement);
+
+    //
+    public async Task CycleAsync() =>
+        await JS.InvokeVoidAsync("DUCARS.cycle", RootElement);
+
+    //
+    public async Task PauseAsync() =>
+        await JS.InvokeVoidAsync("DUCARS.pause", RootElement);
+
+    //
+    public async ValueTask DisposeAsync()
+    {
+        _disposed = true;
+
+        try
+        {
+            await JS.InvokeVoidAsync("DUCARS.disp", RootElement);
+        }
+        catch (JSDisconnectedException)
+        {
+            // 그럴 수도 있음
+        }
+
+        _objref?.Dispose();
+    }
+}

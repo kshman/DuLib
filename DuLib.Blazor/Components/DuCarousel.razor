@@ -1,0 +1,47 @@
+﻿@namespace DuLib.Blazor
+@inherits DuComponentParent
+@implements IDisposable
+
+<div @ref="RootElement"
+     @attributes="UserAttributes"
+     style="@CssStyle.Result"
+     class="@CssClass.Result">
+    @ChildContent
+</div>
+
+@code {
+    [CascadingParameter] public DuGroupCarousel? Group { get; set; }
+
+    [Parameter] public bool Active { get; set; }
+    [Parameter] public double? Interval { get; set; }
+
+    protected override string RootClass => "carousel-item";
+
+    private bool _disposed;
+
+    //
+    protected override void OnInitialized()
+    {
+        Group?.AddItem(this);
+
+        base.OnInitialized();
+    }
+
+    //
+    protected override void OnCssClass()
+    {
+        CssClass
+            .Add(Active, "active");
+    }
+
+    //
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        Group?.RemoveItem(this);
+
+        _disposed = true;
+    }
+}
