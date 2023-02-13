@@ -1,4 +1,6 @@
-﻿namespace DuLib.Blazor;
+﻿using Du.Blazor.Components;
+
+namespace Du.Blazor;
 
 /// <summary>
 /// 컴포넌트 이벤트

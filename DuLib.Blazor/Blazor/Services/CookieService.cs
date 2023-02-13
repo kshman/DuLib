@@ -1,29 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
-namespace DuLib.Blazor.Services;
-
-/// <summary>
-/// 쿠키 서비스 인터페이스
-/// </summary>
-public interface ICookieService
-{
-	/// <summary>
-	/// 쿠키를 얻자
-	/// </summary>
-	/// <param name="name">쿠키 이름</param>
-	/// <param name="refresh">내부 데이터를 갱신하려면 true</param>
-	/// <returns>얻은 값. 없으면 당근 null</returns>
-	Task<string?> GetAsync(string name, bool refresh = false);
-	/// <summary>
-	/// 쿠키를 넣자
-	/// </summary>
-	/// <param name="name">쿠키 이름</param>
-	/// <param name="value">넣을 값</param>
-	/// <param name="days">보존 기간. 기본값이 null로 무제한일껄</param>
-	/// <returns></returns>
-	Task SetAsync(string name, string value, int? days = null);
-}
+namespace Du.Blazor.Services;
 
 /// <summary>
 /// 쿠키 서비스. <br/>
@@ -62,6 +39,28 @@ internal class CookieService : ICookieService
 	// 쓰기
 	public async Task SetAsync(string name, string value, int? days = null) =>
 		await WriteAsync(name, value, days);
+}
+
+/// <summary>
+/// 쿠키 서비스 인터페이스
+/// </summary>
+public interface ICookieService
+{
+	/// <summary>
+	/// 쿠키를 얻자
+	/// </summary>
+	/// <param name="name">쿠키 이름</param>
+	/// <param name="refresh">내부 데이터를 갱신하려면 true</param>
+	/// <returns>얻은 값. 없으면 당근 null</returns>
+	Task<string?> GetAsync(string name, bool refresh = false);
+	/// <summary>
+	/// 쿠키를 넣자
+	/// </summary>
+	/// <param name="name">쿠키 이름</param>
+	/// <param name="value">넣을 값</param>
+	/// <param name="days">보존 기간. 기본값이 null로 무제한일껄</param>
+	/// <returns></returns>
+	Task SetAsync(string name, string value, int? days = null);
 }
 
 /// <summary>

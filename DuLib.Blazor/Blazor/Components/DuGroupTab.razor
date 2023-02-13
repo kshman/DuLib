@@ -1,5 +1,4 @@
-﻿@namespace DuLib.Blazor
-@inherits DuGroupBase
+﻿@inherits DuGroupBase
 
 <div @ref="RootElement"
      @attributes="UserAttributes"
@@ -27,9 +26,45 @@
 @code {
     [Parameter] public bool Flat { get; set; }
     [Parameter] public bool HeaderOnly { get; set; }
-    [Parameter] public ComponentSize Size { get; set; }
-    [Parameter] public ComponentOverflow OverflowBehavior { get; set; }
-    [Parameter] public ComponentPosition Position { get; set; }
+    [Parameter]
+    public ComponentSize Size
+    {
+        get => _size;
+        set
+        {
+            if (_size != value)
+            {
+                _size = value;
+                CssClass.Invalidate();
+            }
+        }
+    }
+    [Parameter]
+    public ComponentOverflow Overflow
+    {
+        get => _overflow;
+        set
+        {
+            if (_overflow != value)
+            {
+                _overflow = value;
+                CssClass.Invalidate();
+            }
+        }
+    }
+    [Parameter]
+    public ComponentPosition Position
+    {
+        get => _position;
+        set
+        {
+            if (_position != value)
+            {
+                _position = value;
+                CssClass.Invalidate();
+            }
+        }
+    }
 
     [Parameter] public string? AriaLabel { get; set; }
 
@@ -40,14 +75,18 @@
     private List<DuTab> _tabs = new();
     private DuTab? _selected;
 
+    private ComponentSize _size;
+    private ComponentOverflow _overflow;
+    private ComponentPosition _position;
+
     //
-    protected override void OnCssClass()
+    protected override void OnComponentClass()
     {
         CssClass
-            .Add(Size == ComponentSize.Large ? "tab-lg" : "tab-nm")
-            .Add(Flat ? "tab-lnk" : "tab-box")
-            .Add(OverflowBehavior == ComponentOverflow.Scroll, "tab-scrl")
-            .Add(Position switch
+            .Add(() => Size == ComponentSize.Large ? "tab-lg" : "tab-nm")
+            .Add(() => Flat ? "tab-lnk" : "tab-box")
+            .Add(() => (Overflow == ComponentOverflow.Scroll).IfTrue("tab-scrl"))
+            .Add(() => Position switch
             {
                 ComponentPosition.Top => "flex-flow-column",
                 ComponentPosition.Right => "flex-flow-row-reverse",

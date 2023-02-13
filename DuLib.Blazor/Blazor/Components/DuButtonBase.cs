@@ -1,32 +1,78 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Web;
-
-namespace DuLib.Blazor;
+﻿namespace Du.Blazor.Components;
 
 public class DuButtonBase : DuComponentParent
 {
-	[CascadingParameter] public EditContext? EditContext { get; set; }
+	[CascadingParameter] 
+	public EditContext? EditContext { get; set; }
 
 	/// <summary>버튼 타입. <see cref="ButtonType"/> 참고</summary>
-	[Parameter] public ButtonType? Type { get; set; }
+	[Parameter] 
+	public ButtonType? Type { get; set; }
+
 	/// <summary>레이아웃 타입. <see cref="ComponentColor"/> 참고</summary>
-	[Parameter] public ComponentColor Color { get; set; } = ComponentColor.Primary;
+	[Parameter]
+	public ComponentColor Color
+	{
+		get => _component_color;
+		set
+		{
+			if (_component_color != value)
+			{
+				_component_color = value;
+				CssClass.Invalidate();
+			}
+		}
+	}
+
 	/// <summary>컴포넌트 크기. <see cref="ComponentSize"/> 참고</summary>
-	[Parameter] public ComponentSize Size { get; set; } = ComponentSize.Medium;
+	[Parameter]
+	public ComponentSize Size
+	{
+		get => _component_size;
+		set
+		{
+			if (_component_size != value)
+			{
+				_component_size = value;
+				CssClass.Invalidate();
+			}
+		}
+	}
+
 	/// <summary>아웃라인 적용.</summary>
-	[Parameter] public bool Outline { get; set; }
+	[Parameter]
+	public bool Outline
+	{
+		get => _outline;
+		set
+		{
+			if (_outline != value)
+			{
+				_outline = value;
+				CssClass.Invalidate();
+			}
+		}
+	}
 
 	/// <summary>마우스 눌린 이벤트 지정.</summary>
-	[Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
-	/// <summary>에디트 폼 ValidClick.</summary>
-	[Parameter] public EventCallback<MouseEventArgs> OnValidClick { get; set; }
-	/// <summary>에디트 폼 InvalidClick.</summary>
-	[Parameter] public EventCallback<MouseEventArgs> OnInvalidClick { get; set; }
+	[Parameter]
+	public EventCallback<MouseEventArgs> OnClick { get; set; }
 
+	/// <summary>에디트 폼 ValidClick.</summary>
+	[Parameter] 
+	public EventCallback<MouseEventArgs> OnValidClick { get; set; }
+
+	/// <summary>에디트 폼 InvalidClick.</summary>
+	[Parameter] 
+	public EventCallback<MouseEventArgs> OnInvalidClick { get; set; }
+
+	// 내부 변수
+	private ComponentColor _component_color;
+	private ComponentSize _component_size;
+	private bool _outline;
 	private bool _handle_click;
 
-	//
+	// OnComponentInitialized를 안쓰고 이걸 쓴 이유는... 컴포넌트 베이스니깐
 	protected override void OnInitialized()
 	{
 		Type ??= EditContext is null ? ButtonType.Button : ButtonType.Submit;
@@ -88,37 +134,12 @@ public class DuButtonBase : DuComponentParent
 		};
 
 	//
-	protected string? GetColorCss()
-	{
-		if (Outline)
-		{
-			return Color switch
-			{
-				ComponentColor.Primary => "btn-outline-primary",
-				ComponentColor.Secondary => "btn-outline-secondary",
-				ComponentColor.Success => "btn-outline-success",
-				ComponentColor.Danger => "btn-outline-danger",
-				ComponentColor.Warning => "btn-outline-warning",
-				ComponentColor.Info => "btn-outline-dark",
-				ComponentColor.Light => "btn-outline-light",
-				ComponentColor.Link => "btn-link",
-				_ => null,
-			};
-		}
-		else
-		{
-			return Color switch
-			{
-				ComponentColor.Primary => "btn-primary",
-				ComponentColor.Secondary => "btn-secondary",
-				ComponentColor.Success => "btn-success",
-				ComponentColor.Danger => "btn-danger",
-				ComponentColor.Warning => "btn-warning",
-				ComponentColor.Info => "btn-dark",
-				ComponentColor.Light => "btn-light",
-				ComponentColor.Link => "btn-link",
-				_ => null,
-			};
-		}
-	}
+	protected string? GetColorCss() =>
+		Color == ComponentColor.Link
+			? RootClasses.btn_link
+			: Color.ToCss(Outline ? RootClasses.btn_outline : RootClasses.btn);
+
+	//
+	protected string? GetSizeCss() =>
+		Size.ToCss(RootClasses.btn);
 }

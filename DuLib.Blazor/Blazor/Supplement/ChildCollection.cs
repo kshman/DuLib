@@ -1,4 +1,4 @@
-﻿namespace DuLib.Blazor.Supplement;
+﻿namespace Du.Blazor.Supplement;
 
 internal class ChildCollection<T>
 {

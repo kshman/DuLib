@@ -1,0 +1,23 @@
+﻿@* 알아두기:
+	기본적으로 그룹은 DIV임. 다만 버튼 그룹과 혼용 가능
+	다만 Size 요소가 없으므로 사용할 수 어뵤임
+*@
+@inherits DuGroupBase
+
+<div @ref="RootElement"
+     @attributes="UserAttributes"
+     style="@CssStyle.Result"
+     class="@CssClass.Result"
+     role="@Role"
+     id="@Id">
+    @ChildContent
+</div>
+
+@code {
+    //
+    protected override void OnComponentClass()
+    {
+        CssClass
+            .Add(() => GetButtonLayout());
+    }
+}

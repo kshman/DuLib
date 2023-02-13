@@ -1,0 +1,28 @@
+﻿@inherits DuGroupBase
+
+<div @ref="RootElement"
+     @attributes="UserAttributes"
+     style="@CssStyle.Result"
+     class="@CssClass.Result"
+     role="@Role"
+     id="@Id">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</div>
+
+@code {
+	/// <summary>플래시 모양 (외곽선이 없는거 같음)</summary>
+	[Parameter] public bool Flush { get; set; }
+	/// <summary>따로 따로 움직임</summary>
+	[Parameter] public bool Separated { get; set; }
+
+	protected override string RootClass => RootClasses.accordion;
+
+	//
+	protected override void OnComponentClass()
+	{
+		CssClass
+			.Add(() => Flush.IfTrue("accordion-flush"));
+	}
+}

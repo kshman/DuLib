@@ -1,4 +1,4 @@
-﻿namespace DuLib.Blazor;
+﻿namespace Du.Blazor;
 
 /// <summary>
 /// 테마 스타일
