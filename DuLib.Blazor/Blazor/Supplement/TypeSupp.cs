@@ -63,9 +63,9 @@
 				ComponentColor.Info => "info",
 				ComponentColor.Light => "light",
 				ComponentColor.Dark => "dark",
-				_ => "dark",
+				_ => "warning", // 알 수 없으면 경고지!
 			};
-			return $"{lead}-${cs}";
+			return $"{lead}-{cs}";
 		}
 
 		#endregion 컴포넌트

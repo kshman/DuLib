@@ -1,4 +1,4 @@
-﻿namespace Du.Blazor.Supplement;
+﻿namespace Du.Blazor;
 
 /// <summary>루트 클래스 모음</summary>
 internal static class RootClasses

@@ -1,66 +1,92 @@
 ﻿@inherits DuComponentParent
 
 <div @ref="RootElement"
-	 @attributes="UserAttributes"
-	 style="@CssStyle.Result"
-	 class="@CssClass.Result">
+     @attributes="UserAttributes"
+     style="@CssStyle.Result"
+     class="@CssClass.Result">
 	<h2 class="accordion-header">
-		<div class="@(Expanded ? "accordion-button" : "accordion-button collapsed")"
-			 role="button"
-			 data-bs-toggle="collapse"
-			 data-bs-target="#@_id"
-			 aria-expanded="@(Expanded ? "true" : "false")"
-			 aria-controls="#@_id"
-			 @onclick="HandleOnClick">
+		<button class="@CssClass.Combine("accordion-button", Expanded.IfFalse("collapsed"))"
+		        type="button"
+		        data-bs-toggle="collapse"
+		        data-bs-target="#@_id"
+		        aria-expanded="@(Expanded ? "true" : "false")"
+		        aria-controls="#@_id"
+		        @onclick="HandleOnClick">
 			@if (Header is not null)
 			{
-				@Header(Expanded)
+				@Header
 			}
 			else
 			{
 				<span>@Title</span>
 			}
-		</div>
+		</button>
 	</h2>
-	@if (Group?.Id is not null || Group is not DuGroupAccordion ga || ga.Separated)
-	{
-		<div id="@_id"
-		 class="accordion-collapse collapse @(Expanded ? "show" : string.Empty)">
-			<div class="accordion-body">
-				@ChildContent
-			</div>
+	<div class="@CssClass.Combine("accordion-collapse", "collapse", Expanded.IfTrue("show"))"
+		 data-bs-parent="@HasNoGroupId.IfFalse($"#{Group!.Id}")"
+	     id="@_id">
+		<div class="accordion-body">
+			@(Content ?? ChildContent)
 		</div>
-	}
-	else
-	{
-		<div id="@_id"
-		 class="accordion-collapse collapse @(Expanded ? "show" : string.Empty)"
-		 data-bs-parent="#@Group.Id">
-			<div class="accordion-body">
-				@ChildContent
-			</div>
-		</div>
-	}
+	</div>
 </div>
 
 @code {
-	[CascadingParameter] public DuGroupBase? Group { get; set; }
+	[CascadingParameter]
+	public DuGroupBase? Group { get; set; }
 
 	/// <summary>타이틀 대신 쓰는 헤더 블럭</summary>
-	[Parameter] public RenderFragment<bool>? Header { get; set; }
+	[Parameter]
+	public RenderFragment? Header { get; set; }
+
+	[Parameter]
+	public RenderFragment? Content { get; set; }
+
 	/// <summary>표시 타이틀</summary>
-	[Parameter] public string? Title { get; set; }
-	/// <summary>펼쳐놓기 상태</summary>
-	[Parameter] public bool Expanded { get; set; }
+	[Parameter]
+	public string? Title { get; set; }
+
+	/// <summary>펼쳐놓기 상태. 이 값으로 확장 여부를 알면 안된다!</summary>
+	[Parameter]
+	public bool Expanded { get; set; }
 
 	/// <summary>마우스가 눌림</summary>
-	[Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+	[Parameter]
+	public EventCallback<MouseEventArgs> OnClick { get; set; }
+
 	/// <summary>펼쳐질 때</summary>
-	[Parameter] public EventCallback<bool> OnExpandedChanged { get; set; }
+	[Parameter]
+	public EventCallback<AccordionExpandEvent> OnExpandChanged { get; set; }
 
 	protected override string RootClass => RootClasses.accordion_item;
 
+	private bool HasNoGroupId =>
+		Group?.Id is null || Group is not DuGroupAccordion ga || ga.AlwaysOpen;
+
 	private string _id = $"{RootIds.accordion}_{TypeSupp.Increment}";
+	private bool _internal_expanded;
+
+	//
+	protected override void OnParametersSet()
+	{
+		_internal_expanded = Expanded;
+	}
+
+	//
+	protected Task InvokeOnClick(MouseEventArgs e)
+	{
+		return OnClick.InvokeAsync(e);
+	}
+
+	//
+	protected Task InvokeOnExpandChanged(bool value)
+	{
+		return OnExpandChanged.InvokeAsync(new AccordionExpandEvent
+		{
+			Accordion = this,
+			Expanded = value
+		});
+	}
 
 	//
 	private async Task HandleOnClick(MouseEventArgs e)
@@ -68,9 +94,10 @@
 		if (!Enabled)
 			return;
 
-		await OnClick.InvokeAsync(e);
+		await InvokeOnClick(e);
 
-		Expanded = !Expanded;
-		await OnExpandedChanged.InvokeAsync(Expanded);
+		_internal_expanded = !_internal_expanded;
+		await InvokeOnExpandChanged(_internal_expanded);
 	}
+
 }

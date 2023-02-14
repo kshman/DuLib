@@ -5,57 +5,57 @@ function showDuLibBlazor(message) {
 // cookie
 DUCKIE = {
   rd: function () {
-	return (document.cookie.length === 0) ? 'z=0' : decodeURIComponent(document.cookie);
+    return (document.cookie.length === 0) ? 'z=0' : decodeURIComponent(document.cookie);
   },
   wr: function (name, value, days) {
-	document.cookie = `${name}=${value}${this.exr(days)};path=/`;
+    document.cookie = `${name}=${value}${this.exr(days)};path=/`;
   },
   rm: function (name) {
-	document.cookie = `${name}=;path=/;expires=${(new Date()).toGMTString()}`;
+    document.cookie = `${name}=;path=/;expires=${(new Date()).toGMTString()}`;
   },
   exr: function (days) {
-	if (!Number.isFinite(days))
-	  return '';
-	return `;expires=${this.afs(days).toGMTString()}`;
+    if (!Number.isFinite(days))
+      return '';
+    return `;expires=${this.afs(days).toGMTString()}`;
   },
   afs: function (days) {
-	const date = new Date();
-	date.setDate(date.getDate() + days);
-	return date;
+    const date = new Date();
+    date.setDate(date.getDate() + days);
+    return date;
   }
 }
 
 // carousel
 DUCARS = {
   init: function (e, ref, opt) {
-	if (!e) return;
-	const c = new bootstrap.Carousel(e, opt);
-	e.orf = ref;
-	e.addEventListener('slide.bs.carousel', this.bs);
-	e.addEventListener('slid.bs.carousel', this.es);
-	if (opt.ride==='carousel') c.cycle();
+    if (!e) return;
+    const c = new bootstrap.Carousel(e, opt);
+    e.orf = ref;
+    e.addEventListener('slide.bs.carousel', this.bs);
+    e.addEventListener('slid.bs.carousel', this.es);
+    if (opt.ride === 'carousel') c.cycle();
   },
   disp: function (e) {
-	if (!e) return;
-	e.removeEventListener('slide.bs.carousel', this.bs);
-	e.removeEventListener('slid.bs.carousel', this.es);
-	e.orf = null;
-	this.g(e)?.dispose();
+    if (!e) return;
+    e.removeEventListener('slide.bs.carousel', this.bs);
+    e.removeEventListener('slid.bs.carousel', this.es);
+    e.orf = null;
+    this.g(e)?.dispose();
   },
   to: function (e, i) {
-	this.g(e)?.to(i);
+    this.g(e)?.to(i);
   },
   prev: function (e) {
-	this.g(e)?.prev();
+    this.g(e)?.prev();
   },
   next: function (e) {
-	this.g(e)?.next();
+    this.g(e)?.next();
   },
   cycle: function (e) {
-	this.g(e)?.cycle();
+    this.g(e)?.cycle();
   },
   pause: function (e) {
-	this.g(e)?.pause();
+    this.g(e)?.pause();
   },
   g: (e) => bootstrap.Carousel.getInstance(e),
   bs: (e) => e.target.orf.invokeMethodAsync('invoke_cars_bs', e.from, e.to, e.direction === 'left'),

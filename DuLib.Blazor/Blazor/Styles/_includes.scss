@@ -1,10 +1,17 @@
 ﻿:root {
-	--du-spsc-factor: 0.5rem;
+	// dulib 기본값
 	--du-serif: "Malgun Gothic","Segoe UI","Apple SD Gothic Neo","Helvetica Neue","Noto Sans",Helvetica,Arial,sans-serif,"Segoe UI Emoji","Segoe UI Symbol","Apple Color Emoji","Noto Color Emoji";
-	--du-font-name: var(--du-serif);
+	// 밝은 테마
+	--du-light-body-bg: #fff;
+	--du-light-body-color: #212529;
+	// 어둔 테마
+	--du-dark-body-bg: #212529;
+	--du-dark-body-color: #fff;
+	// bootstrap 덮어쓰기
+	--bs-font-sans-serif: var(--du-serif);
 }
 
-$du-spscf: var(--du-spsc-factor);
+$du-spscf: 0.5rem;
 $du-font-name: var(--du-font);
 $du-font-size: 1rem;
 

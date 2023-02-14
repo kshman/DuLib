@@ -5,14 +5,18 @@
      @attributes="UserAttributes"
      style="@CssStyle.Result"
      class="@CssClass.Result">
-    @ChildContent
+	@ChildContent
 </div>
 
 @code {
-	[CascadingParameter] public DuGroupCarousel? Group { get; set; }
+	[CascadingParameter]
+	public DuGroupCarousel? Group { get; set; }
 
-	[Parameter] public bool Active { get; set; }
-	[Parameter] public double? Interval { get; set; }
+	[Parameter]
+	public bool Active { get; set; }
+
+	[Parameter]
+	public double? Interval { get; set; }
 
 	protected override string RootClass => RootClasses.carousel_item;
 
@@ -31,14 +35,15 @@
 			.Add(() => Active.IfTrue("active"));
 	}
 
-    //
-    public void Dispose()
-    {
-        if (_disposed)
-            return;
+	//
+	public void Dispose()
+	{
+		if (_disposed)
+			return;
 
-        Group?.RemoveItem(this);
+		Group?.RemoveItem(this);
 
-        _disposed = true;
-    }
+		_disposed = true;
+	}
+
 }

@@ -9,6 +9,12 @@ public class DuComponentEvent : EventArgs
 {
 }
 
+public class AccordionExpandEvent : DuComponentEvent
+{
+	public DuAccordion? Accordion { get; set; }
+	public bool Expanded { get; set; }
+}
+
 /// <summary>
 /// Carousel 이벤트
 /// </summary>

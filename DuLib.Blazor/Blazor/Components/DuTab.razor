@@ -7,92 +7,89 @@
         class="@CssClass.Result"
         type="button"
         role="tab"
-        id="@Id"
         aria-selected="@(Selected ? "true" : "false")"
         aria-label="@AriaLabel"
-        tabindex="@(Selected ? 0 : -1)"
-        onclick="HandleOnClick">
-    @if (Header is not null)
-    {
-        <span>@Header</span>
-    }
-    else
-    {
-        <span>@Title</span>
-    }
+		tabindex="@(Selected ? 0 : -1)"
+		id="@Id"
+		@onclick="HandleOnClick">
+	@if (Header is not null)
+	{
+		<span>@Header</span>
+	}
+	else
+	{
+		<span>@Title</span>
+	}
 </button>
 
-<div @ref="RootElement"
-     @attributes="UserAttributes"
-     style="@CssStyle.Result"
-     class="@CssClass.Result">
-    @ChildContent
-</div>
-
 @code {
-    [CascadingParameter] public DuGroupTab? Group { get; set; }
+	[CascadingParameter]
+	public DuGroupTab? Group { get; set; }
 
-    [Parameter] public string? AriaLabel { get; set; }
-    [Parameter] public string? Title { get; set; }
+	[Parameter]
+	public string? AriaLabel { get; set; }
 
-    [Parameter] public RenderFragment? Header { get; set; }
-    [Parameter] public RenderFragment? Content { get; set; }
+	[Parameter]
+	public string? Title { get; set; }
 
-    public bool Selected
-    {
-        get => _selected;
-        set
-        {
-            if (value != _selected)
-            {
-                _selected = value;
-                CssClass.Invalidate();
-            }
-        }
-    }
+	[Parameter]
+	public RenderFragment? Header { get; set; }
 
-    protected override string RootClass => RootClasses.tab_item;
+	[Parameter]
+	public RenderFragment? Content { get; set; }
 
-    private bool _selected;
-    private bool _disposed;
+	public bool Selected
+	{
+		get => _selected;
+		set
+		{
+			if (value == _selected) return;
+			_selected = value;
+			CssClass.Invalidate();
+		}
+	}
 
-    //
-    protected override void OnInitialized()
-    {
-        Group?.AddTab(this);
+	protected override string RootClass => RootClasses.tab_item;
 
-        base.OnInitialized();
-    }
+	private bool _selected;
+	private bool _disposed;
 
-    //
-    protected override void OnComponentClass()
-    {
-        CssClass
-            .Add(() => Selected.IfTrue(RootClasses.tab_sel));
-    }
+	//
+	protected override void OnComponentInitialized()
+	{
+		Group?.AddTab(this);
+	}
 
-    //
-    public void SetSelected(bool selected)
-    {
-        Selected = selected;
-        StateHasChanged();
-    }
+	//
+	protected override void OnComponentClass()
+	{
+		CssClass
+			.Add(() => Selected.IfTrue(RootClasses.tab_sel));
+	}
 
-    //
-    private void HandleOnClick()
-    {
-        if (Enabled)
-            Group?.SelectTab(this);
-    }
+	//
+	public void SetSelected(bool selected)
+	{
+		Selected = selected;
+		StateHasChanged();
+	}
 
-    //
-    public void Dispose()
-    {
-        if (_disposed)
-            return;
+	//
+	private void HandleOnClick()
+	{
+		if (Enabled)
+			Group?.SelectTab(this);
+	}
 
-        Group?.RemoveTab(this);
+	//
+	public void Dispose()
+	{
+		if (_disposed)
+			return;
 
-        _disposed = true;
-    }
+		Group?.RemoveTab(this);
+
+		_disposed = true;
+	}
+
 }

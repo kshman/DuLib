@@ -5,19 +5,21 @@
 @inherits DuGroupBase
 
 <div @ref="RootElement"
-     @attributes="UserAttributes"
-     style="@CssStyle.Result"
-     class="@CssClass.Result"
-     role="@Role"
-     id="@Id">
-    @ChildContent
+	 @attributes="UserAttributes"
+	 style="@CssStyle.Result"
+	 class="@CssClass.Result"
+	 role="@Role"
+	 id="@Id">
+	<CascadingValue Value="this" IsFixed="true">
+		@ChildContent
+	</CascadingValue>
 </div>
 
 @code {
-    //
-    protected override void OnComponentClass()
-    {
-        CssClass
-            .Add(() => GetButtonLayout());
-    }
+	//
+	protected override void OnComponentClass()
+	{
+		CssClass
+			.Add(() => GetButtonLayout());
+	}
 }

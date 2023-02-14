@@ -109,3 +109,12 @@ public enum CarouselPlay
 	False,	// 수동
 	True,	// 한 사이클
 }
+
+/// <summary>
+/// 탭 타이틀 레이아웃
+/// </summary>
+public enum TabTitleLayout
+{
+	Flat,
+	Box,
+}

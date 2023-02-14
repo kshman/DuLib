@@ -1,7 +1,11 @@
 [
   {
-	"outputFile": "wwwroot/Du.Blazor.css",
-	"inputFile": "Blazor/Styles/_styles.scss",
-	"style": "Compressed"
+    "outputFile": "wwwroot/Du.Blazor.css",
+    "inputFile": "Blazor/Styles/_styles.scss",
+    "style": "Nested"
+  },
+  {
+    "outputFile": "Blazor/Styles/_styles.css",
+    "inputFile": "Blazor/Styles/_styles.scss"
   }
 ]

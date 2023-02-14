@@ -6,16 +6,19 @@
      class="@CssClass.Result"
      role="@Role"
      id="@Id">
-    <CascadingValue Value="this">
-        @ChildContent
-    </CascadingValue>
+	<CascadingValue Value="this" IsFixed="true">
+		@ChildContent
+	</CascadingValue>
 </div>
 
 @code {
 	/// <summary>플래시 모양 (외곽선이 없는거 같음)</summary>
-	[Parameter] public bool Flush { get; set; }
+	[Parameter]
+	public bool Flush { get; set; }
+
 	/// <summary>따로 따로 움직임</summary>
-	[Parameter] public bool Separated { get; set; }
+	[Parameter]
+	public bool AlwaysOpen { get; set; }
 
 	protected override string RootClass => RootClasses.accordion;
 
@@ -25,4 +28,5 @@
 		CssClass
 			.Add(() => Flush.IfTrue("accordion-flush"));
 	}
+
 }

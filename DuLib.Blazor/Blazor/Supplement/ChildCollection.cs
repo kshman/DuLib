@@ -28,16 +28,17 @@ internal class ChildCollection<T>
 	{
 		_collection.Remove(item);
 		_itemRemoved?.Invoke(item);
-		if (!_ownerDisposed())
+
+		if (_ownerDisposed()) 
+			return;
+
+		try
 		{
-			try
-			{
-				await _stateHasChanged.Invoke();
-			}
-			catch (ObjectDisposedException)
-			{
-				// 이건.. 어쩔수 엄슴
-			}
+			await _stateHasChanged.Invoke();
+		}
+		catch (ObjectDisposedException)
+		{
+			// 이건.. 어쩔수 엄슴
 		}
 	}
 }

@@ -6,17 +6,21 @@
      class="@CssClass.Result"
      role="@Role"
      id="@Id">
-    @ChildContent
+	<CascadingValue Value="this" IsFixed="true">
+		@ChildContent
+	</CascadingValue>
 </div>
 
 @code {
-    /// <summary>컴포넌트 크기. <see cref="ComponentSize"/> 참고</summary>
-    [Parameter] public ComponentSize Size { get; set; }
+	/// <summary>컴포넌트 크기. <see cref="ComponentSize" /> 참고</summary>
+	[Parameter]
+	public ComponentSize Size { get; set; }
 
-    //
-    protected override void OnComponentClass()
-    {
-        CssClass
+	//
+	protected override void OnComponentClass()
+	{
+		CssClass
 			.Add(() => GetButtonLayout(Size));
-    }
+	}
+
 }

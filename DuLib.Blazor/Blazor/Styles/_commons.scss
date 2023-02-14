@@ -1,17 +1,3 @@
-﻿html, body {
-	font-family: var(--du-font-name);
-}
-
-.du-hidden {
-	opacity: 0;
-	width: 0;
-	border: 0;
-	z-index: -1;
-	overflow: hidden;
-	position: absolute;
-	left: 0;
-}
-
-.du-test {
+﻿.du-test-box {
 	padding: 0.5rem 1.5rem 1rem 1.5rem;
 }

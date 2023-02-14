@@ -1,6 +1,4 @@
-﻿using Microsoft.JSInterop;
-
-namespace Du.Blazor.Services;
+﻿namespace Du.Blazor.Services;
 
 /// <summary>
 /// 쿠키 서비스. <br/>

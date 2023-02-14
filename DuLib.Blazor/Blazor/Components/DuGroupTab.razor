@@ -7,140 +7,194 @@
      role="toolbar"
      aria-label="@AriaLabel"
      id="@Id">
-    <CascadingValue Value="this" IsFixed="true">
-        <div class="hdr" role="tablist">
-            @ChildContent
-        </div>
-    </CascadingValue>
-    @if (HeaderOnly is false)
-    {
-        <div class="ctx"
-         role="tabpanel"
-         aria-hidden="false"
-         aria-labelledby="@Id">
-            @(_selected?.Content ?? _selected?.ChildContent)
-        </div>
-    }
+	<CascadingValue Value="this" IsFixed="true">
+		<div class="tab-hdr" role="tablist">
+			@ChildContent
+		</div>
+	</CascadingValue>
+	@if (TitleOnly is false)
+	{
+		<div class="tab-ctx"
+		     role="tabpanel"
+		     aria-hidden="false"
+		     aria-labelledby="@Id">
+			@(_selected?.Content ?? _selected?.ChildContent)
+		</div>
+	}
 </div>
 
 @code {
-    [Parameter] public bool Flat { get; set; }
-    [Parameter] public bool HeaderOnly { get; set; }
-    [Parameter]
-    public ComponentSize Size
-    {
-        get => _size;
-        set
-        {
-            if (_size != value)
-            {
-                _size = value;
-                CssClass.Invalidate();
-            }
-        }
-    }
-    [Parameter]
-    public ComponentOverflow Overflow
-    {
-        get => _overflow;
-        set
-        {
-            if (_overflow != value)
-            {
-                _overflow = value;
-                CssClass.Invalidate();
-            }
-        }
-    }
-    [Parameter]
-    public ComponentPosition Position
-    {
-        get => _position;
-        set
-        {
-            if (_position != value)
-            {
-                _position = value;
-                CssClass.Invalidate();
-            }
-        }
-    }
+	[Parameter]
+	public ComponentOverflow Overflow
+	{
+		get => _overflow;
+		set
+		{
+			if (_overflow == value) return;
+			_overflow = value;
+			CssClass.Invalidate();
+		}
+	}
 
-    [Parameter] public string? AriaLabel { get; set; }
+	[Parameter]
+	public ComponentPosition Position
+	{
+		get => _position;
+		set
+		{
+			if (_position == value) return;
+			_position = value;
+			CssClass.Invalidate();
+		}
+	}
 
-    [Parameter] public EventCallback<TabChangeEvent> OnTabChange { get; set; }
+	[Parameter]
+	public ComponentSize TitleSize
+	{
+		get => _title_size;
+		set
+		{
+			if (_title_size == value) return;
+			_title_size = value;
+			CssClass.Invalidate();
+		}
+	}
 
-    protected override string RootClass => "tab";
+	[Parameter]
+	public TabTitleLayout TitleLayout
+	{
+		get => _title_layout;
+		set
+		{
+			if (_title_layout == value) return;
+			_title_layout = value;
+			CssClass.Invalidate();
+		}
+	}
 
-    private List<DuTab> _tabs = new();
-    private DuTab? _selected;
+	[Parameter]
+	public bool TitleOnly { get; set; }
 
-    private ComponentSize _size;
-    private ComponentOverflow _overflow;
-    private ComponentPosition _position;
+	[Parameter]
+	public string? AriaLabel { get; set; }
 
-    //
-    protected override void OnComponentClass()
-    {
-        CssClass
-            .Add(() => Size == ComponentSize.Large ? "tab-lg" : "tab-nm")
-            .Add(() => Flat ? "tab-lnk" : "tab-box")
-            .Add(() => (Overflow == ComponentOverflow.Scroll).IfTrue("tab-scrl"))
-            .Add(() => Position switch
-            {
-                ComponentPosition.Top => "flex-flow-column",
-                ComponentPosition.Right => "flex-flow-row-reverse",
-                ComponentPosition.Bottom => "flex-flow-column-reverse",
-                ComponentPosition.Left => "flex-flow-row",
-                _ => null
-            });
-        ;
-    }
+	[Parameter]
+	public EventCallback<TabChangeEvent> OnTabChange { get; set; }
 
-    //
-    public void AddTab(DuTab tab)
-    {
-        if (Enabled is false)
-            tab.Enabled = false;
+	protected override string RootClass => "tab";
 
-        if (_selected is null)
-        {
-            tab.SetSelected(true);
+	private List<DuTab> _tabs = new();
+	private DuTab? _selected;
 
-            _selected = tab;
-            StateHasChanged();
-        }
+	private ComponentOverflow _overflow;
+	private ComponentPosition _position;
+	private ComponentSize _title_size;
+	private TabTitleLayout _title_layout;
 
-        _tabs.Add(tab);
-    }
+	//
+	protected override void OnComponentClass()
+	{
+		CssClass
+			.Add(GetTitleSizeCss)
+			.Add(GetTitleLayoutCss)
+			.Add(GetOverflowCss)
+			.Add(GetPositionCss);
+	}
 
-    //
-    public void RemoveTab(DuTab tab)
-    {
-        // 근데 이거 해야함? 어짜피 dispose인데
-        _tabs.Remove(tab);
-    }
+	//
+	public void AddTab(DuTab tab)
+	{
+		if (Enabled is false)
+			tab.Enabled = false;
 
-    //
-    public async void SelectTab(DuTab tab)
-    {
-        var prev = _selected;
+		if (_selected is null)
+		{
+			tab.SetSelected(true);
 
-        _selected?.SetSelected(false);
-        tab.SetSelected(true);
+			_selected = tab;
+			StateHasChanged();
+		}
 
-        _selected = tab;
+		_tabs.Add(tab);
+	}
 
-        StateHasChanged();
+	//
+	public void RemoveTab(DuTab tab)
+	{
+		// 근데 이거 해야함? 어짜피 dispose인데
+		_tabs.Remove(tab);
+	}
 
-        await InvokeOnLinkClick(new TabChangeEvent
-            {
-                Tab = tab,
-                Previous = prev,
-            });
-    }
+	//
+	public async void SelectTab(DuTab tab)
+	{
+		var prev = _selected;
 
-    //
-    protected virtual Task InvokeOnLinkClick(TabChangeEvent tab) =>
-        OnTabChange.InvokeAsync(tab);
+		_selected?.SetSelected(false);
+		tab.SetSelected(true);
+
+		_selected = tab;
+
+		StateHasChanged();
+
+		await InvokeOnLinkClick(new TabChangeEvent
+		{
+			Tab = tab,
+			Previous = prev
+		});
+	}
+
+	//
+	protected virtual Task InvokeOnLinkClick(TabChangeEvent tab)
+	{
+		return OnTabChange.InvokeAsync(tab);
+	}
+
+	//
+	private string? GetTitleSizeCss()
+	{
+		return TitleSize switch
+		{
+			ComponentSize.Medium or
+				ComponentSize.Small => "tab-nm",
+			ComponentSize.Large => "tab-lg",
+			_ => null
+			};
+	}
+
+	//
+	private string? GetTitleLayoutCss()
+	{
+		return TitleLayout switch
+		{
+			TabTitleLayout.Flat => "tab-lnk",
+			TabTitleLayout.Box => "tab-box",
+			_ => null
+			};
+	}
+
+	//
+	private string? GetOverflowCss()
+	{
+		return Overflow switch
+		{
+			ComponentOverflow.None => null,
+			ComponentOverflow.Menu => null,
+			ComponentOverflow.Scroll => "tab-scrl",
+			_ => null
+			};
+	}
+
+	//
+	private string? GetPositionCss()
+	{
+		return Position switch
+		{
+			ComponentPosition.Top => "flex-flow-column",
+			ComponentPosition.Right => "flex-flow-row-reverse",
+			ComponentPosition.Bottom => "flex-flow-column-reverse",
+			ComponentPosition.Left => "flex-flow-row",
+			_ => null
+			};
+	}
 }

@@ -12,11 +12,9 @@ public abstract class DuComponentBase : ComponentBase
 		get => _theme;
 		set
 		{
-			if (_theme != value)
-			{
-				_theme = value;
-				CssClass.Invalidate();
-			}
+			if (_theme == value) return;
+			_theme = value;
+			CssClass.Invalidate();
 		}
 	}
 
@@ -27,11 +25,9 @@ public abstract class DuComponentBase : ComponentBase
 		get => _enabled;
 		set
 		{
-			if (_enabled != value)
-			{
-				_enabled = value;
-				CssClass.Invalidate();
-			}
+			if (_enabled == value) return;
+			_enabled = value;
+			CssClass.Invalidate();
 		}
 	}
 	/// <summary>스타일 지정</summary>
@@ -41,11 +37,9 @@ public abstract class DuComponentBase : ComponentBase
 		get => _style;
 		set
 		{
-			if (_style != value)
-			{
-				_style = value;
-				CssClass.Invalidate();
-			}
+			if (_style == value) return;
+			_style = value;
+			CssClass.Invalidate();
 		}
 	}
 	/// <summary>클래스 지정</summary>
@@ -55,11 +49,9 @@ public abstract class DuComponentBase : ComponentBase
 		get => _class;
 		set
 		{
-			if (_class != value)
-			{
-				_class = value;
-				CssClass.Invalidate();
-			}
+			if (_class == value) return;
+			_class = value;
+			CssClass.Invalidate();
 		}
 	}
 	/// <summary>표현 방식 지정</summary>
@@ -69,11 +61,9 @@ public abstract class DuComponentBase : ComponentBase
 		get => _visibility;
 		set
 		{
-			if (_visibility != value)
-			{
-				_visibility = value;
-				CssClass.Invalidate();
-			}
+			if (_visibility == value) return;
+			_visibility = value;
+			CssClass.Invalidate();
 		}
 	}
 	/// <summary>사용자가 설정한 속성 지정</summary>
@@ -83,7 +73,7 @@ public abstract class DuComponentBase : ComponentBase
 	/// <summary>루트 엘리먼트</summary>
 	protected ElementReference RootElement { get; set; }
 	/// <summary>클래스 이름<br/>이 값이 기본 클래스가 된다</summary>
-	protected virtual string? RootClass { get; }
+	protected abstract string? RootClass { get; }
 	/// <summary>스타일 만들기 도움꾼</summary>
 
 	protected StyleCompose CssStyle { get; init; } = new();

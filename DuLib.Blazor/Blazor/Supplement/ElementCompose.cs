@@ -24,12 +24,14 @@ public abstract class ElementCompose
 	{
 		get
 		{
-			if (_invalidate)
-			{
-				_invalidate = false;
-				_result = _elements.Count == 0 ? null :
-					string.Join(_separator, _elements.Select(x => x()).Where(s => s.IsHave(true)));
-			}
+			if (!_invalidate) 
+				return _result;
+
+			_invalidate = false;
+
+			var join = string.Join(_separator, _elements.Select(x => x()).Where(s => s.IsHave(true)));
+			_result = join.Length == 0 ? null : join;
+
 			return _result;
 		}
 	}
@@ -37,6 +39,12 @@ public abstract class ElementCompose
 	public override string ToString()
 	{
 		return $"[{_elements.Count}] {_elements}";
+	}
+
+	public string? Combine(params string?[] elements)
+	{
+		var join = string.Join(_separator, elements.Where(s => s.IsHave(true)));
+		return join.Length == 0 ? null : join;
 	}
 }
 
