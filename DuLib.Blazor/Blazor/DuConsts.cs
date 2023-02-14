@@ -15,8 +15,8 @@ internal static class RootClasses
 	internal const string carousel_item = "carousel-item";
 	internal const string carousel_name = "carousel";
 
-	internal const string tab = "tab";
-	internal const string tab_item = "tab-item";
+	internal const string hpvt = "hpvt";
+	internal const string hpvt_item = "hpvt-item";
 
 	// 루트가 아닌 그냥 클래스
 	internal const string group = "group";
@@ -30,12 +30,21 @@ internal static class RootClasses
 	internal const string carousel_dark = "carousel-dark";
 	internal const string carousel_fade = "carousel-fade";
 
-	internal const string tab_sel = "tab-sel";
+	internal const string hpvt_sel = "hpvt-sel";
 }
 
 /// <summary>루트 아이디 모음</summary>
 internal static class RootIds
 {
-	internal const string parent = "D_CP";
+	internal const string parent = "D_C";
+	internal const string group = "D_GP";
+	internal const string button = "D_B";
 	internal const string accordion = "D_ACD";
+	internal const string carousel = "D_CARS";
+	internal const string pivot = "D_PVT";
+}
+
+internal static class CssConsts
+{
+	internal const string active="active";
 }

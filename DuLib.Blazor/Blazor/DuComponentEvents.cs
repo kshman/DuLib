@@ -9,6 +9,9 @@ public class DuComponentEvent : EventArgs
 {
 }
 
+/// <summary>
+/// 아코디언 펼침 이벤트
+/// </summary>
 public class AccordionExpandEvent : DuComponentEvent
 {
 	public DuAccordion? Accordion { get; set; }
@@ -25,6 +28,18 @@ public class CarouselSlideEvent : DuComponentEvent
 	public bool IsLeft { get; set; }
 }
 
+/// <summary>
+/// 피벗 이벤트
+/// </summary>
+public class PivotChangeEvent : DuComponentEvent
+{
+	public DuPivot? Pivot { get; set; }
+	public DuPivot? Previous { get; set; }
+}
+
+/// <summary>
+/// 탭 이벤트
+/// </summary>
 public class TabChangeEvent : DuComponentEvent
 {
 	public DuTab? Tab { get; set; }

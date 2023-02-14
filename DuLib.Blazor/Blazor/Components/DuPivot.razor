@@ -1,0 +1,95 @@
+﻿@inherits DuComponentParent
+@implements IDisposable
+
+<button @ref="RootElement"
+        @attributes="UserAttributes"
+        style="@CssStyle.Result"
+        class="@CssClass.Result"
+        type="button"
+        role="tab"
+        aria-selected="@(Selected ? "true" : "false")"
+        aria-label="@AriaLabel"
+        tabindex="@(Selected ? 0 : -1)"
+        id="@Id"
+        @onclick="HandleOnClick">
+	@if (Header is not null)
+	{
+		<span>@Header</span>
+	}
+	else
+	{
+		<span>@Title</span>
+	}
+</button>
+
+@code {
+	[CascadingParameter]
+	public DuGroupPivot? Group { get; set; }
+
+	[Parameter]
+	public string? AriaLabel { get; set; }
+
+	[Parameter]
+	public string? Title { get; set; }
+
+	[Parameter]
+	public RenderFragment? Header { get; set; }
+
+	[Parameter]
+	public RenderFragment? Content { get; set; }
+
+	public bool Selected
+	{
+		get => _selected;
+		set
+		{
+			if (value == _selected) return;
+			_selected = value;
+			CssClass.Invalidate();
+		}
+	}
+
+	protected override string RootClass => RootClasses.hpvt_item;
+	protected override string RootId => RootIds.pivot;
+
+	private bool _selected;
+	private bool _disposed;
+
+	//
+	protected override void OnComponentInitialized()
+	{
+		Group?.AddPivot(this);
+	}
+
+	//
+	protected override void OnComponentClass()
+	{
+		CssClass
+			.Add(() => Selected.IfTrue(RootClasses.hpvt_sel));
+	}
+
+	//
+	public void SetSelected(bool selected)
+	{
+		Selected = selected;
+		StateHasChanged();
+	}
+
+	//
+	private void HandleOnClick()
+	{
+		if (Enabled)
+			Group?.SelectPivot(this);
+	}
+
+	//
+	public void Dispose()
+	{
+		if (_disposed)
+			return;
+
+		Group?.RemovePivot(this);
+
+		_disposed = true;
+	}
+}

@@ -88,6 +88,7 @@ public enum GroupLayout
 
 	Accordion,
 	Carousel,
+	Pivot,
 	Tab,
 }
 
@@ -111,9 +112,9 @@ public enum CarouselPlay
 }
 
 /// <summary>
-/// 탭 타이틀 레이아웃
+/// Bit's 피벗 타이틀 레이아웃
 /// </summary>
-public enum TabTitleLayout
+public enum PivotTitleLayout
 {
 	Flat,
 	Box,

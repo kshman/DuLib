@@ -161,10 +161,13 @@ public abstract class DuComponentParent : DuComponentBase
 	/// <summary>컴포넌트 아이디</summary>
 	[Parameter] public string? Id { get; set; }
 
+	/// <summary>루트 아이디 앞문장</summary>
+	protected virtual string RootId => RootIds.parent;
+
 	/// <inheritdoc/>>
 	protected override void OnInitialized()
 	{
-		Id ??= $"{RootIds.parent}_{TypeSupp.Increment}";
+		Id ??= $"{RootId}_{TypeSupp.Increment}";
 
 		base.OnInitialized();
 	}

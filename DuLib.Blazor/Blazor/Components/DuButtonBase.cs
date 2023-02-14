@@ -67,7 +67,8 @@ public class DuButtonBase : DuComponentParent
 	[Parameter]
 	public EventCallback<MouseEventArgs> OnInvalidClick { get; set; }
 
-	protected override string RootClass => "btn";
+	protected override string RootClass => RootClasses.btn;
+	protected override string RootId => RootIds.button;
 
 	// OnComponentInitialized를 안쓰고 이걸 쓴 이유는... 컴포넌트 베이스니깐
 	protected override void OnInitialized()

@@ -26,9 +26,12 @@ public class DuGroupBase : DuComponentParent
 			GroupLayout.ToolbarButton => RootClasses.btn_group_toolbar,
 			GroupLayout.Accordion => RootClasses.accordion,
 			GroupLayout.Carousel => RootClasses.carousel,
-			GroupLayout.Tab => RootClasses.tab,
+			GroupLayout.Pivot => RootClasses.hpvt,
+			//GroupLayout.Tab => RootClasses.tab,
 			_ => null
 		};
+
+	protected override string RootId => RootIds.group;
 
 	protected string? Role =>
 		_layout switch

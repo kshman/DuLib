@@ -8,9 +8,9 @@
 		<button class="@CssClass.Combine("accordion-button", Expanded.IfFalse("collapsed"))"
 		        type="button"
 		        data-bs-toggle="collapse"
-		        data-bs-target="#@_id"
+		        data-bs-target="#@Id"
 		        aria-expanded="@(Expanded ? "true" : "false")"
-		        aria-controls="#@_id"
+				aria-controls="#@Id"
 		        @onclick="HandleOnClick">
 			@if (Header is not null)
 			{
@@ -24,7 +24,7 @@
 	</h2>
 	<div class="@CssClass.Combine("accordion-collapse", "collapse", Expanded.IfTrue("show"))"
 		 data-bs-parent="@HasNoGroupId.IfFalse($"#{Group!.Id}")"
-	     id="@_id">
+		 id="@Id">
 		<div class="accordion-body">
 			@(Content ?? ChildContent)
 		</div>
@@ -59,11 +59,11 @@
 	public EventCallback<AccordionExpandEvent> OnExpandChanged { get; set; }
 
 	protected override string RootClass => RootClasses.accordion_item;
+	protected override string RootId => RootIds.accordion;
 
 	private bool HasNoGroupId =>
 		Group?.Id is null || Group is not DuGroupAccordion ga || ga.AlwaysOpen;
 
-	private string _id = $"{RootIds.accordion}_{TypeSupp.Increment}";
 	private bool _internal_expanded;
 
 	//
@@ -99,5 +99,4 @@
 		_internal_expanded = !_internal_expanded;
 		await InvokeOnExpandChanged(_internal_expanded);
 	}
-
 }

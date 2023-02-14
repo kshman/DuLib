@@ -1,14 +1,14 @@
-﻿/* 탭 */
-.tab {
+﻿/* Bit's 피벗 */
+.hpvt {
 	display: flex;
 }
 
-.tab-hdr {
+.hpvt-hdr {
 	display: flex;
 	height: 3rem;
 }
 
-.tab-ctx {
+.hpvt-ctx {
 	flex-grow: 1;
 	padding: 0;
 	margin: 0;
@@ -18,21 +18,21 @@
 }
 
 .flex-flow-row, .flex-flow-row-reverse {
-	.tab-hdr {
+	.hpvt-hdr {
 		flex-flow: column;
 		height: unset;
 	}
 }
 
-.tab-lnk {
-	.tab-item {
+.hpvt-lnk {
+	.hpvt-item {
 		&:hover {
 			color: var(--bs-body-bg);
 			background-color: var(--bs-gray-600);
 		}
 	}
 
-	.tab-sel {
+	.hpvt-sel {
 		&::before {
 			background-color: var(--bs-primary);
 		}
@@ -46,8 +46,8 @@
 	}
 }
 
-.tab-box {
-	.tab-item {
+.hpvt-box {
+	.hpvt-item {
 		transition: 0.3s;
 
 		&:hover {
@@ -57,15 +57,15 @@
 		}
 	}
 
-	.tab-sel {
+	.hpvt-sel {
 		background-color: var(--bs-primary);
 		color: var(--bs-white);
 		font-weight: 400;
 	}
 }
 
-.tab-scrl {
-	.tab-hdr {
+.hpvt-scrl {
+	.hpvt-hdr {
 		overflow-x: auto;
 
 		&::-webkit-scrollbar {
@@ -88,23 +88,23 @@
 	}
 }
 
-.tab-nm {
-	.tab-hdr {
+.hpvt-nm {
+	.hpvt-hdr {
 		* {
 			font-size: 1rem;
 		}
 	}
 }
 
-.tab-lg {
-	.tab-hdr {
+.hpvt-lg {
+	.hpvt-hdr {
 		* {
 			font-size: 1.25rem;
 		}
 	}
 }
 
-.tab-item {
+.hpvt-item {
 	outline: transparent;
 	position: relative;
 	box-sizing: border-box;
@@ -138,7 +138,7 @@
 	}
 }
 
-.tab-sel {
+.hpvt-sel {
 	font-weight: 700;
 	//color: lightseagreen;
 

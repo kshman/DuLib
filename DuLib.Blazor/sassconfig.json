@@ -2,7 +2,7 @@
   {
     "outputFile": "wwwroot/Du.Blazor.css",
     "inputFile": "Blazor/Styles/_styles.scss",
-    "style": "Nested"
+    "style": "Compressed"
   },
   {
     "outputFile": "Blazor/Styles/_styles.css",

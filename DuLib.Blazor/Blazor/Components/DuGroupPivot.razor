@@ -1,23 +1,23 @@
 ﻿@inherits DuGroupBase
 
 <div @ref="RootElement"
-     @attributes="UserAttributes"
-     style="@CssStyle.Result"
-     class="@CssClass.Result"
-     role="toolbar"
-     aria-label="@AriaLabel"
-     id="@Id">
+	 @attributes="UserAttributes"
+	 style="@CssStyle.Result"
+	 class="@CssClass.Result"
+	 role="toolbar"
+	 aria-label="@AriaLabel"
+	 id="@Id">
 	<CascadingValue Value="this" IsFixed="true">
-		<div class="tab-hdr" role="tablist">
+		<div class="hpvt-hdr" role="tablist">
 			@ChildContent
 		</div>
 	</CascadingValue>
 	@if (TitleOnly is false)
 	{
-		<div class="tab-ctx"
-		     role="tabpanel"
-		     aria-hidden="false"
-		     aria-labelledby="@Id">
+		<div class="hpvt-ctx"
+		 role="tabpanel"
+		 aria-hidden="false"
+		 aria-labelledby="@Id">
 			@(_selected?.Content ?? _selected?.ChildContent)
 		</div>
 	}
@@ -79,12 +79,12 @@
 	public string? AriaLabel { get; set; }
 
 	[Parameter]
-	public EventCallback<TabChangeEvent> OnTabChange { get; set; }
+	public EventCallback<PivotChangeEvent> OnPivotChange { get; set; }
 
-	protected override string RootClass => "tab";
+	protected override string RootClass => RootClasses.hpvt;
 
-	private List<DuTab> _tabs = new();
-	private DuTab? _selected;
+	private readonly List<DuPivot> _pivots = new();
+	private DuPivot? _selected;
 
 	private ComponentOverflow _overflow;
 	private ComponentPosition _position;
@@ -102,52 +102,63 @@
 	}
 
 	//
-	public void AddTab(DuTab tab)
+	public void AddPivot(DuPivot pivot)
 	{
 		if (Enabled is false)
-			tab.Enabled = false;
+			pivot.Enabled = false;
 
 		if (_selected is null)
 		{
-			tab.SetSelected(true);
+			pivot.SetSelected(true);
 
-			_selected = tab;
+			_selected = pivot;
 			StateHasChanged();
 		}
 
-		_tabs.Add(tab);
+		_pivots.Add(pivot);
 	}
 
 	//
-	public void RemoveTab(DuTab tab)
+	public void RemovePivot(DuPivot pivot)
 	{
 		// 근데 이거 해야함? 어짜피 dispose인데
-		_tabs.Remove(tab);
+		_pivots.Remove(pivot);
 	}
 
 	//
-	public async void SelectTab(DuTab tab)
+	public async void SelectPivot(DuPivot pivot)
 	{
 		var prev = _selected;
 
 		_selected?.SetSelected(false);
-		tab.SetSelected(true);
+		pivot.SetSelected(true);
 
-		_selected = tab;
+		_selected = pivot;
 
 		StateHasChanged();
 
-		await InvokeOnLinkClick(new TabChangeEvent
-		{
-			Tab = tab,
-			Previous = prev
-		});
+		await InvokeOnLinkClick(new PivotChangeEvent()
+			{
+				Pivot = pivot,
+				Previous = prev
+			});
 	}
 
 	//
-	protected virtual Task InvokeOnLinkClick(TabChangeEvent tab)
+	public void SelectPivot(string id) 
 	{
-		return OnTabChange.InvokeAsync(tab);
+		var pivot = _pivots.FirstOrDefault(x => x.Id == id);
+
+		if (pivot == null || pivot == _selected || !pivot.Enabled)
+			return;
+
+		SelectPivot(pivot);
+	}
+
+	//
+	protected virtual Task InvokeOnLinkClick(PivotChangeEvent pivot)
+	{
+		return OnPivotChange.InvokeAsync(pivot);
 	}
 
 	//
@@ -156,10 +167,10 @@
 		return TitleSize switch
 		{
 			ComponentSize.Medium or
-				ComponentSize.Small => "tab-nm",
-			ComponentSize.Large => "tab-lg",
+				ComponentSize.Small => "hpvt-nm",
+			ComponentSize.Large => "hpvt-lg",
 			_ => null
-			};
+		};
 	}
 
 	//
@@ -167,10 +178,10 @@
 	{
 		return TitleLayout switch
 		{
-			PivotTitleLayout.Flat => "tab-lnk",
-			PivotTitleLayout.Box => "tab-box",
+			PivotTitleLayout.Flat => "hpvt-lnk",
+			PivotTitleLayout.Box => "hpvt-box",
 			_ => null
-			};
+		};
 	}
 
 	//
@@ -180,9 +191,9 @@
 		{
 			ComponentOverflow.None => null,
 			ComponentOverflow.Menu => null,
-			ComponentOverflow.Scroll => "tab-scrl",
+			ComponentOverflow.Scroll => "hpvt-scrl",
 			_ => null
-			};
+		};
 	}
 
 	//
@@ -195,6 +206,6 @@
 			ComponentPosition.Bottom => "flex-flow-column-reverse",
 			ComponentPosition.Left => "flex-flow-row",
 			_ => null
-			};
+		};
 	}
 }

@@ -1,28 +1,7 @@
-﻿@inherits DuComponentParent
-@implements IDisposable
+﻿namespace Du.Blazor.Components;
 
-<button @ref="RootElement"
-        @attributes="UserAttributes"
-        style="@CssStyle.Result"
-        class="@CssClass.Result"
-        type="button"
-        role="tab"
-        aria-selected="@(Selected ? "true" : "false")"
-        aria-label="@AriaLabel"
-		tabindex="@(Selected ? 0 : -1)"
-		id="@Id"
-		@onclick="HandleOnClick">
-	@if (Header is not null)
-	{
-		<span>@Header</span>
-	}
-	else
-	{
-		<span>@Title</span>
-	}
-</button>
-
-@code {
+public class DuTab : DuComponentParent, IDisposable
+{
 	[CascadingParameter]
 	public DuGroupTab? Group { get; set; }
 
@@ -49,7 +28,7 @@
 		}
 	}
 
-	protected override string RootClass => RootClasses.tab_item;
+	protected override string RootClass => ""; //RootClasses.tab_item;
 
 	private bool _selected;
 	private bool _disposed;
@@ -63,8 +42,8 @@
 	//
 	protected override void OnComponentClass()
 	{
-		CssClass
-			.Add(() => Selected.IfTrue(RootClasses.tab_sel));
+		//CssClass
+		//	.Add(() => Selected.IfTrue(RootClasses.tab_sel));
 	}
 
 	//
@@ -91,5 +70,4 @@
 
 		_disposed = true;
 	}
-
 }
