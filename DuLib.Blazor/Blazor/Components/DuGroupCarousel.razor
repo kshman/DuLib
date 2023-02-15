@@ -3,7 +3,7 @@
 @inject IJSRuntime JS
 
 <div @ref="RootElement"
-     @attributes="UserAttributes"
+     @attributes="UserAttrs"
      style="@CssStyle.Result"
      class="@CssClass.Result"
      data-bs-interval="@(Interval is null ? "false" : Interval)"
@@ -77,7 +77,7 @@
 	[Parameter]
 	public EventCallback<CarouselSlideEvent> OnEndSlide { get; set; }
 
-	protected override string RootClass => RootClasses.carousel;
+	protected override string RootName => RootNames.carousel;
 
 	private List<DuCarousel> _items = new();
 
@@ -85,11 +85,11 @@
 	private bool _disposed;
 
 	//
-	protected override void OnComponentClass()
+	protected override void OnComponentCss()
 	{
 		CssClass
-			.Add(() => Dark.IfTrue(RootClasses.carousel_dark))
-			.Add(() => Fade.IfTrue(RootClasses.carousel_fade));
+			.Add(() => Dark.IfTrue(RootNames.carousel_dark))
+			.Add(() => Fade.IfTrue(RootNames.carousel_fade));
 	}
 
 	//
@@ -104,11 +104,11 @@
 		{
 			["ride"] = Play switch
 			{
-				CarouselPlay.Auto => RootClasses.carousel_name,
+				CarouselPlay.Auto => RootNames.carousel_name,
 				CarouselPlay.True => true,
 				_ => false
 			},
-			["pause"] = Pause == CarouselPause.Hover ? RootClasses.hover : false
+			["pause"] = Pause == CarouselPause.Hover ? RootNames.hover : false
 		};
 
 		_objref ??= DotNetObjectReference.Create(this);

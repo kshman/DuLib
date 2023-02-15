@@ -19,25 +19,26 @@ public class DuTab : DuComponentParent, IDisposable
 	/// </summary>
 	[Parameter] public RenderFragment? Content { get; set; }
 
-	protected override string RootClass => RootClasses.tab_item;
+	protected override string RootName => RootNames.tab_item;
 	protected override string RootId => RootIds.tab;
 
-	private bool _disposed;
-
 	//
-	protected override void OnComponentInitialized()
-	{
+	protected override void OnComponentInitialized() => 
 		Group?.AddTab(this);
-	}
 
 	//
 	public void Dispose()
 	{
-		if (_disposed)
+		Dispose(true);
+		GC.SuppressFinalize(this);
+	}
+
+	//
+	protected virtual void Dispose(bool disposing)
+	{
+		if (!disposing)
 			return;
 
 		Group?.RemoveTab(this);
-
-		_disposed = true;
 	}
 }

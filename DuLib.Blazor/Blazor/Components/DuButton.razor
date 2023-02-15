@@ -3,50 +3,41 @@
 @if (Href.IsHave())
 {
 	<a @ref="RootElement"
-	   @attributes="UserAttributes"
-	   style="@CssStyle.Result"
-	   class="@CssClass.Result"
-	   title="@Title"
-	   target="@Target"
-	   href="@Href"
-	   id="@Id">
+   @attributes="UserAttrs"
+   style="@CssStyle.Result"
+   class="@CssClass.Result"
+   target="@Target"
+   href="@Href"
+   id="@Id">
 		@ChildContent
 	</a>
 }
 else
 {
 	<button @ref="RootElement"
-	        @attributes="UserAttributes"
-	        style="@CssStyle.Result"
-	        class="@CssClass.Result"
-	        type="@GetTypeHtml()"
-	        title="@Title"
-	        target="@Target"
-	        id="@Id"
-	        @onclick="HandleOnClick">
+		@attributes="UserAttrs"
+		style="@CssStyle.Result"
+		class="@CssClass.Result"
+		type="@GetHtmlType()"
+		formtarget="@Target"
+		id="@Id"
+		@onclick="HandleOnClickAsync">
 		@ChildContent
 	</button>
 }
 
 @code {
-	/// <summary>타이틀 지정.</summary>
-	[Parameter]
-	public string? Title { get; set; }
-
 	/// <summary>URL 링크 지정.</summary>
-	[Parameter]
-	public string? Href { get; set; }
-
+	[Parameter] public string? Href { get; set; }
 	/// <summary>타겟 지정.</summary>
-	[Parameter]
-	public string? Target { get; set; }
+	[Parameter] public string? Target { get; set; }
 
 	//
-	protected override void OnComponentClass()
+	protected override void OnComponentCss()
 	{
 		CssClass
-			.Add(GetColorCss)
-			.Add(GetSizeCss);
+			.Add(GetCssColor)
+			.Add(GetCssSize);
 	}
 
 }

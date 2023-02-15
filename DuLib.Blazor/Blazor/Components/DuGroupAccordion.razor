@@ -1,7 +1,7 @@
 ﻿@inherits DuGroupBase
 
 <div @ref="RootElement"
-     @attributes="UserAttributes"
+     @attributes="UserAttrs"
      style="@CssStyle.Result"
      class="@CssClass.Result"
      role="@Role"
@@ -20,10 +20,10 @@
 	[Parameter]
 	public bool AlwaysOpen { get; set; }
 
-	protected override string RootClass => RootClasses.accordion;
+	protected override string RootName => RootNames.accordion;
 
 	//
-	protected override void OnComponentClass()
+	protected override void OnComponentCss()
 	{
 		CssClass
 			.Add(() => Flush.IfTrue("accordion-flush"));

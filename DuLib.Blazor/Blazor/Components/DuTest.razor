@@ -3,7 +3,7 @@
 @inject IJSRuntime JS
 
 <button @ref="RootElement"
-        @attributes="UserAttributes"
+        @attributes="UserAttrs"
         style="@CssStyle.Result"
         class="@CssClass.Result btn-outline-light"
         type="button"
@@ -15,7 +15,7 @@
 @code {
     [CascadingParameter] public EditContext? EditContext { get; set; }
 
-    protected override string RootClass => "btn";
+    protected override string RootName => "btn";
 
     protected bool _handle_click;
 

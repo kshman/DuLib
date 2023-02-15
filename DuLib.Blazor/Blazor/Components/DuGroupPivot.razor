@@ -1,7 +1,7 @@
 ﻿@inherits DuGroupBase
 
 <div @ref="RootElement"
-	 @attributes="UserAttributes"
+	 @attributes="UserAttrs"
 	 style="@CssStyle.Result"
 	 class="@CssClass.Result"
 	 role="toolbar"
@@ -81,7 +81,7 @@
 	[Parameter]
 	public EventCallback<PivotChangeEvent> OnPivotChange { get; set; }
 
-	protected override string RootClass => RootClasses.hpvt;
+	protected override string RootName => RootNames.hpvt;
 
 	private readonly List<DuPivot> _pivots = new();
 	private DuPivot? _selected;
@@ -92,7 +92,7 @@
 	private PivotTitleLayout _title_layout;
 
 	//
-	protected override void OnComponentClass()
+	protected override void OnComponentCss()
 	{
 		CssClass
 			.Add(GetTitleSizeCss)

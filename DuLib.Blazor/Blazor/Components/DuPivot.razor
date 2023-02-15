@@ -2,7 +2,7 @@
 @implements IDisposable
 
 <button @ref="RootElement"
-        @attributes="UserAttributes"
+        @attributes="UserAttrs"
         style="@CssStyle.Result"
         class="@CssClass.Result"
         type="button"
@@ -50,7 +50,7 @@
 		}
 	}
 
-	protected override string RootClass => RootClasses.hpvt_item;
+	protected override string RootName => RootNames.hpvt_item;
 	protected override string RootId => RootIds.pivot;
 
 	private bool _selected;
@@ -63,10 +63,10 @@
 	}
 
 	//
-	protected override void OnComponentClass()
+	protected override void OnComponentCss()
 	{
 		CssClass
-			.Add(() => Selected.IfTrue(RootClasses.hpvt_sel));
+			.Add(() => Selected.IfTrue(RootNames.hpvt_sel));
 	}
 
 	//

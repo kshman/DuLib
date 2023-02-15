@@ -9,12 +9,10 @@ public class DuButtonBase : DuComponentParent
 	private bool _outline;
 
 	/// <summary>에디트 컨텍스트</summary>
-	[CascadingParameter]
-	public EditContext? EditContext { get; set; }
+	[CascadingParameter] public EditContext? EditContext { get; set; }
 
 	/// <summary>버튼 타입. <see cref="ButtonType" /> 참고</summary>
-	[Parameter]
-	public ButtonType? Type { get; set; }
+	[Parameter] public ButtonType? Type { get; set; }
 
 	/// <summary>레이아웃 타입. <see cref="ComponentColor" /> 참고</summary>
 	[Parameter]
@@ -56,18 +54,15 @@ public class DuButtonBase : DuComponentParent
 	}
 
 	/// <summary>마우스 눌린 이벤트 지정.</summary>
-	[Parameter]
-	public EventCallback<MouseEventArgs> OnClick { get; set; }
+	[Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
 	/// <summary>에디트 폼 ValidClick.</summary>
-	[Parameter]
-	public EventCallback<MouseEventArgs> OnValidClick { get; set; }
+	[Parameter] public EventCallback<MouseEventArgs> OnValidClick { get; set; }
 
 	/// <summary>에디트 폼 InvalidClick.</summary>
-	[Parameter]
-	public EventCallback<MouseEventArgs> OnInvalidClick { get; set; }
+	[Parameter] public EventCallback<MouseEventArgs> OnInvalidClick { get; set; }
 
-	protected override string RootClass => RootClasses.btn;
+	protected override string RootName => RootNames.btn;
 	protected override string RootId => RootIds.button;
 
 	// OnComponentInitialized를 안쓰고 이걸 쓴 이유는... 컴포넌트 베이스니깐
@@ -79,25 +74,19 @@ public class DuButtonBase : DuComponentParent
 	}
 
 	//
-	protected virtual Task InvokeOnClick(MouseEventArgs e)
-	{
-		return OnClick.InvokeAsync(e);
-	}
+	protected virtual Task InvokeOnClickAsync(MouseEventArgs e) =>
+		OnClick.InvokeAsync(e);
 
 	//
-	protected virtual Task InvokeOnValidClick(MouseEventArgs e)
-	{
-		return OnValidClick.InvokeAsync(e);
-	}
+	protected virtual Task InvokeOnValidClickAsync(MouseEventArgs e) =>
+		OnValidClick.InvokeAsync(e);
 
 	//
-	protected virtual Task InvokeOnInvalidClick(MouseEventArgs e)
-	{
-		return OnInvalidClick.InvokeAsync(e);
-	}
+	protected virtual Task InvokeOnInvalidClickAsync(MouseEventArgs e) =>
+		OnInvalidClick.InvokeAsync(e);
 
 	// 마우스 핸들러
-	protected async Task HandleOnClick(MouseEventArgs e)
+	protected async Task HandleOnClickAsync(MouseEventArgs e)
 	{
 		if (!Enabled)
 			return;
@@ -107,17 +96,17 @@ public class DuButtonBase : DuComponentParent
 			_handle_click = true;
 
 			if (OnClick.HasDelegate)
-				await InvokeOnClick(e);
+				await InvokeOnClickAsync(e);
 			else if (Type == ButtonType.Submit && EditContext != null &&
 					 (OnValidClick.HasDelegate || OnInvalidClick.HasDelegate))
 				switch (EditContext.Validate())
 				{
 					case true when OnValidClick.HasDelegate:
-						await InvokeOnValidClick(e);
+						await InvokeOnValidClickAsync(e);
 						break;
 
 					case false when OnInvalidClick.HasDelegate:
-						await InvokeOnInvalidClick(e);
+						await InvokeOnInvalidClickAsync(e);
 						break;
 				}
 
@@ -126,28 +115,20 @@ public class DuButtonBase : DuComponentParent
 	}
 
 	//
-	protected string? GetTypeHtml()
+	protected string? GetHtmlType() => Type switch
 	{
-		return Type switch
-		{
-			ButtonType.Button => "button",
-			ButtonType.Submit => "submit",
-			ButtonType.Reset => "reset",
-			_ => null
-		};
-	}
+		ButtonType.Button => "button",
+		ButtonType.Submit => "submit",
+		ButtonType.Reset => "reset",
+		_ => null
+	};
 
 	//
-	protected string GetColorCss()
-	{
-		return Color == ComponentColor.Link
-			? RootClasses.btn_link
-			: Color.ToCss(Outline ? RootClasses.btn_outline : RootClasses.btn);
-	}
+	protected string GetCssColor() => Color == ComponentColor.Link
+			? RootNames.btn_link
+			: Color.ToCss(Outline ? RootNames.btn_outline : RootNames.btn);
 
 	//
-	protected string? GetSizeCss()
-	{
-		return Size.ToCss(RootClasses.btn);
-	}
+	protected string? GetCssSize() =>
+		Size.ToCss(RootNames.btn);
 }

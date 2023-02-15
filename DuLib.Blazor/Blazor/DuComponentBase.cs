@@ -5,90 +5,27 @@
 /// </summary>
 public abstract class DuComponentBase : ComponentBase
 {
-	/// <summary>테마 지정</summary>
-	[CascadingParameter]
-	public ThemeStyle Theme
-	{
-		get => _theme;
-		set
-		{
-			if (_theme == value) return;
-			_theme = value;
-			CssClass.Invalidate();
-		}
-	}
-
-	/// <summary>사용 여부 지정</summary>
-	[Parameter]
-	public bool Enabled
-	{
-		get => _enabled;
-		set
-		{
-			if (_enabled == value) return;
-			_enabled = value;
-			CssClass.Invalidate();
-		}
-	}
-	/// <summary>스타일 지정</summary>
-	[Parameter]
-	public string? Style
-	{
-		get => _style;
-		set
-		{
-			if (_style == value) return;
-			_style = value;
-			CssClass.Invalidate();
-		}
-	}
+	/// <summary>테마 지정 (data-bs-theme)</summary>
+	[CascadingParameter] public ThemeStyle Theme { get; set; }
+	/// <summary>사용하지 않음 지정 (disabled)</summary>
+	[Parameter] public bool Disabled { get; set; }
 	/// <summary>클래스 지정</summary>
-	[Parameter]
-	public string? Class
-	{
-		get => _class;
-		set
-		{
-			if (_class == value) return;
-			_class = value;
-			CssClass.Invalidate();
-		}
-	}
-	/// <summary>표현 방식 지정</summary>
-	[Parameter]
-	public ComponentVisibility Visibility
-	{
-		get => _visibility;
-		set
-		{
-			if (_visibility == value) return;
-			_visibility = value;
-			CssClass.Invalidate();
-		}
-	}
+	[Parameter] public string? Class { get; set; }
 	/// <summary>사용자가 설정한 속성 지정</summary>
-	[Parameter(CaptureUnmatchedValues = true)]
-	public Dictionary<string, object> UserAttributes { get; set; } = new();
+	[Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object> UserAttrs { get; set; } = new();
 
+	/// <summary>
+	/// 클래스 이름<br/>
+	/// 이 값이 기본 클래스가 된다
+	/// </summary>
+	protected virtual string RootName => RootNames.empty;
 	/// <summary>루트 엘리먼트</summary>
 	protected ElementReference RootElement { get; set; }
-	/// <summary>클래스 이름<br/>이 값이 기본 클래스가 된다</summary>
-	protected abstract string? RootClass { get; }
-	/// <summary>스타일 만들기 도움꾼</summary>
+	/// <summary>CSS 클래스 </summary>
+	protected string RootClass => _css.Class;
 
-	public StyleCompose CssStyle { get; init; } = new();
-	/// <summary>클래스 만들기 도움꾼</summary>
-	public ClassCompose CssClass { get; init; } = new();
-	/// <summary><see cref="OnAfterRender"/> 메소드가 처리되면 참</summary>
-	public bool Rendered { get; private set; }
-
-	// 내부 변수
-	private ThemeStyle _theme;
-
-	private bool _enabled = true;
-	private string? _style;
-	private string? _class;
-	private ComponentVisibility _visibility;
+	// CSS 컴포즈
+	private readonly CssSupp _css = new();
 
 	/// <summary>
 	/// 초기화 + 컴포넌트 속성 만들기.<br/>
@@ -97,36 +34,11 @@ public abstract class DuComponentBase : ComponentBase
 	/// </summary>
 	protected override void OnInitialized()
 	{
-		OnComponentStyle();
-		CssStyle
-			.Add(() => _style)
-			.Add(() => _visibility.ToCss());
-
-		CssClass
-			.Add(() => RootClass)
-			.Add(() => _enabled.IfFalse(CssConsts.disabled));
-		OnComponentClass();
-		CssClass
-			.Add(() => _class);
+		_css.Set(RootName).Register(CheckCssDisabled);
+		OnComponentClass(_css);
+		_css.Add(Class);
 
 		OnComponentInitialized();
-	}
-
-	/// <summary>
-	/// 렌더 후 처리.<br/>
-	/// 내부에서 <see cref="Rendered"/> 값을 설정하므로 재정의한 곳 처음 또는 마지막에
-	/// <i>base.OnAfterRender()</i>  메소드를 호출할 것
-	/// <code>
-	/// protected override void OnAfterRender()
-	/// {
-	///		base.OnAfterRender();
-	///		// 여기에 사용자 코드
-	/// }
-	/// </code>
-	/// </summary>
-	protected override void OnAfterRender(bool firstRender)
-	{
-		Rendered = true;
 	}
 
 	/// <summary>
@@ -140,15 +52,15 @@ public abstract class DuComponentBase : ComponentBase
 	protected virtual void OnComponentInitialized()
 	{ }
 
-	/// <summary>컴포넌트의 스타일 값을 지정</summary>
-	/// <seealso cref="OnComponentClass"/>
-	protected virtual void OnComponentStyle()
+	/// <summary>컴포넌트의 CSS 클래스 값을 지정</summary>
+	protected virtual void OnComponentClass(CssSupp css)
 	{ }
 
-	/// <summary>컴포넌트의 클래스 값을 지정</summary>
-	/// <seealso cref="OnComponentStyle"/>
-	protected virtual void OnComponentClass()
-	{ }
+	protected async Task StateHasChangedAsync() =>
+		await InvokeAsync(StateHasChanged);
+
+	private string? CheckCssDisabled() =>
+		Disabled.IfTrue(CssConsts.disabled);
 }
 
 /// <summary>

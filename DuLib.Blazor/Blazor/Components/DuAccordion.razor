@@ -1,7 +1,7 @@
 ﻿@inherits DuComponentParent
 
 <div @ref="RootElement"
-     @attributes="UserAttributes"
+     @attributes="UserAttrs"
      style="@CssStyle.Result"
      class="@CssClass.Result">
 	<h2 class="accordion-header">
@@ -58,7 +58,7 @@
 	[Parameter]
 	public EventCallback<AccordionExpandEvent> OnExpandChanged { get; set; }
 
-	protected override string RootClass => RootClasses.accordion_item;
+	protected override string RootName => RootNames.accordion_item;
 	protected override string RootId => RootIds.accordion;
 
 	private bool HasNoGroupId =>

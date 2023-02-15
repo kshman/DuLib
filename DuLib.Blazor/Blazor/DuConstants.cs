@@ -1,8 +1,10 @@
 ﻿namespace Du.Blazor;
 
-/// <summary>루트 클래스 모음</summary>
-internal static class RootClasses
+/// <summary>루트 클래스 이름 모음</summary>
+internal static class RootNames
 {
+	internal const string empty = "";
+
 	internal const string btn = "btn";
 	internal const string btn_group = "btn-group";
 	internal const string btn_group_vertical = "btn-group-vertical";

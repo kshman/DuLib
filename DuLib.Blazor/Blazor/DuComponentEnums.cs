@@ -10,16 +10,6 @@ public enum ThemeStyle
 }
 
 /// <summary>
-/// 컴포넌트 표시 방법
-/// </summary>
-public enum ComponentVisibility
-{
-	Visible,
-	Hidden,
-	Collapsed,
-}
-
-/// <summary>
 /// 컴포넌트 크기
 /// </summary>
 public enum ComponentSize

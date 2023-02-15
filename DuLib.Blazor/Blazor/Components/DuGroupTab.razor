@@ -11,7 +11,7 @@
 }
 
 <nav @ref="RootElement"
-	 @attributes="UserAttributes"
+	 @attributes="UserAttrs"
 	 style="@CssStyle.Result"
 	 class="@CssClass.Result"
 	 id="@Id">
@@ -38,7 +38,7 @@
 	<div class="tab-content">
 		@foreach (var tab in orderedList)
 		{
-			<div class="@CssClass.Combine(RootClasses.tab_pane, (tab == _current).IfTrue(CssConsts.active))">
+			<div class="@CssClass.Combine(RootNames.tab_pane, (tab == _current).IfTrue(CssConsts.active))">
 				@(tab.Content ?? tab.ChildContent)
 			</div>
 		}
@@ -51,7 +51,7 @@
 
 	[Parameter] public EventCallback<string?> ActiveIdChanged { get; set; }
 
-	protected override string RootClass => RootClasses.tab;
+	protected override string RootName => RootNames.tab;
 
 	private readonly List<DuTab> _tabs = new();
 	private DuTab? _current;

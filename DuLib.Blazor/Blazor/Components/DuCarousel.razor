@@ -2,7 +2,7 @@
 @implements IDisposable
 
 <div @ref="RootElement"
-     @attributes="UserAttributes"
+     @attributes="UserAttrs"
      style="@CssStyle.Result"
      class="@CssClass.Result"
      id="@Id">
@@ -19,7 +19,7 @@
 	[Parameter]
 	public double? Interval { get; set; }
 
-	protected override string RootClass => RootClasses.carousel_item;
+	protected override string RootName => RootNames.carousel_item;
 	protected override string RootId => RootIds.carousel;
 
 	private bool _disposed;
@@ -31,7 +31,7 @@
 	}
 
 	//
-	protected override void OnComponentClass()
+	protected override void OnComponentCss()
 	{
 		CssClass
 			.Add(() => Active.IfTrue(CssConsts.active));

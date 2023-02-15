@@ -5,7 +5,7 @@
 @inherits DuGroupBase
 
 <div @ref="RootElement"
-	 @attributes="UserAttributes"
+	 @attributes="UserAttrs"
 	 style="@CssStyle.Result"
 	 class="@CssClass.Result"
 	 role="@Role"
@@ -17,9 +17,9 @@
 
 @code {
 	//
-	protected override void OnComponentClass()
+	protected override void OnComponentCss()
 	{
 		CssClass
-			.Add(() => GetButtonLayout());
+			.Add(() => GetCssSize());
 	}
 }
