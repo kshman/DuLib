@@ -126,7 +126,7 @@
 	}
 
 	//
-	public async void SelectPivot(DuPivot pivot)
+	public async Task SelectPivot(DuPivot pivot)
 	{
 		var prev = _selected;
 
@@ -137,9 +137,9 @@
 
 		StateHasChanged();
 
-		await InvokeOnLinkClick(new PivotChangeEvent()
+		await InvokeOnPivotChange(new PivotChangeEvent()
 			{
-				Pivot = pivot,
+				Current = pivot,
 				Previous = prev
 			});
 	}
@@ -152,11 +152,11 @@
 		if (pivot == null || pivot == _selected || !pivot.Enabled)
 			return;
 
-		SelectPivot(pivot);
+		_ = SelectPivot(pivot);
 	}
 
 	//
-	protected virtual Task InvokeOnLinkClick(PivotChangeEvent pivot)
+	protected virtual Task InvokeOnPivotChange(PivotChangeEvent pivot)
 	{
 		return OnPivotChange.InvokeAsync(pivot);
 	}

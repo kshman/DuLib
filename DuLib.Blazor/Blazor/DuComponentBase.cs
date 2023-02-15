@@ -76,11 +76,11 @@ public abstract class DuComponentBase : ComponentBase
 	protected abstract string? RootClass { get; }
 	/// <summary>스타일 만들기 도움꾼</summary>
 
-	protected StyleCompose CssStyle { get; init; } = new();
+	public StyleCompose CssStyle { get; init; } = new();
 	/// <summary>클래스 만들기 도움꾼</summary>
-	protected ClassCompose CssClass { get; init; } = new();
+	public ClassCompose CssClass { get; init; } = new();
 	/// <summary><see cref="OnAfterRender"/> 메소드가 처리되면 참</summary>
-	protected bool Rendered { get; private set; }
+	public bool Rendered { get; private set; }
 
 	// 내부 변수
 	private ThemeStyle _theme;
@@ -104,7 +104,7 @@ public abstract class DuComponentBase : ComponentBase
 
 		CssClass
 			.Add(() => RootClass)
-			.Add(() => _enabled.IfFalse("disabled"));
+			.Add(() => _enabled.IfFalse(CssConsts.disabled));
 		OnComponentClass();
 		CssClass
 			.Add(() => _class);

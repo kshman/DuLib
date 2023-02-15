@@ -18,6 +18,10 @@ internal static class RootClasses
 	internal const string hpvt = "hpvt";
 	internal const string hpvt_item = "hpvt-item";
 
+	internal const string tab = "nav nav-tabs";
+	internal const string tab_item = "nav-link";
+	internal const string tab_pane = "tab-pane";
+
 	// 루트가 아닌 그냥 클래스
 	internal const string group = "group";
 	internal const string toolbar = "toolbar";
@@ -42,9 +46,12 @@ internal static class RootIds
 	internal const string accordion = "D_ACD";
 	internal const string carousel = "D_CARS";
 	internal const string pivot = "D_PVT";
+	internal const string tab = "D_TAB";
 }
 
+/// <summary>공통 CSS 상수</summary>
 internal static class CssConsts
 {
+	internal const string disabled = "disabled";
 	internal const string active="active";
 }

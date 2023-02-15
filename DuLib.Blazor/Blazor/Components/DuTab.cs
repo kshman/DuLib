@@ -1,63 +1,33 @@
 ﻿namespace Du.Blazor.Components;
 
+/// <summary>탭 아이템</summary>
 public class DuTab : DuComponentParent, IDisposable
 {
-	[CascadingParameter]
-	public DuGroupTab? Group { get; set; }
+	/// <summary>그룹</summary>
+	[CascadingParameter] public DuGroupTab? Group { get; set; }
 
-	[Parameter]
-	public string? AriaLabel { get; set; }
+	/// <summary>타이틀 <see cref="Header"/></summary>
+	[Parameter] public string? Title { get; set; }
+	/// <summary>순번</summary>
+	[Parameter] public int Index { get; set; }
 
-	[Parameter]
-	public string? Title { get; set; }
+	/// <summary>헤더 <see cref="Title"/></summary>
+	[Parameter] public RenderFragment? Header { get; set; }
+	/// <summary>내용 
+	/// <see cref="Header"/>와 짝꿍<br/>이 내용이 있을 경우,
+	/// 태그 밖 <see cref="DuComponentParent.ChildContent"/>는 처리하지 않는다
+	/// </summary>
+	[Parameter] public RenderFragment? Content { get; set; }
 
-	[Parameter]
-	public RenderFragment? Header { get; set; }
+	protected override string RootClass => RootClasses.tab_item;
+	protected override string RootId => RootIds.tab;
 
-	[Parameter]
-	public RenderFragment? Content { get; set; }
-
-	public bool Selected
-	{
-		get => _selected;
-		set
-		{
-			if (value == _selected) return;
-			_selected = value;
-			CssClass.Invalidate();
-		}
-	}
-
-	protected override string RootClass => ""; //RootClasses.tab_item;
-
-	private bool _selected;
 	private bool _disposed;
 
 	//
 	protected override void OnComponentInitialized()
 	{
 		Group?.AddTab(this);
-	}
-
-	//
-	protected override void OnComponentClass()
-	{
-		//CssClass
-		//	.Add(() => Selected.IfTrue(RootClasses.tab_sel));
-	}
-
-	//
-	public void SetSelected(bool selected)
-	{
-		Selected = selected;
-		StateHasChanged();
-	}
-
-	//
-	private void HandleOnClick()
-	{
-		if (Enabled)
-			Group?.SelectTab(this);
 	}
 
 	//

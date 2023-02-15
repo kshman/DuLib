@@ -1,104 +1,78 @@
 ﻿@inherits DuGroupBase
 
-<div @ref="RootElement"
-     @attributes="UserAttributes"
-     style="@CssStyle.Result"
-     class="@CssClass.Result"
-     role="toolbar"
-     aria-label="@AriaLabel"
-     id="@Id">
-	<CascadingValue Value="this" IsFixed="true">
-		<div class="tab-hdr" role="tablist">
-			@ChildContent
-		</div>
-	</CascadingValue>
-	@if (TitleOnly is false)
+<CascadingValue Value="this" IsFixed="true">
+	@ChildContent
+</CascadingValue>
+
+@{
+	var orderedList = _tabs
+		.Where(t => t.Visibility == ComponentVisibility.Visible)
+		.OrderBy(t => t.Index).ToList();
+}
+
+<nav @ref="RootElement"
+	 @attributes="UserAttributes"
+	 style="@CssStyle.Result"
+	 class="@CssClass.Result"
+	 id="@Id">
+	@foreach (var tab in orderedList)
 	{
-		<div class="tab-ctx"
-		     role="tabpanel"
-		     aria-hidden="false"
-		     aria-labelledby="@Id">
-			@(_selected?.Content ?? _selected?.ChildContent)
-		</div>
+		<a role="button"
+	   class="@CssClass.Combine(tab.CssClass.Result, (tab == _current).IfTrue(CssConsts.active))"
+	   id="@tab.Id"
+	   @onclick="async () => await HandleOnClickAsync(tab)">
+			@if (tab.Header is not null)
+			{
+				@tab.Header
+			}
+			else
+			{
+				@tab.Title
+			}
+		</a>
 	}
-</div>
+</nav>
+
+@if (TitleOnly is false)
+{
+	<div class="tab-content">
+		@foreach (var tab in orderedList)
+		{
+			<div class="@CssClass.Combine(RootClasses.tab_pane, (tab == _current).IfTrue(CssConsts.active))">
+				@(tab.Content ?? tab.ChildContent)
+			</div>
+		}
+	</div>
+}
 
 @code {
-	[Parameter]
-	public ComponentOverflow Overflow
-	{
-		get => _overflow;
-		set
-		{
-			if (_overflow == value) return;
-			_overflow = value;
-			CssClass.Invalidate();
-		}
-	}
+	[Parameter] public bool TitleOnly { get; set; }
+	[Parameter] public string? ActiveId { get; set; }
 
-	[Parameter]
-	public ComponentPosition Position
-	{
-		get => _position;
-		set
-		{
-			if (_position == value) return;
-			_position = value;
-			CssClass.Invalidate();
-		}
-	}
+	[Parameter] public EventCallback<string?> ActiveIdChanged { get; set; }
 
-	[Parameter]
-	public ComponentSize TitleSize
-	{
-		get => _title_size;
-		set
-		{
-			if (_title_size == value) return;
-			_title_size = value;
-			CssClass.Invalidate();
-		}
-	}
+	protected override string RootClass => RootClasses.tab;
 
-	[Parameter]
-	public PivotTitleLayout TitleLayout
-	{
-		get => _title_layout;
-		set
-		{
-			if (_title_layout == value) return;
-			_title_layout = value;
-			CssClass.Invalidate();
-		}
-	}
-
-	[Parameter]
-	public bool TitleOnly { get; set; }
-
-	[Parameter]
-	public string? AriaLabel { get; set; }
-
-	[Parameter]
-	public EventCallback<TabChangeEvent> OnTabChange { get; set; }
-
-	protected override string RootClass => "tab";
-
-	private List<DuTab> _tabs = new();
-	private DuTab? _selected;
-
-	private ComponentOverflow _overflow;
-	private ComponentPosition _position;
-	private ComponentSize _title_size;
-	private PivotTitleLayout _title_layout;
+	private readonly List<DuTab> _tabs = new();
+	private DuTab? _current;
 
 	//
-	protected override void OnComponentClass()
+	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
-		CssClass
-			.Add(GetTitleSizeCss)
-			.Add(GetTitleLayoutCss)
-			.Add(GetOverflowCss)
-			.Add(GetPositionCss);
+		if (!firstRender)
+			return;
+
+		if (ActiveId.IsHave(true))
+			await SelectTabByIdAsync(ActiveId);
+		else if (_current is null)
+		{
+			var orderedList = _tabs
+				.Where(t => t is { Enabled: true, Visibility: ComponentVisibility.Visible })
+				.OrderBy(t => t.Index).ToList();
+
+			if (orderedList.Count > 0)
+				await SelectTabAsync(orderedList[0]);
+		}
 	}
 
 	//
@@ -107,15 +81,17 @@
 		if (Enabled is false)
 			tab.Enabled = false;
 
-		if (_selected is null)
-		{
-			tab.SetSelected(true);
-
-			_selected = tab;
-			StateHasChanged();
-		}
-
 		_tabs.Add(tab);
+
+		if (ActiveId is not null)
+		{
+			if (tab.Id == ActiveId)
+				_ = SelectTabAsync(tab);
+		}
+		else if (_current is null && tab.Enabled)
+		{
+			_ = SelectTabAsync(tab);
+		}
 	}
 
 	//
@@ -126,75 +102,29 @@
 	}
 
 	//
-	public async void SelectTab(DuTab tab)
+	private async Task SelectTabAsync(DuTab? tab)
 	{
-		var prev = _selected;
+		if (tab == _current)
+			return;
 
-		_selected?.SetSelected(false);
-		tab.SetSelected(true);
+		_current = tab;
 
-		_selected = tab;
-
-		StateHasChanged();
-
-		await InvokeOnLinkClick(new TabChangeEvent
-		{
-			Tab = tab,
-			Previous = prev
-		});
+		if (tab is not null)
+			await InvokeActiveIdChangedAsync(tab.Id);
 	}
 
 	//
-	protected virtual Task InvokeOnLinkClick(TabChangeEvent tab)
+	private Task SelectTabByIdAsync(string? id)
 	{
-		return OnTabChange.InvokeAsync(tab);
+		var tab = _tabs.FirstOrDefault(t => t.Id == id);
+		return SelectTabAsync(tab);
 	}
 
 	//
-	private string? GetTitleSizeCss()
-	{
-		return TitleSize switch
-		{
-			ComponentSize.Medium or
-				ComponentSize.Small => "tab-nm",
-			ComponentSize.Large => "tab-lg",
-			_ => null
-			};
-	}
+	protected virtual Task InvokeActiveIdChangedAsync(string? id) =>
+		ActiveIdChanged.InvokeAsync(id);
 
 	//
-	private string? GetTitleLayoutCss()
-	{
-		return TitleLayout switch
-		{
-			PivotTitleLayout.Flat => "tab-lnk",
-			PivotTitleLayout.Box => "tab-box",
-			_ => null
-			};
-	}
-
-	//
-	private string? GetOverflowCss()
-	{
-		return Overflow switch
-		{
-			ComponentOverflow.None => null,
-			ComponentOverflow.Menu => null,
-			ComponentOverflow.Scroll => "tab-scrl",
-			_ => null
-			};
-	}
-
-	//
-	private string? GetPositionCss()
-	{
-		return Position switch
-		{
-			ComponentPosition.Top => "flex-flow-column",
-			ComponentPosition.Right => "flex-flow-row-reverse",
-			ComponentPosition.Bottom => "flex-flow-column-reverse",
-			ComponentPosition.Left => "flex-flow-row",
-			_ => null
-			};
-	}
+	protected async Task HandleOnClickAsync(DuTab tab) =>
+		await SelectTabAsync(tab);
 }

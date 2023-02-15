@@ -33,7 +33,7 @@ public class CarouselSlideEvent : DuComponentEvent
 /// </summary>
 public class PivotChangeEvent : DuComponentEvent
 {
-	public DuPivot? Pivot { get; set; }
+	public DuPivot? Current { get; set; }
 	public DuPivot? Previous { get; set; }
 }
 
@@ -42,6 +42,6 @@ public class PivotChangeEvent : DuComponentEvent
 /// </summary>
 public class TabChangeEvent : DuComponentEvent
 {
-	public DuTab? Tab { get; set; }
+	public DuTab? Current { get; set; }
 	public DuTab? Previous { get; set; }
 }
