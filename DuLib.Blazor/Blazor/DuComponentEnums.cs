@@ -65,24 +65,6 @@ public enum ButtonType
 }
 
 /// <summary>
-/// 그룹 레이아웃
-/// </summary>
-public enum GroupLayout
-{
-	None,
-
-	Button,
-	HorizontalButton,
-	VerticalButton,
-	ToolbarButton,
-
-	Accordion,
-	Carousel,
-	Pivot,
-	Tab,
-}
-
-/// <summary>
 /// carousel 정지 방법
 /// </summary>
 public enum CarouselPause
