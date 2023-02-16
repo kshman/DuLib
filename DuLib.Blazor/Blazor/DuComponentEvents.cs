@@ -33,21 +33,3 @@ public class CarouselSlideEvent : DuComponentEvent
 	public int To { get; set; }
 	public bool IsLeft { get; set; }
 }
-
-/// <summary>
-/// 피벗 이벤트
-/// </summary>
-public class PivotChangeEvent : DuComponentEvent
-{
-	public DuPivot? Current { get; set; }
-	public DuPivot? Previous { get; set; }
-}
-
-/// <summary>
-/// 탭 이벤트
-/// </summary>
-public class TabChangeEvent : DuComponentEvent
-{
-	public DuTab? Current { get; set; }
-	public DuTab? Previous { get; set; }
-}

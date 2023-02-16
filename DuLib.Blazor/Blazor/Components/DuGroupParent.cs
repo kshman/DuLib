@@ -27,7 +27,7 @@ public abstract class DuGroupParent<T> : DuComponentParent, IAsyncDisposable whe
 		if (_current is null)
 		{
 			if (Active.IsHave(true))
-				await SelectItemByIdAsync(Active);
+				await SelectItemAsync(Active);
 			else if (_items.Count > 0)
 				await SelectItemAsync(_items[0]);
 		}
@@ -91,9 +91,10 @@ public abstract class DuGroupParent<T> : DuComponentParent, IAsyncDisposable whe
 		if (item == _current)
 			return;
 
+		var previous = _current;
 		_current = item;
 
-		var task = OnItemSelectedAsync(item);
+		var task = OnItemSelectedAsync(item, previous);
 		if (task.ShouldAwaitTask())
 		{
 			try
@@ -112,7 +113,7 @@ public abstract class DuGroupParent<T> : DuComponentParent, IAsyncDisposable whe
 	}
 
 	//
-	private Task SelectItemByIdAsync(string? id)
+	private Task SelectItemAsync(string? id)
 	{
 		var item = _items.FirstOrDefault(i => i.Id == id);
 		return SelectItemAsync(item);
@@ -131,7 +132,7 @@ public abstract class DuGroupParent<T> : DuComponentParent, IAsyncDisposable whe
 		Task.CompletedTask;
 
 	// false를 반환하면 그뒤에 기능(InvokeActiveChangedAsync 호출)을 하지 않음
-	protected virtual Task<bool> OnItemSelectedAsync(T? item) =>
+	protected virtual Task<bool> OnItemSelectedAsync(T? item, T? previous) =>
 		Task.FromResult(true);
 
 	//
@@ -156,5 +157,10 @@ public abstract class DuGroupParentCarousel : DuGroupParent<DuCarousel>
 
 //
 public abstract class DuGroupParentTab : DuGroupParent<DuTab>
+{
+}
+
+//
+public abstract class DuGrouParentPivot : DuGroupParent<DuPivot>
 {
 }

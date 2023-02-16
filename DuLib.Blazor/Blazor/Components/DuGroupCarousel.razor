@@ -108,7 +108,7 @@ else
 
 	//
 	[JSInvokable("invoke_cars_bs")]
-	private async Task HandleBeginSlideAsync(int from, int to, bool isLeft)
+	public async Task HandleBeginSlideAsync(int from, int to, bool isLeft)
 	{
 		await InvokeOnBeginSlideAsync(new CarouselSlideEvent
 			{
@@ -120,7 +120,7 @@ else
 
 	//
 	[JSInvokable("invoke_cars_es")]
-	private async Task HandleEndSlideAsync(int from, int to, bool isLeft)
+	public async Task HandleEndSlideAsync(int from, int to, bool isLeft)
 	{
 		await InvokeOnEndSlideAsync(new CarouselSlideEvent
 			{

@@ -1,5 +1,5 @@
 function showDuLibBlazor(message) {
-  return prompt(message, 'DuLib Blazor!');
+  return prompt(message, "DuLib Blazor!");
 }
 
 // cookie
@@ -33,7 +33,7 @@ DUCARS = {
     e.orf = ref;
     e.addEventListener('slide.bs.carousel', this.bs);
     e.addEventListener('slid.bs.carousel', this.es);
-    if (opt.ride === 'carousel') c.cycle();
+    if (opt.ride === "carousel") c.cycle();
   },
   disp: function (e) {
     if (!e) return;
@@ -59,5 +59,5 @@ DUCARS = {
   },
   g: (e) => bootstrap.Carousel.getInstance(e),
   bs: (e) => e.target.orf.invokeMethodAsync('invoke_cars_bs', e.from, e.to, e.direction === 'left'),
-  es: (e) => e.target.orf.invokeMethodAsync('invoke_cars_es', e.from, e.to, e.direction === 'left'),
+  es: (e) => e.target.orf.invokeMethodAsync('invoke_cars_es', e.from, e.to, e.direction === 'left')
 }

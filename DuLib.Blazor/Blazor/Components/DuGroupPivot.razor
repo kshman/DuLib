@@ -1,23 +1,45 @@
-﻿@inherits DuComponentParent
+﻿@using System.Runtime.InteropServices
+@inherits DuGrouParentPivot
+
+<CascadingValue Value="this" IsFixed="true">
+	@ChildContent
+</CascadingValue>
 
 <div @ref="RootElement"
 	 class="@CssClass"
 	 role="toolbar"
-	 aria-label="@AriaLabel"
 	 id="@Id"
 	 @attributes="UserAttrs">
-	<CascadingValue Value="this" IsFixed="true">
-		<div class="hpvt-hdr" role="tablist">
-			@ChildContent
-		</div>
-	</CascadingValue>
+	<div class="hpvt-hdr" role="tablist">
+		@foreach (var pv in _items)
+		{
+			<button class="@pv.CssClass"
+				type="button"
+				role="tab"
+				aria-selected="@(pv == _current).ToBootStrap()"
+				tabindex="@(pv == _current ? 0 : -1)"
+				id="@Id"
+				@attributes="UserAttrs"
+				@onclick="async () => await HandleOnClickAsync(pv)">
+				@if (pv.Header is not null)
+				{
+					<span>@pv.Header</span>
+				}
+				else
+				{
+					<span>@pv.Title</span>
+				}
+			</button>
+		}
+	</div>
+
 	@if (TitleOnly is false)
 	{
 		<div class="hpvt-ctx"
 		 role="tabpanel"
 		 aria-hidden="false"
 		 aria-labelledby="@Id">
-			@(_selected?.Content ?? _selected?.ChildContent)
+			@(_current?.Content ?? _current?.ChildContent)
 		</div>
 	}
 </div>
@@ -29,14 +51,8 @@
 	[Parameter] public PivotLayout Layout { get; set; }
 
 	[Parameter] public bool TitleOnly { get; set; }
-	[Parameter] public string? AriaLabel { get; set; }
-
-	[Parameter] public EventCallback<PivotChangeEvent> OnPivotChange { get; set; }
 
 	protected override string RootClass => "hpvt";
-
-	private readonly List<DuPivot> _pivots = new();
-	private DuPivot? _selected;
 
 	//
 	protected override void OnComponentClass(CssSupp css)
@@ -49,64 +65,29 @@
 	}
 
 	//
-	public void AddPivot(DuPivot pivot)
+	protected override Task OnItemAddedAsync(DuPivot item)
 	{
-		if (Disabled)
-			pivot.Disabled = true;
+		if (item == _current)
+			item.Selected = true;
 
-		if (_selected is null)
-		{
-			pivot.SetSelected(true);
-
-			_selected = pivot;
-			StateHasChanged();
-		}
-
-		_pivots.Add(pivot);
+		return Task.CompletedTask;
 	}
 
 	//
-	public void RemovePivot(DuPivot pivot)
+	protected override Task<bool> OnItemSelectedAsync(DuPivot? item, DuPivot? previous)
 	{
-		// 근데 이거 해야함? 어짜피 dispose인데
-		_pivots.Remove(pivot);
+		if (previous is not null)
+			previous.Selected = false;
+
+		if (item is not null)
+			item.Selected = true;
+
+		return Task.FromResult(true);
 	}
 
 	//
-	public async Task SelectPivot(DuPivot pivot)
-	{
-		var prev = _selected;
-
-		_selected?.SetSelected(false);
-		pivot.SetSelected(true);
-
-		_selected = pivot;
-
-		StateHasChanged();
-
-		await InvokeOnPivotChange(new PivotChangeEvent()
-			{
-				Current = pivot,
-				Previous = prev
-			});
-	}
-
-	//
-	public void SelectPivot(string id) 
-	{
-		var pivot = _pivots.FirstOrDefault(x => x.Id == id);
-
-		if (pivot == null || pivot == _selected || pivot.Disabled)
-			return;
-
-		_ = SelectPivot(pivot);
-	}
-
-	//
-	protected virtual Task InvokeOnPivotChange(PivotChangeEvent pivot)
-	{
-		return OnPivotChange.InvokeAsync(pivot);
-	}
+	protected Task HandleOnClickAsync(DuPivot pivot) =>
+		SelectItemAsync(pivot);
 
 	//
 	private string? GetSizeCss()
