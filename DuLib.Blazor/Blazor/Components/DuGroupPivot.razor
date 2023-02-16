@@ -1,12 +1,11 @@
-﻿@inherits DuGroupBase
+﻿@inherits DuComponentParent
 
 <div @ref="RootElement"
-	 @attributes="UserAttrs"
-	 style="@CssStyle.Result"
-	 class="@CssClass.Result"
+	 class="@CssClass"
 	 role="toolbar"
 	 aria-label="@AriaLabel"
-	 id="@Id">
+	 id="@Id"
+	 @attributes="UserAttrs">
 	<CascadingValue Value="this" IsFixed="true">
 		<div class="hpvt-hdr" role="tablist">
 			@ChildContent
@@ -24,88 +23,36 @@
 </div>
 
 @code {
-	[Parameter]
-	public ComponentOverflow Overflow
-	{
-		get => _overflow;
-		set
-		{
-			if (_overflow == value) return;
-			_overflow = value;
-			CssClass.Invalidate();
-		}
-	}
+	[Parameter] public ComponentOverflow Overflow { get; set; }
+	[Parameter] public ComponentPosition Position { get; set; }
+	[Parameter] public ComponentSize Size { get; set; }
+	[Parameter] public PivotLayout Layout { get; set; }
 
-	[Parameter]
-	public ComponentPosition Position
-	{
-		get => _position;
-		set
-		{
-			if (_position == value) return;
-			_position = value;
-			CssClass.Invalidate();
-		}
-	}
+	[Parameter] public bool TitleOnly { get; set; }
+	[Parameter] public string? AriaLabel { get; set; }
 
-	[Parameter]
-	public ComponentSize TitleSize
-	{
-		get => _title_size;
-		set
-		{
-			if (_title_size == value) return;
-			_title_size = value;
-			CssClass.Invalidate();
-		}
-	}
+	[Parameter] public EventCallback<PivotChangeEvent> OnPivotChange { get; set; }
 
-	[Parameter]
-	public PivotTitleLayout TitleLayout
-	{
-		get => _title_layout;
-		set
-		{
-			if (_title_layout == value) return;
-			_title_layout = value;
-			CssClass.Invalidate();
-		}
-	}
-
-	[Parameter]
-	public bool TitleOnly { get; set; }
-
-	[Parameter]
-	public string? AriaLabel { get; set; }
-
-	[Parameter]
-	public EventCallback<PivotChangeEvent> OnPivotChange { get; set; }
-
-	protected override string RootName => RootNames.hpvt;
+	protected override string RootClass => "hpvt";
 
 	private readonly List<DuPivot> _pivots = new();
 	private DuPivot? _selected;
 
-	private ComponentOverflow _overflow;
-	private ComponentPosition _position;
-	private ComponentSize _title_size;
-	private PivotTitleLayout _title_layout;
-
 	//
-	protected override void OnComponentCss()
+	protected override void OnComponentClass(CssSupp css)
 	{
-		CssClass
-			.Add(GetTitleSizeCss)
-			.Add(GetTitleLayoutCss)
-			.Add(GetOverflowCss)
-			.Add(GetPositionCss);
+		css
+			.Add(GetSizeCss())
+			.Add(GetLayoutCss())
+			.Add(GetOverflowCss())
+			.Add(GetPositionCss());
 	}
 
 	//
 	public void AddPivot(DuPivot pivot)
 	{
-		if (Enabled is false)
-			pivot.Enabled = false;
+		if (Disabled)
+			pivot.Disabled = true;
 
 		if (_selected is null)
 		{
@@ -149,7 +96,7 @@
 	{
 		var pivot = _pivots.FirstOrDefault(x => x.Id == id);
 
-		if (pivot == null || pivot == _selected || !pivot.Enabled)
+		if (pivot == null || pivot == _selected || pivot.Disabled)
 			return;
 
 		_ = SelectPivot(pivot);
@@ -162,9 +109,9 @@
 	}
 
 	//
-	private string? GetTitleSizeCss()
+	private string? GetSizeCss()
 	{
-		return TitleSize switch
+		return Size switch
 		{
 			ComponentSize.Medium or
 				ComponentSize.Small => "hpvt-nm",
@@ -174,12 +121,12 @@
 	}
 
 	//
-	private string? GetTitleLayoutCss()
+	private string? GetLayoutCss()
 	{
-		return TitleLayout switch
+		return Layout switch
 		{
-			PivotTitleLayout.Flat => "hpvt-lnk",
-			PivotTitleLayout.Box => "hpvt-box",
+			PivotLayout.Flat => "hpvt-lnk",
+			PivotLayout.Box => "hpvt-box",
 			_ => null
 		};
 	}

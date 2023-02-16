@@ -1,25 +1,11 @@
-﻿@* 알아두기:
-	기본적으로 그룹은 DIV임. 다만 버튼 그룹과 혼용 가능
-	다만 Size 요소가 없으므로 사용할 수 어뵤임
-*@
-@inherits DuGroupBase
+﻿@inherits DuComponentParent
 
 <div @ref="RootElement"
-	 @attributes="UserAttrs"
-	 style="@CssStyle.Result"
-	 class="@CssClass.Result"
-	 role="@Role"
-	 id="@Id">
-	<CascadingValue Value="this" IsFixed="true">
+	 class="@CssClass"
+	 id="@Id"
+	 @attributes="UserAttrs">
 		@ChildContent
-	</CascadingValue>
 </div>
 
 @code {
-	//
-	protected override void OnComponentCss()
-	{
-		CssClass
-			.Add(() => GetCssSize());
-	}
 }

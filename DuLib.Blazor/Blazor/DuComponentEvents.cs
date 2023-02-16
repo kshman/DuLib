@@ -14,8 +14,14 @@ public class DuComponentEvent : EventArgs
 /// </summary>
 public class AccordionExpandEvent : DuComponentEvent
 {
-	public DuAccordion? Accordion { get; set; }
+	public string Id { get; set; }
 	public bool Expanded { get; set; }
+
+	public AccordionExpandEvent(string id, bool expanded)
+	{
+		Id = id;
+		Expanded = expanded;
+	}
 }
 
 /// <summary>

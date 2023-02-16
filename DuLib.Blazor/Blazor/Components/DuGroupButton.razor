@@ -1,26 +1,45 @@
-﻿@inherits DuGroupBase
+﻿@inherits DuComponentParent
 
 <div @ref="RootElement"
-     @attributes="UserAttrs"
-     style="@CssStyle.Result"
-     class="@CssClass.Result"
-     role="@Role"
-     id="@Id">
+     class="@CssClass"
+	 role="@GetHtmlRole()"
+	 id="@Id"
+	 @attributes="UserAttrs">
 	<CascadingValue Value="this" IsFixed="true">
 		@ChildContent
 	</CascadingValue>
 </div>
 
 @code {
+	/// <summary>버튼 그룹 형식</summary>
+	[Parameter] public ButtonGroup Group { get; set; } // 기본: 가로 버튼
 	/// <summary>컴포넌트 크기. <see cref="ComponentSize" /> 참고</summary>
-	[Parameter]
-	public ComponentSize Size { get; set; }
+	[Parameter] public ComponentSize Size { get; set; }
+
+	protected override string RootClass => Group switch
+	{
+		ButtonGroup.Button => "btn-group",
+		ButtonGroup.Vertical => "btn-group-vertical",
+		ButtonGroup.Toolbar => "btn-toolbar",
+		_ => "",
+	};
 
 	//
-	protected override void OnComponentCss()
+	protected override void OnComponentClass(CssSupp css)
 	{
-		CssClass
-			.Add(() => GetCssSize(Size));
+		css.Add(GetCssSize());
 	}
 
+	//
+	private string? GetHtmlRole() => Group switch
+	{
+		ButtonGroup.Button or
+			ButtonGroup.Vertical => "group",
+		ButtonGroup.Toolbar => "toolbar",
+		_ => null,
+	};
+
+	//
+	private string? GetCssSize() =>
+		Size.ToCss("btn-group");
 }

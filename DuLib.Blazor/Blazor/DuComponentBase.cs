@@ -13,16 +13,17 @@ public abstract class DuComponentBase : ComponentBase
 	[Parameter] public string? Class { get; set; }
 	/// <summary>사용자가 설정한 속성 지정</summary>
 	[Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object> UserAttrs { get; set; } = new();
-
+	
+	/// <summary>루트 엘리먼트</summary>
+	protected ElementReference RootElement { get; set; }
 	/// <summary>
 	/// 클래스 이름<br/>
 	/// 이 값이 기본 클래스가 된다
 	/// </summary>
-	protected virtual string RootName => RootNames.empty;
-	/// <summary>루트 엘리먼트</summary>
-	protected ElementReference RootElement { get; set; }
+	protected virtual string RootClass => "";
+	
 	/// <summary>CSS 클래스 </summary>
-	protected string RootClass => _css.Class;
+	public string CssClass => _css.Class;
 
 	// CSS 컴포즈
 	private readonly CssSupp _css = new();
@@ -34,7 +35,7 @@ public abstract class DuComponentBase : ComponentBase
 	/// </summary>
 	protected override void OnInitialized()
 	{
-		_css.Set(RootName).Register(CheckCssDisabled);
+		_css.Set(RootClass).Register(() => Disabled.IfTrue("disabled"));
 		OnComponentClass(_css);
 		_css.Add(Class);
 
@@ -56,11 +57,24 @@ public abstract class DuComponentBase : ComponentBase
 	protected virtual void OnComponentClass(CssSupp css)
 	{ }
 
-	protected async Task StateHasChangedAsync() =>
-		await InvokeAsync(StateHasChanged);
+	// 태스크 상태를 봐서 기다렸다가 StateHasChanged 호출
+	protected async Task StateHasChangedOnAsyncCompletion(Task task)
+	{
+		if (task.ShouldAwaitTask())
+		{
+			try
+			{
+				await task;
+			}
+			catch
+			{
+				if (task.IsCanceled) return;
+				throw;
+			}
+		}
 
-	private string? CheckCssDisabled() =>
-		Disabled.IfTrue(CssConsts.disabled);
+		StateHasChanged();
+	}
 }
 
 /// <summary>
@@ -71,16 +85,5 @@ public abstract class DuComponentParent : DuComponentBase
 	/// <summary>자식 콘텐트</summary>
 	[Parameter] public RenderFragment? ChildContent { get; set; }
 	/// <summary>컴포넌트 아이디</summary>
-	[Parameter] public string? Id { get; set; }
-
-	/// <summary>루트 아이디 앞문장</summary>
-	protected virtual string RootId => RootIds.parent;
-
-	/// <inheritdoc/>>
-	protected override void OnInitialized()
-	{
-		Id ??= $"{RootId}_{TypeSupp.Increment}";
-
-		base.OnInitialized();
-	}
+	[Parameter] public string Id { get; set; } = $"DU_B_{TypeSupp.Increment}";
 }

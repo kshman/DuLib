@@ -1,17 +1,16 @@
 ﻿@inherits DuComponentParent
 
 <div @ref="RootElement"
-     @attributes="UserAttrs"
-     style="@CssStyle.Result"
-     class="@CssClass.Result">
+     class="@CssClass"
+     @attributes="UserAttrs">
 	<h2 class="accordion-header">
-		<button class="@CssClass.Combine("accordion-button", Expanded.IfFalse("collapsed"))"
+		<button class="@CssSupp.Join("accordion-button", Expanded.IfFalse("collapsed"))"
 		        type="button"
 		        data-bs-toggle="collapse"
 		        data-bs-target="#@Id"
-		        aria-expanded="@(Expanded ? "true" : "false")"
-				aria-controls="#@Id"
-		        @onclick="HandleOnClick">
+		        aria-expanded="@Expanded.ToBootStrap()"
+		        aria-controls="#@Id"
+		        @onclick="HandleOnClickAsync">
 			@if (Header is not null)
 			{
 				@Header
@@ -22,81 +21,84 @@
 			}
 		</button>
 	</h2>
-	<div class="@CssClass.Combine("accordion-collapse", "collapse", Expanded.IfTrue("show"))"
-		 data-bs-parent="@HasNoGroupId.IfFalse($"#{Group!.Id}")"
-		 id="@Id">
+	<div class="@CssSupp.Join("accordion-collapse", "collapse", Expanded.IfTrue("show"))"
+	     data-bs-parent="@Group?.GetIdForBsParent()"
+	     id="@Id">
 		<div class="accordion-body">
 			@(Content ?? ChildContent)
 		</div>
 	</div>
 </div>
 
+
 @code {
-	[CascadingParameter]
-	public DuGroupBase? Group { get; set; }
+	[CascadingParameter] public DuGroupAccordion? Group { get; set; }
 
 	/// <summary>타이틀 대신 쓰는 헤더 블럭</summary>
-	[Parameter]
-	public RenderFragment? Header { get; set; }
-
-	[Parameter]
-	public RenderFragment? Content { get; set; }
+	[Parameter] public RenderFragment? Header { get; set; }
+	/// <summary>콘텐트 블럭</summary>
+	[Parameter] public RenderFragment? Content { get; set; }
 
 	/// <summary>표시 타이틀</summary>
-	[Parameter]
-	public string? Title { get; set; }
-
+	[Parameter] public string? Title { get; set; }
 	/// <summary>펼쳐놓기 상태. 이 값으로 확장 여부를 알면 안된다!</summary>
-	[Parameter]
-	public bool Expanded { get; set; }
+	/// <remarks>expand는 동사이므로 expanded가 명사</remarks>
+	[Parameter] public bool Expanded { get; set; }
 
 	/// <summary>마우스가 눌림</summary>
-	[Parameter]
-	public EventCallback<MouseEventArgs> OnClick { get; set; }
+	[Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+	/// <summary>펼쳐지고 닫힐 때</summary>
+	[Parameter] public EventCallback<AccordionExpandEvent> OnExpanded { get; set; }
 
-	/// <summary>펼쳐질 때</summary>
-	[Parameter]
-	public EventCallback<AccordionExpandEvent> OnExpandChanged { get; set; }
-
-	protected override string RootName => RootNames.accordion_item;
-	protected override string RootId => RootIds.accordion;
-
-	private bool HasNoGroupId =>
-		Group?.Id is null || Group is not DuGroupAccordion ga || ga.AlwaysOpen;
+	protected override string RootClass => "accordion-item";
 
 	private bool _internal_expanded;
 
 	//
 	protected override void OnParametersSet()
 	{
-		_internal_expanded = Expanded;
+		if (Group is not null && Group.Expanded == Id && Expanded is false)
+			Expanded = true;
 	}
 
 	//
-	protected Task InvokeOnClick(MouseEventArgs e)
+	/// <inheritdoc />
+	protected override void OnAfterRender(bool firstRender)
 	{
-		return OnClick.InvokeAsync(e);
+		if (firstRender)
+			_internal_expanded = Expanded;
 	}
 
 	//
-	protected Task InvokeOnExpandChanged(bool value)
-	{
-		return OnExpandChanged.InvokeAsync(new AccordionExpandEvent
-		{
-			Accordion = this,
-			Expanded = value
-		});
-	}
+	protected Task InvokeOnClickAsync(MouseEventArgs e) =>
+		OnClick.InvokeAsync(e);
 
 	//
-	private async Task HandleOnClick(MouseEventArgs e)
-	{
-		if (!Enabled)
-			return;
+	protected Task InvokeOnExpandedAsync(bool expanded) =>
+		OnExpanded.InvokeAsync(new AccordionExpandEvent(Id, expanded));
 
-		await InvokeOnClick(e);
+	//
+	private async Task HandleOnClickAsync(MouseEventArgs e)
+	{
+		await InvokeOnClickAsync(e);
 
 		_internal_expanded = !_internal_expanded;
-		await InvokeOnExpandChanged(_internal_expanded);
+
+		if (Group is not null && !Group.AlwaysOpen)
+		{
+			if (_internal_expanded)
+			{
+				if (Group.Expanded != Id)
+					await Group.SetExpandedByIdAsync(Id);
+			}
+			else
+			{
+				if (Group.Expanded == Id)
+					await Group.SetExpandedByIdAsync(null);
+			}
+		}
+
+		await InvokeOnExpandedAsync(_internal_expanded);
 	}
 }
+

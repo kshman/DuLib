@@ -1,171 +1,133 @@
-﻿@inherits DuGroupBase
-@implements IAsyncDisposable
+﻿@inherits DuGroupParentCarousel
 @inject IJSRuntime JS
 
-<div @ref="RootElement"
-     @attributes="UserAttrs"
-     style="@CssStyle.Result"
-     class="@CssClass.Result"
-     data-bs-interval="@(Interval is null ? "false" : Interval)"
-     data-bs-touch="@(Touch ? "true" : "false")"
-     id="@Id">
+<CascadingValue Value="this" IsFixed="true">
+	@ChildContent
+</CascadingValue>
 
-	@if (Indicators && _items.Count > 0)
-	{
-		<div class="carousel-indicators">
-			@for (var i = 0; i < _items.Count; i++)
+@if (_items.Count == 0)
+{
+	<div class="alert alert-danger col-md-8"><em>No carousel item found</em></div>
+}
+else
+{
+	<div @ref="RootElement"
+	 class="@CssClass"
+	 data-bs-interval="@(Interval is null ? "false" : Interval)"
+	 data-bs-touch="@Touch.ToBootStrap()"
+	 id="@Id"
+	 @attributes="UserAttrs">
+		@if (Indicators)
+		{
+			<div class="carousel-indicators">
+				@for (var i = 0; i < _items.Count; i++)
+				{
+					if (_items[i] == _current)
+					{
+						<button type="button" data-bs-target="#@Id" data-bs-slide-to="@i" aria-label="Slide @i" class="active" aria-current="true">
+						</button>
+					}
+					else
+					{
+						<button type="button" data-bs-target="#@Id" data-bs-slide-to="@i" aria-label="Slide @i">
+						</button>
+					}
+				}
+			</div>
+		}
+		<div class="carousel-inner">
+			@foreach (var crs in _items)
 			{
-				<button class="@_items[i].Active.IfTrue("active")"
-				        type="button"
-				        data-bs-target="#@Id"
-				        data-bs-slide-to="@i"
-				        aria-label="Slide @i"
-				        aria-current="@_items[i].Active.IfTrue("true")"
-				        @key="i">
-				</button>
+				<div class="@CssSupp.Join(crs.CssClass, (crs == _current).IfTrue("active"))" id="@crs.Id" @attributes="crs.UserAttrs">
+					@crs.ChildContent
+				</div>
 			}
 		</div>
-	}
-
-	<div class="carousel-inner">
-		<CascadingValue Value="this" IsFixed="true">
-			@ChildContent
-		</CascadingValue>
+		@if (Controls)
+		{
+			<button class="carousel-control-prev" type="button" data-bs-target="#@Id" data-bs-slide="prev" id="@($"{Id}_prev")">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Previous</span>
+			</button>
+			<button class="carousel-control-next" type="button" data-bs-target="#@Id" data-bs-slide="next" id="@($"{Id}_next")">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Next</span>
+			</button>
+		}
 	</div>
-
-	@if (Controls)
-	{
-		<button class="carousel-control-prev" type="button" data-bs-target="#@Id" data-bs-slide="prev" id="@($"{Id}_prev")">
-			<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-			<span class="visually-hidden">Previous</span>
-		</button>
-		<button class="carousel-control-next" type="button" data-bs-target="#@Id" data-bs-slide="next" id="@($"{Id}_next")">
-			<span class="carousel-control-next-icon" aria-hidden="true"></span>
-			<span class="visually-hidden">Next</span>
-		</button>
-	}
-</div>
+}
 
 @code {
-	[Parameter]
-	public bool Dark { get; set; }
+	[Parameter] public bool Fade { get; set; }
+	[Parameter] public bool Indicators { get; set; }
+	[Parameter] public bool Controls { get; set; } = true;
+	[Parameter] public int? Interval { get; set; } = 5000;
+	[Parameter] public bool Touch { get; set; } = true;
+	[Parameter] public CarouselPlay Play { get; set; } // 기본: CarouselPlay.Auto;
+	[Parameter] public CarouselPause Pause { get; set; } // 기본: CarouselPause.Hover;
 
-	[Parameter]
-	public bool Fade { get; set; }
+	[Parameter] public EventCallback<CarouselSlideEvent> OnBeginSlide { get; set; }
+	[Parameter] public EventCallback<CarouselSlideEvent> OnEndSlide { get; set; }
 
-	[Parameter]
-	public bool Indicators { get; set; }
-
-	[Parameter]
-	public bool Controls { get; set; } = true;
-
-	[Parameter]
-	public int? Interval { get; set; } = 5000;
-
-	[Parameter]
-	public bool Touch { get; set; } = true;
-
-	[Parameter]
-	public CarouselPlay Play { get; set; } = CarouselPlay.Auto;
-
-	[Parameter]
-	public CarouselPause Pause { get; set; } = CarouselPause.Hover;
-
-	[Parameter]
-	public EventCallback<CarouselSlideEvent> OnBeginSlide { get; set; }
-
-	[Parameter]
-	public EventCallback<CarouselSlideEvent> OnEndSlide { get; set; }
-
-	protected override string RootName => RootNames.carousel;
-
-	private List<DuCarousel> _items = new();
+	protected override string RootClass => "carousel slide"; // slide 까지가 포함됨
 
 	private DotNetObjectReference<DuGroupCarousel>? _objref;
-	private bool _disposed;
 
 	//
-	protected override void OnComponentCss()
+	protected override void OnComponentClass(CssSupp css)
 	{
-		CssClass
-			.Add(() => Dark.IfTrue(RootNames.carousel_dark))
-			.Add(() => Fade.IfTrue(RootNames.carousel_fade));
+		css.Add(Fade, "carousel-fade");
 	}
 
 	//
-	protected override async Task OnAfterRenderAsync(bool firstRender)
+	protected override async Task OnAfterFirstRenderAsync()
 	{
-		await base.OnAfterRenderAsync(firstRender);
-
-		if (!firstRender || _disposed)
-			return;
-
+		// 자바스크립트로 만들어 줘야 돌아가는 carousel
 		var options = new Dictionary<string, object>
-		{
-			["ride"] = Play switch
 			{
-				CarouselPlay.Auto => RootNames.carousel_name,
-				CarouselPlay.True => true,
-				_ => false
-			},
-			["pause"] = Pause == CarouselPause.Hover ? RootNames.hover : false
-		};
+				["ride"] = Play switch
+				{
+					CarouselPlay.Auto => "carousel",
+					CarouselPlay.True => true,
+					_ => false
+				},
+				["pause"] = Pause == CarouselPause.Hover ? "hover" : false
+			};
 
 		_objref ??= DotNetObjectReference.Create(this);
 		await JS.InvokeVoidAsync("DUCARS.init", RootElement, _objref, options);
 	}
 
 	//
-	public void AddItem(DuCarousel item)
-	{
-		_items.Add(item);
-
-		StateHasChanged();
-	}
+	protected virtual Task InvokeOnBeginSlideAsync(CarouselSlideEvent e) =>
+		OnBeginSlide.InvokeAsync(e);
 
 	//
-	public void RemoveItem(DuCarousel item)
-	{
-		_items.Remove(item);
-
-		if (!_disposed)
-			StateHasChanged();
-	}
-
-	//
-	public virtual Task InvokeOnBeginSlide(CarouselSlideEvent e)
-	{
-		return OnBeginSlide.InvokeAsync(e);
-	}
-
-	//
-	public virtual Task InvokeOnEndSlide(CarouselSlideEvent e)
-	{
-		return OnEndSlide.InvokeAsync(e);
-	}
+	protected virtual Task InvokeOnEndSlideAsync(CarouselSlideEvent e) =>
+		OnEndSlide.InvokeAsync(e);
 
 	//
 	[JSInvokable("invoke_cars_bs")]
-	public async Task HandleBeginSlide(int from, int to, bool isLeft)
+	private async Task HandleBeginSlideAsync(int from, int to, bool isLeft)
 	{
-		await InvokeOnBeginSlide(new CarouselSlideEvent
-		{
-			From = from,
-			To = to,
-			IsLeft = isLeft
-		});
+		await InvokeOnBeginSlideAsync(new CarouselSlideEvent
+			{
+				From = from,
+				To = to,
+				IsLeft = isLeft
+			});
 	}
 
 	//
 	[JSInvokable("invoke_cars_es")]
-	public async Task HandleEndSlide(int from, int to, bool isLeft)
+	private async Task HandleEndSlideAsync(int from, int to, bool isLeft)
 	{
-		await InvokeOnEndSlide(new CarouselSlideEvent
-		{
-			From = from,
-			To = to,
-			IsLeft = isLeft
-		});
+		await InvokeOnEndSlideAsync(new CarouselSlideEvent
+			{
+				From = from,
+				To = to,
+				IsLeft = isLeft
+			});
 	}
 
 	//
@@ -199,21 +161,17 @@
 	}
 
 	//
-	public async ValueTask DisposeAsync()
+	protected override async ValueTask DisposeAsyncCore()
 	{
-		if (_disposed) return;
-
 		try
 		{
 			await JS.InvokeVoidAsync("DUCARS.disp", RootElement);
 		}
 		catch (JSDisconnectedException)
 		{
-	// 그럴 수도 있음
+			// 그럴 수도 있음
 		}
 
 		_objref?.Dispose();
-
-		_disposed = true;
 	}
 }

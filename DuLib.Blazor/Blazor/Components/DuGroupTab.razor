@@ -1,24 +1,17 @@
-﻿@inherits DuGroupBase
+﻿@inherits DuGroupParentTab
 
 <CascadingValue Value="this" IsFixed="true">
 	@ChildContent
 </CascadingValue>
 
-@{
-	var orderedList = _tabs
-		.Where(t => t.Visibility == ComponentVisibility.Visible)
-		.OrderBy(t => t.Index).ToList();
-}
-
 <nav @ref="RootElement"
-	 @attributes="UserAttrs"
-	 style="@CssStyle.Result"
-	 class="@CssClass.Result"
-	 id="@Id">
-	@foreach (var tab in orderedList)
+	 class="@CssClass"
+	 id="@Id"
+	 @attributes="UserAttrs">
+	@foreach (var tab in _items)
 	{
 		<a role="button"
-	   class="@CssClass.Combine(tab.CssClass.Result, (tab == _current).IfTrue(CssConsts.active))"
+	   class="@CssSupp.Join(tab.CssClass, TabClass, (tab == _current).IfTrue("active"))"
 	   id="@tab.Id"
 	   @onclick="async () => await HandleOnClickAsync(tab)">
 			@if (tab.Header is not null)
@@ -36,9 +29,9 @@
 @if (TitleOnly is false)
 {
 	<div class="tab-content">
-		@foreach (var tab in orderedList)
+		@foreach (var tab in _items)
 		{
-			<div class="@CssClass.Combine(RootNames.tab_pane, (tab == _current).IfTrue(CssConsts.active))">
+			<div class="@CssSupp.Join("tab-pane", (tab == _current).IfTrue("active"))">
 				@(tab.Content ?? tab.ChildContent)
 			</div>
 		}
@@ -47,84 +40,27 @@
 
 @code {
 	[Parameter] public bool TitleOnly { get; set; }
-	[Parameter] public string? ActiveId { get; set; }
+	[Parameter] public TabLayout Layout { get; set; }
+	[Parameter] public string? TabClass { get; set; }
 
-	[Parameter] public EventCallback<string?> ActiveIdChanged { get; set; }
-
-	protected override string RootName => RootNames.tab;
-
-	private readonly List<DuTab> _tabs = new();
-	private DuTab? _current;
+	protected override string RootClass => "nav";
 
 	//
-	protected override async Task OnAfterRenderAsync(bool firstRender)
+	protected override void OnComponentClass(CssSupp css)
 	{
-		if (!firstRender)
-			return;
-
-		if (ActiveId.IsHave(true))
-			await SelectTabByIdAsync(ActiveId);
-		else if (_current is null)
-		{
-			var orderedList = _tabs
-				.Where(t => t is { Enabled: true, Visibility: ComponentVisibility.Visible })
-				.OrderBy(t => t.Index).ToList();
-
-			if (orderedList.Count > 0)
-				await SelectTabAsync(orderedList[0]);
-		}
+		css.Add(GetCssNav());
 	}
 
 	//
-	public void AddTab(DuTab tab)
+	protected Task HandleOnClickAsync(DuTab tab) =>
+		SelectItemAsync(tab);
+
+	//
+	private string? GetCssNav() => Layout switch
 	{
-		if (Enabled is false)
-			tab.Enabled = false;
-
-		_tabs.Add(tab);
-
-		if (ActiveId is not null)
-		{
-			if (tab.Id == ActiveId)
-				_ = SelectTabAsync(tab);
-		}
-		else if (_current is null && tab.Enabled)
-		{
-			_ = SelectTabAsync(tab);
-		}
-	}
-
-	//
-	public void RemoveTab(DuTab tab)
-	{
-		// 근데 이거 해야함? 어짜피 dispose인데
-		_tabs.Remove(tab);
-	}
-
-	//
-	private async Task SelectTabAsync(DuTab? tab)
-	{
-		if (tab == _current)
-			return;
-
-		_current = tab;
-
-		if (tab is not null)
-			await InvokeActiveIdChangedAsync(tab.Id);
-	}
-
-	//
-	private Task SelectTabByIdAsync(string? id)
-	{
-		var tab = _tabs.FirstOrDefault(t => t.Id == id);
-		return SelectTabAsync(tab);
-	}
-
-	//
-	protected virtual Task InvokeActiveIdChangedAsync(string? id) =>
-		ActiveIdChanged.InvokeAsync(id);
-
-	//
-	protected async Task HandleOnClickAsync(DuTab tab) =>
-		await SelectTabAsync(tab);
+		TabLayout.Standard => null,
+		TabLayout.Pills => "nav-pills",
+		TabLayout.Tabs => "nav-tabs",
+		_ => null,
+	};
 }

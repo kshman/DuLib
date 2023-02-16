@@ -1,15 +1,13 @@
 ﻿namespace Du.Blazor.Components;
 
 /// <summary>탭 아이템</summary>
-public class DuTab : DuComponentParent, IDisposable
+public class DuTab : DuComponentParent, IAsyncDisposable
 {
 	/// <summary>그룹</summary>
 	[CascadingParameter] public DuGroupTab? Group { get; set; }
 
 	/// <summary>타이틀 <see cref="Header"/></summary>
 	[Parameter] public string? Title { get; set; }
-	/// <summary>순번</summary>
-	[Parameter] public int Index { get; set; }
 
 	/// <summary>헤더 <see cref="Title"/></summary>
 	[Parameter] public RenderFragment? Header { get; set; }
@@ -19,26 +17,26 @@ public class DuTab : DuComponentParent, IDisposable
 	/// </summary>
 	[Parameter] public RenderFragment? Content { get; set; }
 
-	protected override string RootName => RootNames.tab_item;
-	protected override string RootId => RootIds.tab;
+	protected override string RootClass => "nav-link";
 
 	//
-	protected override void OnComponentInitialized() => 
-		Group?.AddTab(this);
-
-	//
-	public void Dispose()
+	protected override async Task OnInitializedAsync()
 	{
-		Dispose(true);
+		if (Group != null)
+			await Group.AddItemAsync(this);
+	}
+
+	//
+	public async ValueTask DisposeAsync()
+	{
+		await DisposeAsyncCore().ConfigureAwait(false);
 		GC.SuppressFinalize(this);
 	}
 
 	//
-	protected virtual void Dispose(bool disposing)
+	protected virtual async ValueTask DisposeAsyncCore()
 	{
-		if (!disposing)
-			return;
-
-		Group?.RemoveTab(this);
+		if (Group != null)
+			await Group.RemoveItemAsync(this);
 	}
 }

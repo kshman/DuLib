@@ -17,8 +17,11 @@
 		internal static bool IsHave(this string? s, bool alsoTestSpace = false) =>
 			alsoTestSpace ? !string.IsNullOrWhiteSpace(s) : !string.IsNullOrEmpty(s);
 
-		internal static string? ToExtendCss(this string? value, string rootElement) =>
+		internal static string? ToCss(this string? value, string rootElement) =>
 			value.IsHave() ? $"{rootElement}-{value}" : null;
+
+		internal static string ToBootStrap(this bool value) =>
+			value ? "true" : "false";
 
 		internal static string? IfTrue(this bool condition, string? value) =>
 			condition ? value : null;
@@ -26,13 +29,12 @@
 		internal static string? IfFalse(this bool condition, string? value) =>
 			condition ? null : value;
 
+		internal static bool ShouldAwaitTask(this Task task) =>
+			task.Status is not TaskStatus.RanToCompletion and not TaskStatus.Canceled;
+
 		#endregion 기본 타입
 
 		#region 컴포넌트
-
-		internal static string? ToCss(this ComponentVisibility visibility) =>
-			visibility == ComponentVisibility.Hidden ? "visibility:hidden" :
-			visibility == ComponentVisibility.Collapsed ? "display:none" : null;
 
 		internal static string? ToCss(this ComponentSize size, string lead)
 		{

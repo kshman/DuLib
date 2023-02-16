@@ -65,6 +65,16 @@ public enum ButtonType
 }
 
 /// <summary>
+/// 버튼 그룹
+/// </summary>
+public enum ButtonGroup
+{
+	Button,
+	Vertical,
+	Toolbar,
+}
+
+/// <summary>
 /// carousel 정지 방법
 /// </summary>
 public enum CarouselPause
@@ -86,8 +96,18 @@ public enum CarouselPlay
 /// <summary>
 /// Bit's 피벗 타이틀 레이아웃
 /// </summary>
-public enum PivotTitleLayout
+public enum PivotLayout
 {
 	Flat,
 	Box,
+}
+
+/// <summary>
+/// 탭 레이아웃
+/// </summary>
+public enum TabLayout
+{
+	Standard,
+	Tabs,
+	Pills,
 }

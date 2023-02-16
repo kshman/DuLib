@@ -1,44 +1,8 @@
-﻿@namespace Du.Blazor.Components
-@inherits DuComponentParent
-@inject IJSRuntime JS
+﻿<div>
+    @Text
+</div>
 
-<button @ref="RootElement"
-        @attributes="UserAttrs"
-        style="@CssStyle.Result"
-        class="@CssClass.Result btn-outline-light"
-        type="button"
-        id="@Id"
-        @onclick="HandleOnClick">
-    @ChildContent
-</button>
-
-@code {
-    [CascadingParameter] public EditContext? EditContext { get; set; }
-
-    protected override string RootName => "btn";
-
-    protected bool _handle_click;
-
-    //
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
-
-    // 마우스 핸들러
-    protected async Task HandleOnClick(MouseEventArgs e)
-    {
-        if (!Enabled)
-            return;
-
-        if (!_handle_click)
-        {
-            _handle_click = true;
-
-            await JS.InvokeVoidAsync("showDuLibBlazor", "아후");
-
-            _handle_click = false;
-        }
-    }
+@code
+{
+    [Parameter] public string? Text { get; set; }
 }
-

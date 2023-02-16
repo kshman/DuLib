@@ -3,24 +3,22 @@
 @if (Href.IsHave())
 {
 	<a @ref="RootElement"
-   @attributes="UserAttrs"
-   style="@CssStyle.Result"
-   class="@CssClass.Result"
-   target="@Target"
+   class="@CssClass"
    href="@Href"
-   id="@Id">
+   target="@Target"
+   id="@Id"
+   @attributes="UserAttrs">
 		@ChildContent
 	</a>
 }
 else
 {
 	<button @ref="RootElement"
-		@attributes="UserAttrs"
-		style="@CssStyle.Result"
-		class="@CssClass.Result"
+		class="@CssClass"
 		type="@GetHtmlType()"
 		formtarget="@Target"
 		id="@Id"
+		@attributes="UserAttrs"
 		@onclick="HandleOnClickAsync">
 		@ChildContent
 	</button>
@@ -33,11 +31,10 @@ else
 	[Parameter] public string? Target { get; set; }
 
 	//
-	protected override void OnComponentCss()
+	protected override void OnComponentClass(CssSupp css)
 	{
-		CssClass
-			.Add(GetCssColor)
-			.Add(GetCssSize);
+		css
+			.Add(GetCssColor())
+			.Add(GetCssSize());
 	}
-
 }

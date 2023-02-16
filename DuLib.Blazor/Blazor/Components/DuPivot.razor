@@ -2,15 +2,14 @@
 @implements IDisposable
 
 <button @ref="RootElement"
-        @attributes="UserAttrs"
-        style="@CssStyle.Result"
-        class="@CssClass.Result"
+        class="@CssClass"
         type="button"
         role="tab"
-        aria-selected="@(Selected ? "true" : "false")"
+		aria-selected="@Selected.ToBootStrap()"
         aria-label="@AriaLabel"
         tabindex="@(Selected ? 0 : -1)"
-        id="@Id"
+		id="@Id"
+		@attributes="UserAttrs"
         @onclick="HandleOnClick">
 	@if (Header is not null)
 	{
@@ -39,22 +38,9 @@
 	/// </summary>
 	[Parameter] public RenderFragment? Content { get; set; }
 
-	public bool Selected
-	{
-		get => _selected;
-		set
-		{
-			if (value == _selected) return;
-			_selected = value;
-			CssClass.Invalidate();
-		}
-	}
+	public bool Selected { get; set; }
 
-	protected override string RootName => RootNames.hpvt_item;
-	protected override string RootId => RootIds.pivot;
-
-	private bool _selected;
-	private bool _disposed;
+	protected override string RootClass => "hpvt-item";
 
 	//
 	protected override void OnComponentInitialized()
@@ -63,10 +49,9 @@
 	}
 
 	//
-	protected override void OnComponentCss()
+	protected override void OnComponentClass(CssSupp css)
 	{
-		CssClass
-			.Add(() => Selected.IfTrue(RootNames.hpvt_sel));
+		css.Register(() => Selected.IfTrue("hpvt-sel"));
 	}
 
 	//
@@ -79,18 +64,23 @@
 	//
 	private void HandleOnClick()
 	{
-		if (Enabled)
+		if (Disabled is false)
 			Group?.SelectPivot(this);
 	}
 
 	//
 	public void Dispose()
 	{
-		if (_disposed)
+		Disposing(true);
+		GC.SuppressFinalize(this);
+	}
+
+	//
+	protected virtual void Disposing(bool disposing)
+	{
+		if (!disposing)
 			return;
 
 		Group?.RemovePivot(this);
-
-		_disposed = true;
 	}
 }
