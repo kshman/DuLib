@@ -1,0 +1,32 @@
+﻿@inherits ComponentParent
+
+<div @ref="RootElement"
+	 class="@CssClass"
+	 role="@Layout.ToCss()"
+	 id="@Id"
+	 @attributes="UserAttrs">
+	<CascadingValue Value="this" IsFixed="true">
+		@ChildContent
+	</CascadingValue>
+</div>
+
+@code {
+	/// <summary>버튼 그룹 형식</summary>
+	[Parameter] public GroupLayout Layout { get; set; }
+	/// <summary>컴포넌트 크기. <see cref="ComponentSize" /> 참고</summary>
+	[Parameter] public ComponentSize Size { get; set; }
+
+	protected override string RootClass => Layout switch
+	{
+		GroupLayout.Button => "btn-Layout",
+		GroupLayout.Vertical => "btn-Layout-vertical",
+		GroupLayout.Toolbar => "btn-toolbar",
+		_ => "",
+	};
+
+	//
+	protected override void OnComponentClass(CssCompose css)
+	{
+		css.Add(Size.ToCss("btn-Layout"));
+	}
+}

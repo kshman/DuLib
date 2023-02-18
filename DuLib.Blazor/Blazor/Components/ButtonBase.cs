@@ -1,6 +1,6 @@
 ﻿namespace Du.Blazor.Components;
 
-public class DuButtonBase : DuComponentParent
+public class ButtonBase : ComponentParent
 {
 	/// <summary>에디트 컨텍스트</summary>
 	[CascadingParameter] public EditContext? EditContext { get; set; }
@@ -8,11 +8,11 @@ public class DuButtonBase : DuComponentParent
 	/// <summary>버튼 타입. <see cref="ButtonType" /> 참고</summary>
 	[Parameter] public ButtonType? Type { get; set; }
 	/// <summary>레이아웃 타입. <see cref="ComponentColor" /> 참고</summary>
-	[Parameter]public ComponentColor Color { get; set; }
+	[Parameter] public ComponentColor Color { get; set; }
 	/// <summary>컴포넌트 크기. <see cref="ComponentSize" /> 참고</summary>
-	[Parameter]public ComponentSize Size { get; set; }
+	[Parameter] public ComponentSize Size { get; set; }
 	/// <summary>아웃라인 적용.</summary>
-	[Parameter]public bool Outline { get; set; }
+	[Parameter] public bool Outline { get; set; }
 
 	/// <summary>마우스 눌린 이벤트 지정.</summary>
 	[Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
@@ -34,16 +34,9 @@ public class DuButtonBase : DuComponentParent
 	}
 
 	//
-	protected virtual Task InvokeOnClickAsync(MouseEventArgs e) =>
-		OnClick.InvokeAsync(e);
-
-	//
-	protected virtual Task InvokeOnValidClickAsync(MouseEventArgs e) =>
-		OnValidClick.InvokeAsync(e);
-
-	//
-	protected virtual Task InvokeOnInvalidClickAsync(MouseEventArgs e) =>
-		OnInvalidClick.InvokeAsync(e);
+	protected virtual Task InvokeOnClickAsync(MouseEventArgs e) => OnClick.InvokeAsync(e);
+	protected virtual Task InvokeOnValidClickAsync(MouseEventArgs e) => OnValidClick.InvokeAsync(e);
+	protected virtual Task InvokeOnInvalidClickAsync(MouseEventArgs e) => OnInvalidClick.InvokeAsync(e);
 
 	// 마우스 핸들러
 	protected async Task HandleOnClickAsync(MouseEventArgs e)
@@ -69,22 +62,4 @@ public class DuButtonBase : DuComponentParent
 			_handle_click = false;
 		}
 	}
-
-	//
-	protected string? GetHtmlType() => Type switch
-	{
-		ButtonType.Button => "button",
-		ButtonType.Submit => "submit",
-		ButtonType.Reset => "reset",
-		_ => null
-	};
-
-	//
-	protected string GetCssColor() => Color == ComponentColor.Link
-			? "btn-link"
-			: Color.ToCss(Outline ? "btn-outline" : "btn");
-
-	//
-	protected string? GetCssSize() =>
-		Size.ToCss("btn");
 }

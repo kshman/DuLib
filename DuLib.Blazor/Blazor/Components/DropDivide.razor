@@ -1,0 +1,15 @@
+﻿@inherits ComponentParent
+
+<li class="@BaseClass">
+	<hr @ref="@RootElement"
+	    class="@CssClass"
+	    @attributes="UserAttrs" />
+</li>
+
+@code {
+	[CascadingParameter] public DropDown? Drop { get; set; }
+
+	[Parameter] public string? BaseClass { get; set; }
+
+	protected override string RootClass => "dropdown-divider";
+}

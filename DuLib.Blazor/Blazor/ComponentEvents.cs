@@ -3,16 +3,9 @@
 namespace Du.Blazor;
 
 /// <summary>
-/// 컴포넌트 이벤트
-/// </summary>
-public class DuComponentEvent : EventArgs
-{
-}
-
-/// <summary>
 /// 아코디언 펼침 이벤트
 /// </summary>
-public class AccordionExpandEvent : DuComponentEvent
+public class AccordionExpandEvent : EventArgs
 {
 	public string Id { get; set; }
 	public bool Expanded { get; set; }
@@ -27,7 +20,7 @@ public class AccordionExpandEvent : DuComponentEvent
 /// <summary>
 /// Carousel 이벤트
 /// </summary>
-public class CarouselSlideEvent : DuComponentEvent
+public class CarouselSlideEvent : EventArgs
 {
 	public int From { get; set; }
 	public int To { get; set; }

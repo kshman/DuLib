@@ -1,0 +1,118 @@
+﻿@inherits ComponentParent
+
+<div @ref="RootElement"
+	 class="@CssCompose.Join(Direction.ToCss(), BaseClass)"
+	 id="@Id"
+	 @onfocusout="HandleFocusOutAsync">
+	@if (Layout == DropLayout.Standard)
+	{
+		<a class="@CssClass" role="button" id="@_title_id" @onclick="HandleToggleAsync" @attributes="UserAttrs">
+			@(Header is not null ? Header : Title)
+		</a>
+		<ul class="@MenuClass" aria-labelledby="@_title_id}" @onfocusout="HandleFocusOutAsync">
+			<CascadingValue Value="this" IsFixed="true">
+				@ChildContent
+			</CascadingValue>
+		</ul>
+	}
+	else
+	{
+		<button class="@CssClass" id="@_title_id" @onclick="HandleToggleAsync" @attributes="UserAttrs">
+			@(Header is not null ? Header : Title)
+		</button>
+		<ul class="@MenuClass" aria-labelledby="@_title_id}" @onfocusout="HandleFocusOutAsync">
+			<CascadingValue Value="this" IsFixed="true">
+				@ChildContent
+			</CascadingValue>
+		</ul>
+	}
+</div>
+
+@code {
+	[Parameter] public DropLayout Layout { get; set; }
+	[Parameter] public DropDirection Direction { get; set; }
+	[Parameter] public DropAlignment Alignment { get; set; }
+	[Parameter] public string? Title { get; set; }
+	[Parameter] public RenderFragment? Header { get; set; }
+
+	[Parameter] public ComponentColor Color { get; set; }
+	[Parameter] public ComponentSize Size { get; set; }
+	[Parameter] public bool Outline { get; set; }
+
+	[Parameter] public string? BaseClass { get; set; }
+	[Parameter] public string? ListClass { get; set; }
+
+	[Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+	[Parameter] public EventCallback<bool> OnOpenClose { get; set; }
+
+	//
+	public bool IsOpen { get; set; }
+
+	protected override string RootClass => "dropdown-toggle";
+
+	private readonly string _title_id = $"D_H_{TypeSupp.Increment}";
+	private bool _handle_toggle;
+
+	//
+	protected override void OnComponentClass(CssCompose css)
+	{
+		if (Layout == DropLayout.Button)
+		{
+			css
+				.Add("btn")
+				.Add(Color.ToButtonCss(Outline))
+				.Add(Size.ToCss("btn"));
+		}
+
+		//css.Register(() => IsOpen.IfFalse("show"));
+	}
+
+	//
+	public void Open()
+	{
+		IsOpen = true;
+	}
+
+	//
+	public void Close()
+	{
+		IsOpen = false;
+	}
+
+	//
+	protected virtual Task InvokeOnClickAsync(MouseEventArgs e) => OnClick.InvokeAsync(e);
+	protected virtual Task InvokeOnOpenCloseAsync(bool e) => OnOpenClose.InvokeAsync(e);
+
+	//
+	private Task HandleFocusOutAsync()
+	{
+		IsOpen = false;
+		return Task.CompletedTask;
+	}
+
+	//
+	private async Task HandleToggleAsync(MouseEventArgs e)
+	{
+		if (!_handle_toggle)
+		{
+			_handle_toggle = true;
+
+			if (OnClick.HasDelegate)
+				await InvokeOnClickAsync(e);
+
+			IsOpen = !IsOpen;
+
+			if (OnOpenClose.HasDelegate)
+				await InvokeOnOpenCloseAsync(IsOpen);
+
+			_handle_toggle = false;
+		}
+	}
+	
+	//
+	private string MenuClass => CssCompose.Join(
+		"dropdown-menu",
+		Alignment.ToCss(),
+		ListClass,
+		IsOpen ? "show" : null)!;
+}

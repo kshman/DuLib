@@ -1,16 +1,16 @@
-﻿@inherits DuComponentParent
+﻿@inherits ComponentParent
 
 <div @ref="RootElement"
-     class="@CssClass"
-     @attributes="UserAttrs">
+	 class="@CssClass"
+	 @attributes="UserAttrs">
 	<h2 class="accordion-header">
-		<button class="@CssSupp.Join("accordion-button", Expanded.IfFalse("collapsed"))"
-		        type="button"
-		        data-bs-toggle="collapse"
-		        data-bs-target="#@Id"
-		        aria-expanded="@Expanded.ToBootStrap()"
-		        aria-controls="#@Id"
-		        @onclick="HandleOnClickAsync">
+		<button class="@CssCompose.Join("accordion-button", Expanded.IfFalse("collapsed"))"
+				type="button"
+				data-bs-toggle="collapse"
+				data-bs-target="#@Id"
+				aria-expanded="@Expanded.ToBootStrap()"
+				aria-controls="#@Id"
+				@onclick="HandleOnClickAsync">
 			@if (Header is not null)
 			{
 				@Header
@@ -21,18 +21,17 @@
 			}
 		</button>
 	</h2>
-	<div class="@CssSupp.Join("accordion-collapse", "collapse", Expanded.IfTrue("show"))"
-	     data-bs-parent="@Group?.GetIdForBsParent()"
-	     id="@Id">
+	<div class="@CssCompose.Join("accordion-collapse", "collapse", Expanded.IfTrue("show"))"
+		 data-bs-parent="@Group?.GetIdForBsParent()"
+		 id="@Id">
 		<div class="accordion-body">
 			@(Content ?? ChildContent)
 		</div>
 	</div>
 </div>
 
-
 @code {
-	[CascadingParameter] public DuGroupAccordion? Group { get; set; }
+	[CascadingParameter] public Accordion? Group { get; set; }
 
 	/// <summary>타이틀 대신 쓰는 헤더 블럭</summary>
 	[Parameter] public RenderFragment? Header { get; set; }
@@ -89,16 +88,15 @@
 			if (_internal_expanded)
 			{
 				if (Group.Expanded != Id)
-					await Group.SetExpandedByIdAsync(Id);
+					await Group.SetExpandedAsync(Id);
 			}
 			else
 			{
 				if (Group.Expanded == Id)
-					await Group.SetExpandedByIdAsync(null);
+					await Group.SetExpandedAsync(null);
 			}
 		}
 
 		await InvokeOnExpandedAsync(_internal_expanded);
 	}
 }
-

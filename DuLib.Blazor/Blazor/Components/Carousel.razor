@@ -1,4 +1,4 @@
-﻿@inherits DuGroupParentCarousel
+﻿@inherits AbstractCarousel
 @inject IJSRuntime JS
 
 <CascadingValue Value="this" IsFixed="true">
@@ -7,13 +7,13 @@
 
 @if (_items.Count == 0)
 {
-	<div class="alert alert-danger col-md-8"><em>No carousel item found</em></div>
+	<div class="alert alert-danger col-auto"><em>No carousel item found</em></div>
 }
 else
 {
 	<div @ref="RootElement"
 	 class="@CssClass"
-	 data-bs-interval="@(Interval is null ? "false" : Interval)"
+	 data-bs-interval="@(Interval == 0 ? "false" : Interval)"
 	 data-bs-touch="@Touch.ToBootStrap()"
 	 id="@Id"
 	 @attributes="UserAttrs">
@@ -38,7 +38,7 @@ else
 		<div class="carousel-inner">
 			@foreach (var crs in _items)
 			{
-				<div class="@CssSupp.Join(crs.CssClass, (crs == _current).IfTrue("active"))" id="@crs.Id" @attributes="crs.UserAttrs">
+				<div class="@CssCompose.Join(crs.CssClass, (crs == _current).IfTrue("active"))" id="@crs.Id" @attributes="crs.UserAttrs">
 					@crs.ChildContent
 				</div>
 			}
@@ -58,23 +58,32 @@ else
 }
 
 @code {
+	/// <summary>슬라이드 대신 페이드로 표시</summary>
 	[Parameter] public bool Fade { get; set; }
+	/// <summary>하단 선택 표시</summary>
 	[Parameter] public bool Indicators { get; set; }
+	/// <summary>좌우 이동 컨트롤 표시</summary>
 	[Parameter] public bool Controls { get; set; } = true;
+	/// <summary>슬라이드 변경 시간 밀리초 단위(1초=1000밀리초)<br/>기본값은 5000 (5초)</summary>
 	[Parameter] public int? Interval { get; set; } = 5000;
+	/// <summary>터치 지원 여부</summary>
 	[Parameter] public bool Touch { get; set; } = true;
-	[Parameter] public CarouselPlay Play { get; set; } // 기본: CarouselPlay.Auto;
-	[Parameter] public CarouselPause Pause { get; set; } // 기본: CarouselPause.Hover;
+	/// <summary>마우스가 올라가 있을때 중지 여부</summary>
+	[Parameter] public bool Hover { get; set; } = true;
+	/// <summary>플레이 방법, 기본은 처음부터 재생</summary>
+	[Parameter] public CarouselPlay Play { get; set; }
 
+	/// <summary>이벤트: 슬라이드가 시작될 때</summary>
 	[Parameter] public EventCallback<CarouselSlideEvent> OnBeginSlide { get; set; }
+	/// <summary>이벤트: 슬라이드가 끝날 때</summary>
 	[Parameter] public EventCallback<CarouselSlideEvent> OnEndSlide { get; set; }
 
 	protected override string RootClass => "carousel slide"; // slide 까지가 포함됨
 
-	private DotNetObjectReference<DuGroupCarousel>? _objref;
+	private DotNetObjectReference<Carousel>? _objref;
 
 	//
-	protected override void OnComponentClass(CssSupp css)
+	protected override void OnComponentClass(CssCompose css)
 	{
 		css.Add(Fade, "carousel-fade");
 	}
@@ -82,7 +91,7 @@ else
 	//
 	protected override async Task OnAfterFirstRenderAsync()
 	{
-		// 자바스크립트로 만들어 줘야 돌아가는 carousel
+		// 자바스크립트로 만들어 줘야 돌아가는 회전목마
 		var options = new Dictionary<string, object>
 			{
 				["ride"] = Play switch
@@ -91,7 +100,7 @@ else
 					CarouselPlay.True => true,
 					_ => false
 				},
-				["pause"] = Pause == CarouselPause.Hover ? "hover" : false
+				["pause"] = Hover ? "hover" : false,
 			};
 
 		_objref ??= DotNetObjectReference.Create(this);
@@ -106,9 +115,9 @@ else
 	protected virtual Task InvokeOnEndSlideAsync(CarouselSlideEvent e) =>
 		OnEndSlide.InvokeAsync(e);
 
-	//
-	[JSInvokable("invoke_cars_bs")]
-	public async Task HandleBeginSlideAsync(int from, int to, bool isLeft)
+	// 반드시 public
+	[JSInvokable("ivk_cars_bs")]
+	public async Task InternalHandleBeginSlideAsync(int from, int to, bool isLeft)
 	{
 		await InvokeOnBeginSlideAsync(new CarouselSlideEvent
 			{
@@ -118,9 +127,9 @@ else
 			});
 	}
 
-	//
-	[JSInvokable("invoke_cars_es")]
-	public async Task HandleEndSlideAsync(int from, int to, bool isLeft)
+	// 반드시 public
+	[JSInvokable("ivk_cars_es")]
+	public async Task InternalHandleEndSlideAsync(int from, int to, bool isLeft)
 	{
 		await InvokeOnEndSlideAsync(new CarouselSlideEvent
 			{

@@ -1,4 +1,4 @@
-﻿@inherits DuGroupParentTab
+﻿@inherits AbstractTab
 
 <CascadingValue Value="this" IsFixed="true">
 	@ChildContent
@@ -11,7 +11,7 @@
 	@foreach (var tab in _items)
 	{
 		<a role="button"
-	   class="@CssSupp.Join(tab.CssClass, TabClass, (tab == _current).IfTrue("active"))"
+	   class="@CssCompose.Join(tab.CssClass, TabClass, (tab == _current).IfTrue("active"))"
 	   id="@tab.Id"
 	   @onclick="async () => await HandleOnClickAsync(tab)">
 			@if (tab.Header is not null)
@@ -31,7 +31,7 @@
 	<div class="tab-content">
 		@foreach (var tab in _items)
 		{
-			<div class="@CssSupp.Join("tab-pane", (tab == _current).IfTrue("active"))">
+			<div class="@CssCompose.Join("tab-pane", (tab == _current).IfTrue("active"))">
 				@(tab.Content ?? tab.ChildContent)
 			</div>
 		}
@@ -40,27 +40,27 @@
 
 @code {
 	[Parameter] public bool TitleOnly { get; set; }
-	[Parameter] public TabLayout Layout { get; set; }
+	[Parameter] public NavLayout Layout { get; set; }
 	[Parameter] public string? TabClass { get; set; }
 
 	protected override string RootClass => "nav";
 
 	//
-	protected override void OnComponentClass(CssSupp css)
+	protected override void OnComponentClass(CssCompose css)
 	{
 		css.Add(GetCssNav());
 	}
 
 	//
-	protected Task HandleOnClickAsync(DuTab tab) =>
+	protected Task HandleOnClickAsync(TabItem tab) =>
 		SelectItemAsync(tab);
 
 	//
 	private string? GetCssNav() => Layout switch
 	{
-		TabLayout.Standard => null,
-		TabLayout.Pills => "nav-pills",
-		TabLayout.Tabs => "nav-tabs",
+		NavLayout.Standard => null,
+		NavLayout.Pills => "nav-pills",
+		NavLayout.Tabs => "nav-tabs",
 		_ => null,
 	};
 }

@@ -1,9 +1,9 @@
 ﻿namespace Du.Blazor;
 
 /// <summary>
-/// 테마 스타일
+/// 테마 스타일 (data-bs-theme)
 /// </summary>
-public enum ThemeStyle
+public enum ThemeColor
 {
 	Light,
 	Dark,
@@ -67,20 +67,11 @@ public enum ButtonType
 /// <summary>
 /// 버튼 그룹
 /// </summary>
-public enum ButtonGroup
+public enum GroupLayout
 {
 	Button,
 	Vertical,
 	Toolbar,
-}
-
-/// <summary>
-/// carousel 정지 방법
-/// </summary>
-public enum CarouselPause
-{
-	Hover,
-	False,
 }
 
 /// <summary>
@@ -103,11 +94,39 @@ public enum PivotLayout
 }
 
 /// <summary>
-/// 탭 레이아웃
+/// NAV 레이아웃 (탭)
 /// </summary>
-public enum TabLayout
+public enum NavLayout
 {
 	Standard,
 	Tabs,
 	Pills,
+}
+
+public enum DropLayout
+{
+	Standard,
+	Button,
+}
+
+public enum DropDirection
+{
+	Down,
+	Up,
+	Start,
+	End,
+}
+
+public enum DropAlignment
+{
+	Start,
+	End,
+}
+
+public enum DropAutoClose
+{
+	True,
+	False,
+	Inside,
+	Outside,
 }

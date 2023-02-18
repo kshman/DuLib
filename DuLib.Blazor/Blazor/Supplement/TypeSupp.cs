@@ -36,22 +36,13 @@
 
 		#region 컴포넌트
 
-		internal static string? ToCss(this ComponentSize size, string lead)
+		internal static string? ToCss(this ComponentSize size, string lead) => size switch
 		{
-			switch (size)
-			{
-				case ComponentSize.Small:
-					return $"{lead}-sm";
-
-				case ComponentSize.Large:
-					return $"{lead}-lg";
-
-				case ComponentSize.Medium:
-				default:
-					break;
-			}
-			return null;
-		}
+			ComponentSize.Small => $"{lead}-sm",
+			ComponentSize.Large => $"{lead}-lg",
+			//ComponentSize.Medium
+			_ => null,
+		};
 
 		internal static string ToCss(this ComponentColor color, string lead)
 		{
@@ -70,11 +61,59 @@
 			return $"{lead}-{cs}";
 		}
 
-		#endregion 컴포넌트
+		internal static string ToButtonCss(this ComponentColor color, bool outline) => color switch
+		{
+			ComponentColor.Link => "btn-link",
+			_ => color.ToCss(outline ? "btn-outline" : "btn"),
+		};
 
-		#region 자바스크립트
+		internal static string ToHtml(this ButtonType? button) => button switch
+		{
+			//ButtonType.Button => "button",
+			ButtonType.Submit => "submit",
+			ButtonType.Reset => "reset",
+			_ => "button",
+		};
 
-		internal static ValueTask<IJSObjectReference> ImportModuleAsync(this IJSRuntime js, string moduleName, string? subPath)
+		internal static string? ToCss(this GroupLayout layout) => layout switch
+		{
+			GroupLayout.Button or 
+				GroupLayout.Vertical => "group",
+			GroupLayout.Toolbar => "toolbar",
+			_ => null,
+		};
+
+		internal static string ToCss(this DropDirection dir) => dir switch
+		{
+			//DropDirection.Down => "dropdown",
+			DropDirection.Up => "dropup",
+			DropDirection.Start => "dropstart",
+			DropDirection.End => "dropend",
+			_ => "dropdown",
+		};
+
+		internal static string? ToCss(this DropAutoClose close) => close switch
+		{
+			DropAutoClose.True => "true",
+			DropAutoClose.False => "false",
+			DropAutoClose.Inside => "inside",
+			DropAutoClose.Outside => "outside",
+			_ => null,
+		};
+
+		internal static string? ToCss(this DropAlignment alignment) => alignment switch
+		{
+			DropAlignment.Start => "dropdown-menu-start",
+			DropAlignment.End => "dropdown-menu-end",
+			_ => null
+		};
+
+	#endregion 컴포넌트
+
+	#region 자바스크립트
+
+	// 모듈 임포트
+	internal static ValueTask<IJSObjectReference> ImportModuleAsync(this IJSRuntime js, string moduleName, string? subPath)
 		{
 			var path = subPath.IsHave() ?
 				"./_content/Du.Blazor/" + subPath + "/" + moduleName + ".razor.js" :

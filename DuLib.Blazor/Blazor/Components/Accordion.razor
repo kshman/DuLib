@@ -1,4 +1,4 @@
-﻿@inherits DuComponentParent
+﻿@inherits ComponentParent
 
 <div @ref="RootElement"
 	 class="@CssClass"
@@ -16,7 +16,7 @@
 	[Parameter] public bool AlwaysOpen { get; set; }
 	/// <summary>
 	/// 열림 설정하거나 얻기<br/>
-	/// 얻을 때는 부정확하니깐 <see cref="DuAccordion.OnExpanded"/> 쪽을 사용하는게 좋음
+	/// 얻을 때는 부정확하니깐 <see cref="AccordionItem.OnExpanded"/> 쪽을 사용하는게 좋음
 	/// </summary>
 	/// <remarks>정확히 하려면 자바스크립트로 속성 체크를 해야할 듯</remarks>
 	[Parameter] public string? Expanded { get; set; }
@@ -30,17 +30,17 @@
 	protected override async Task OnParametersSetAsync()
 	{
 		if (Expanded.IsHave(true))
-			await SetExpandedByIdAsync(Expanded!);
+			await SetExpandedAsync(Expanded!);
 	}
 
 	//
-	protected override void OnComponentClass(CssSupp css)
+	protected override void OnComponentClass(CssCompose css)
 	{
 		css.Add(Flush, "accordion-flush");
 	}
 
 	//
-	internal async Task SetExpandedByIdAsync(string? id)
+	internal async Task SetExpandedAsync(string? id)
 	{
 		if (Expanded == id)
 			return;
@@ -56,6 +56,6 @@
 		ExpandedChanged.InvokeAsync(id);
 
 	//
-	public string? GetIdForBsParent() =>
+	internal string? GetIdForBsParent() =>
 		AlwaysOpen ? null : $"#{Id}";
 }

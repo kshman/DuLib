@@ -3,7 +3,7 @@
 /// <summary>
 /// CSS 클래스 만들어 주기
 /// </summary>
-public class CssSupp
+public class CssCompose
 {
 	private const char class_separator = ' ';
 	private const char style_separator = ';';
@@ -11,27 +11,27 @@ public class CssSupp
 	private readonly List<string> _sts = new();
 	private readonly List<Func<string?>> _fns = new();
 
-	public CssSupp Set(string className)
+	public CssCompose Set(string className)
 	{
 		_sts.Add(className);
 		return this;
 	}
 
-	public CssSupp Add(string? className)
+	public CssCompose Add(string? className)
 	{
 		if (className.IsHave())
 			_sts.Add(className!);
 		return this;
 	}
 
-	public CssSupp Add(bool condition, string className)
+	public CssCompose Add(bool condition, string className)
 	{
 		if (condition)
 			_sts.Add(className);
 		return this;
 	}
 
-	public CssSupp Register(Func<string?> classFunc)
+	public CssCompose Register(Func<string?> classFunc)
 	{
 		_fns.Add(classFunc);
 		return this;

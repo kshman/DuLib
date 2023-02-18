@@ -3,12 +3,12 @@
 /// <summary>
 /// 컴포넌트 기본
 /// </summary>
-public abstract class DuComponentBase : ComponentBase
+public abstract class ComponentObject : ComponentBase
 {
 	/// <summary>테마 지정 (data-bs-theme)</summary>
-	[CascadingParameter] public ThemeStyle Theme { get; set; }
-	/// <summary>사용하지 않음 지정 (disabled)</summary>
-	[Parameter] public bool Disabled { get; set; }
+	[CascadingParameter] public ThemeColor Theme { get; set; }
+	/// <summary>사용하지 여부 (disabled)</summary>
+	[Parameter] public bool Enabled { get; set; } = true;
 	/// <summary>클래스 지정</summary>
 	[Parameter] public string? Class { get; set; }
 	/// <summary>사용자가 설정한 속성 지정</summary>
@@ -26,7 +26,7 @@ public abstract class DuComponentBase : ComponentBase
 	public string CssClass => _css.Class;
 
 	// CSS 컴포즈
-	private readonly CssSupp _css = new();
+	private readonly CssCompose _css = new();
 
 	/// <summary>
 	/// 초기화 + 컴포넌트 속성 만들기.<br/>
@@ -35,7 +35,7 @@ public abstract class DuComponentBase : ComponentBase
 	/// </summary>
 	protected override void OnInitialized()
 	{
-		_css.Set(RootClass).Register(() => Disabled.IfTrue("disabled"));
+		_css.Set(RootClass).Register(() => Enabled.IfFalse("disabled"));
 		OnComponentClass(_css);
 		_css.Add(Class);
 
@@ -54,7 +54,7 @@ public abstract class DuComponentBase : ComponentBase
 	{ }
 
 	/// <summary>컴포넌트의 CSS 클래스 값을 지정</summary>
-	protected virtual void OnComponentClass(CssSupp css)
+	protected virtual void OnComponentClass(CssCompose css)
 	{ }
 
 	// 태스크 상태를 봐서 기다렸다가 StateHasChanged 호출
@@ -80,7 +80,7 @@ public abstract class DuComponentBase : ComponentBase
 /// <summary>
 /// 자식을 가지는 컴포넌트 기본
 /// </summary>
-public abstract class DuComponentParent : DuComponentBase
+public abstract class ComponentParent : ComponentObject
 {
 	/// <summary>자식 콘텐트</summary>
 	[Parameter] public RenderFragment? ChildContent { get; set; }

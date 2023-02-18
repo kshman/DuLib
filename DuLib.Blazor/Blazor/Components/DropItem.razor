@@ -1,0 +1,40 @@
+﻿@inherits ComponentParent
+
+<li class="@BaseClass">
+	@if (OnClick.HasDelegate)
+	{
+		<span @ref="RootElement"
+		  class="@CssClass"
+		  role="button"
+		  @onmousedown="HandleOnClickAsync"
+		  @onmousedown:stopPropagation="true"
+		  @attributes="UserAttrs">
+			@ChildContent
+		</span>
+	}
+	else
+	{
+		<span @ref="RootElement"
+		  class="@CssClass"
+		  @attributes="UserAttrs">
+			@ChildContent
+		</span>
+	}
+</li>
+
+@code {
+	[CascadingParameter] public DropDown? Drop { get; set; }
+
+	[Parameter] public string? BaseClass { get; set; }
+
+	[Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+	protected override string RootClass =>
+		OnClick.HasDelegate ? "dropdown-item" : "dropdown-item-text";
+
+	//
+	private Task HandleOnClickAsync(MouseEventArgs e) => InvokeOnClickAsync(e);
+
+	//
+	protected virtual Task InvokeOnClickAsync(MouseEventArgs e) => OnClick.InvokeAsync(e);
+}

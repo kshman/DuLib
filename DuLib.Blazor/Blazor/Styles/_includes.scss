@@ -1,12 +1,6 @@
 ﻿:root {
 	// dulib 기본값
 	--du-serif: "Malgun Gothic","Segoe UI","Apple SD Gothic Neo","Helvetica Neue","Noto Sans",Helvetica,Arial,sans-serif,"Segoe UI Emoji","Segoe UI Symbol","Apple Color Emoji","Noto Color Emoji";
-	// 밝은 테마
-	--du-light-body-bg: #fff;
-	--du-light-body-color: #212529;
-	// 어둔 테마
-	--du-dark-body-bg: #212529;
-	--du-dark-body-color: #fff;
 	// bootstrap 덮어쓰기
 	--bs-font-sans-serif: var(--du-serif);
 }

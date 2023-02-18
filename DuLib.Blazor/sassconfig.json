@@ -5,7 +5,8 @@
     "style": "Compressed"
   },
   {
-    "outputFile": "Blazor/Styles/_styles.css",
-    "inputFile": "Blazor/Styles/_styles.scss"
+    "outputFile": "wwwroot/Du.Blazor.nested.css",
+    "inputFile": "Blazor/Styles/_styles.scss",
+    "style": "Nested"
   }
 ]

@@ -8,7 +8,7 @@
 		<PublishTrimmed>true</PublishTrimmed>
 		<RootNamespace>Du</RootNamespace>
 		<RepositoryUrl>https://github.com/kshman/DuLib</RepositoryUrl>
-		<Version>0.1.0</Version>
+		<Version>0.2.0</Version>
 		<Title>Du.Blazor</Title>
 		<PackageId>Du.Blazor</PackageId>
 		<Product>Du.Blazor</Product>

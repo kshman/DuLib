@@ -1,5 +1,5 @@
 ﻿@using System.Runtime.InteropServices
-@inherits DuGrouParentPivot
+@inherits AbstractPivot
 
 <CascadingValue Value="this" IsFixed="true">
 	@ChildContent
@@ -55,17 +55,41 @@
 	protected override string RootClass => "hpvt";
 
 	//
-	protected override void OnComponentClass(CssSupp css)
+	protected override void OnComponentClass(CssCompose css)
 	{
 		css
-			.Add(GetSizeCss())
-			.Add(GetLayoutCss())
-			.Add(GetOverflowCss())
-			.Add(GetPositionCss());
+			.Add(Size switch
+			{
+				ComponentSize.Medium or
+				ComponentSize.Small => "hpvt-nm",
+				ComponentSize.Large => "hpvt-lg",
+				_ => null
+			})
+			.Add(Layout switch
+			{
+				PivotLayout.Flat => "hpvt-lnk",
+				PivotLayout.Box => "hpvt-box",
+				_ => null
+			})
+			.Add(Overflow switch
+			{
+				ComponentOverflow.None => null,
+				ComponentOverflow.Menu => null,
+				ComponentOverflow.Scroll => "hpvt-scrl",
+				_ => null
+			})
+			.Add(Position switch
+			{
+				ComponentPosition.Top => "ff-column",
+				ComponentPosition.Right => "ff-row-reverse",
+				ComponentPosition.Bottom => "ff-column-reverse",
+				ComponentPosition.Left => "ff-row",
+				_ => null
+			});
 	}
 
 	//
-	protected override Task OnItemAddedAsync(DuPivot item)
+	protected override Task OnItemAddedAsync(PivotItem item)
 	{
 		if (item == _current)
 			item.Selected = true;
@@ -74,7 +98,7 @@
 	}
 
 	//
-	protected override Task<bool> OnItemSelectedAsync(DuPivot? item, DuPivot? previous)
+	protected override Task<bool> OnItemSelectedAsync(PivotItem? item, PivotItem? previous)
 	{
 		if (previous is not null)
 			previous.Selected = false;
@@ -86,54 +110,6 @@
 	}
 
 	//
-	protected Task HandleOnClickAsync(DuPivot pivot) =>
+	protected Task HandleOnClickAsync(PivotItem pivot) =>
 		SelectItemAsync(pivot);
-
-	//
-	private string? GetSizeCss()
-	{
-		return Size switch
-		{
-			ComponentSize.Medium or
-				ComponentSize.Small => "hpvt-nm",
-			ComponentSize.Large => "hpvt-lg",
-			_ => null
-		};
-	}
-
-	//
-	private string? GetLayoutCss()
-	{
-		return Layout switch
-		{
-			PivotLayout.Flat => "hpvt-lnk",
-			PivotLayout.Box => "hpvt-box",
-			_ => null
-		};
-	}
-
-	//
-	private string? GetOverflowCss()
-	{
-		return Overflow switch
-		{
-			ComponentOverflow.None => null,
-			ComponentOverflow.Menu => null,
-			ComponentOverflow.Scroll => "hpvt-scrl",
-			_ => null
-		};
-	}
-
-	//
-	private string? GetPositionCss()
-	{
-		return Position switch
-		{
-			ComponentPosition.Top => "flex-flow-column",
-			ComponentPosition.Right => "flex-flow-row-reverse",
-			ComponentPosition.Bottom => "flex-flow-column-reverse",
-			ComponentPosition.Left => "flex-flow-row",
-			_ => null
-		};
-	}
 }

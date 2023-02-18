@@ -1,4 +1,4 @@
-﻿@inherits DuButtonBase
+﻿@inherits ButtonBase
 
 @if (Href.IsHave())
 {
@@ -15,7 +15,7 @@ else
 {
 	<button @ref="RootElement"
 		class="@CssClass"
-		type="@GetHtmlType()"
+		type="@Type.ToHtml()"
 		formtarget="@Target"
 		id="@Id"
 		@attributes="UserAttrs"
@@ -31,10 +31,10 @@ else
 	[Parameter] public string? Target { get; set; }
 
 	//
-	protected override void OnComponentClass(CssSupp css)
+	protected override void OnComponentClass(CssCompose css)
 	{
 		css
-			.Add(GetCssColor())
-			.Add(GetCssSize());
+			.Add(Color.ToButtonCss(Outline))
+			.Add(Size.ToCss("btn"));
 	}
 }

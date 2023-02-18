@@ -1,8 +1,8 @@
 ﻿namespace Du.Blazor.Components;
 
-public class DuCarousel : DuComponentParent, IAsyncDisposable
+public class CarouselItem : ComponentParent, IAsyncDisposable
 {
-    [CascadingParameter] public DuGroupCarousel? Group { get; set; }
+    [CascadingParameter] public Carousel? Group { get; set; }
 
     protected override string RootClass => "carousel-item";
 
