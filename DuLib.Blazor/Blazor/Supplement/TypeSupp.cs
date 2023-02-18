@@ -108,12 +108,20 @@
 			_ => null
 		};
 
-	#endregion 컴포넌트
+		internal static string? ToCss(this NavLayout nav) => nav switch
+		{
+			NavLayout.Standard => null,
+			NavLayout.Pills => "nav-pills",
+			NavLayout.Tabs => "nav-tabs",
+			_ => null,
+		};
 
-	#region 자바스크립트
+		#endregion 컴포넌트
 
-	// 모듈 임포트
-	internal static ValueTask<IJSObjectReference> ImportModuleAsync(this IJSRuntime js, string moduleName, string? subPath)
+		#region 자바스크립트
+
+		// 모듈 임포트
+		internal static ValueTask<IJSObjectReference> ImportModuleAsync(this IJSRuntime js, string moduleName, string? subPath)
 		{
 			var path = subPath.IsHave() ?
 				"./_content/Du.Blazor/" + subPath + "/" + moduleName + ".razor.js" :

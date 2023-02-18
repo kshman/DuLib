@@ -18,8 +18,8 @@
 
 	protected override string RootClass => Layout switch
 	{
-		GroupLayout.Button => "btn-Layout",
-		GroupLayout.Vertical => "btn-Layout-vertical",
+		GroupLayout.Button => "btn-group",
+		GroupLayout.Vertical => "btn-group-vertical",
 		GroupLayout.Toolbar => "btn-toolbar",
 		_ => "",
 	};
@@ -27,6 +27,6 @@
 	//
 	protected override void OnComponentClass(CssCompose css)
 	{
-		css.Add(Size.ToCss("btn-Layout"));
+		css.Add(Size.ToCss("btn-group"));
 	}
 }

@@ -3,13 +3,14 @@
 <div @ref="RootElement"
 	 class="@CssCompose.Join(Direction.ToCss(), BaseClass)"
 	 id="@Id"
-	 @onfocusout="HandleFocusOutAsync">
-	@if (Layout == DropLayout.Standard)
+	 @onfocusout="HandleFocusOutAsync" @onfocusout:stopPropagation="true">
+	@if (Layout is DropLayout.Standard)
 	{
-		<a class="@CssClass" role="button" id="@_title_id" @onclick="HandleToggleAsync" @attributes="UserAttrs">
+		var idA = $"{Id}_A";
+		<span role="button" class="@CssClass" id="@idA" @onclick="HandleOnClickAsync" @attributes="UserAttrs">
 			@(Header is not null ? Header : Title)
-		</a>
-		<ul class="@MenuClass" aria-labelledby="@_title_id}" @onfocusout="HandleFocusOutAsync">
+		</span>
+		<ul class="@MenuClass" aria-labelledby="@idA">
 			<CascadingValue Value="this" IsFixed="true">
 				@ChildContent
 			</CascadingValue>
@@ -17,10 +18,11 @@
 	}
 	else
 	{
-		<button class="@CssClass" id="@_title_id" @onclick="HandleToggleAsync" @attributes="UserAttrs">
+		var idButton = $"{Id}_B";
+		<button type="button" class="@CssClass" id="@idButton" @onclick="HandleOnClickAsync" @attributes="UserAttrs">
 			@(Header is not null ? Header : Title)
 		</button>
-		<ul class="@MenuClass" aria-labelledby="@_title_id}" @onfocusout="HandleFocusOutAsync">
+		<ul class="@MenuClass" aria-labelledby="@idButton">
 			<CascadingValue Value="this" IsFixed="true">
 				@ChildContent
 			</CascadingValue>
@@ -29,29 +31,30 @@
 </div>
 
 @code {
+	[Parameter] public bool AutoClose { get; set; } = true;
 	[Parameter] public DropLayout Layout { get; set; }
 	[Parameter] public DropDirection Direction { get; set; }
 	[Parameter] public DropAlignment Alignment { get; set; }
-	[Parameter] public string? Title { get; set; }
-	[Parameter] public RenderFragment? Header { get; set; }
-
 	[Parameter] public ComponentColor Color { get; set; }
 	[Parameter] public ComponentSize Size { get; set; }
 	[Parameter] public bool Outline { get; set; }
+	[Parameter] public string? Title { get; set; }
+	[Parameter] public RenderFragment? Header { get; set; }
 
 	[Parameter] public string? BaseClass { get; set; }
 	[Parameter] public string? ListClass { get; set; }
 
 	[Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
-	[Parameter] public EventCallback<bool> OnOpenClose { get; set; }
+	[Parameter] public EventCallback<bool> OnShowHide { get; set; }
+	[Parameter] public EventCallback<SelectEventArgs> OnSelect { get; set; }
 
 	//
 	public bool IsOpen { get; set; }
+	public DropItem? SelectedItem { get; set; }
 
 	protected override string RootClass => "dropdown-toggle";
 
-	private readonly string _title_id = $"D_H_{TypeSupp.Increment}";
-	private bool _handle_toggle;
+	private bool _handle_click;
 
 	//
 	protected override void OnComponentClass(CssCompose css)
@@ -63,52 +66,75 @@
 				.Add(Color.ToButtonCss(Outline))
 				.Add(Size.ToCss("btn"));
 		}
-
-		//css.Register(() => IsOpen.IfFalse("show"));
+		else if (Layout == DropLayout.NavButton)
+		{
+			css
+				//.Add("nav-link")
+				.Add("nav-button");
+		}
 	}
 
 	//
-	public void Open()
+	public async Task ShowAsync()
 	{
 		IsOpen = true;
+		await InvokeOnShowHideAsync(true);
 	}
 
 	//
-	public void Close()
+	public async Task HideAsync()
 	{
+		await Task.Delay(100);
 		IsOpen = false;
+		await InvokeOnShowHideAsync(false);
+	}
+
+	//
+	public async Task ToggleAsync()
+	{
+		IsOpen = !IsOpen;
+		await InvokeOnShowHideAsync(IsOpen);
+	}
+
+	//
+	internal async Task SetSelectedAsync(DropItem item)
+	{
+		SelectedItem = item;
+		await HideAsync();
+		await InvokeOnSelectAsync(new SelectEventArgs(item.Id, item.Title));
 	}
 
 	//
 	protected virtual Task InvokeOnClickAsync(MouseEventArgs e) => OnClick.InvokeAsync(e);
-	protected virtual Task InvokeOnOpenCloseAsync(bool e) => OnOpenClose.InvokeAsync(e);
+	protected virtual Task InvokeOnShowHideAsync(bool e) => OnShowHide.InvokeAsync(e);
+	protected virtual Task InvokeOnSelectAsync(SelectEventArgs e) => OnSelect.InvokeAsync(e);
 
 	//
-	private Task HandleFocusOutAsync()
+	private async Task HandleFocusOutAsync()
 	{
-		IsOpen = false;
-		return Task.CompletedTask;
+		if (AutoClose is false)
+			return;
+		if (IsOpen is false)
+			return;
+		await HideAsync();
 	}
 
 	//
-	private async Task HandleToggleAsync(MouseEventArgs e)
+	private async Task HandleOnClickAsync(MouseEventArgs e)
 	{
-		if (!_handle_toggle)
+		if (_handle_click is false)
 		{
-			_handle_toggle = true;
+			_handle_click = true;
 
 			if (OnClick.HasDelegate)
 				await InvokeOnClickAsync(e);
 
-			IsOpen = !IsOpen;
+			await ToggleAsync();
 
-			if (OnOpenClose.HasDelegate)
-				await InvokeOnOpenCloseAsync(IsOpen);
-
-			_handle_toggle = false;
+			_handle_click = false;
 		}
 	}
-	
+
 	//
 	private string MenuClass => CssCompose.Join(
 		"dropdown-menu",

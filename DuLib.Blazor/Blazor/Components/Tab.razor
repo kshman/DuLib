@@ -48,19 +48,10 @@
 	//
 	protected override void OnComponentClass(CssCompose css)
 	{
-		css.Add(GetCssNav());
+		css.Add(Layout.ToCss());
 	}
 
 	//
 	protected Task HandleOnClickAsync(TabItem tab) =>
 		SelectItemAsync(tab);
-
-	//
-	private string? GetCssNav() => Layout switch
-	{
-		NavLayout.Standard => null,
-		NavLayout.Pills => "nav-pills",
-		NavLayout.Tabs => "nav-tabs",
-		_ => null,
-	};
 }

@@ -4,11 +4,11 @@
 	 class="@CssClass"
 	 @attributes="UserAttrs">
 	<h2 class="accordion-header">
-		<button class="@CssCompose.Join("accordion-button", Expanded.IfFalse("collapsed"))"
+		<button class="@CssCompose.Join("accordion-button", Active.IfFalse("collapsed"))"
 				type="button"
 				data-bs-toggle="collapse"
 				data-bs-target="#@Id"
-				aria-expanded="@Expanded.ToBootStrap()"
+				aria-expanded="@Active.ToBootStrap()"
 				aria-controls="#@Id"
 				@onclick="HandleOnClickAsync">
 			@if (Header is not null)
@@ -21,7 +21,7 @@
 			}
 		</button>
 	</h2>
-	<div class="@CssCompose.Join("accordion-collapse", "collapse", Expanded.IfTrue("show"))"
+	<div class="@CssCompose.Join("accordion-collapse", "collapse", Active.IfTrue("show"))"
 		 data-bs-parent="@Group?.GetIdForBsParent()"
 		 id="@Id">
 		<div class="accordion-body">
@@ -41,13 +41,12 @@
 	/// <summary>표시 타이틀</summary>
 	[Parameter] public string? Title { get; set; }
 	/// <summary>펼쳐놓기 상태. 이 값으로 확장 여부를 알면 안된다!</summary>
-	/// <remarks>expand는 동사이므로 expanded가 명사</remarks>
-	[Parameter] public bool Expanded { get; set; }
+	[Parameter] public bool Active { get; set; }
 
 	/// <summary>마우스가 눌림</summary>
 	[Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
 	/// <summary>펼쳐지고 닫힐 때</summary>
-	[Parameter] public EventCallback<AccordionExpandEvent> OnExpanded { get; set; }
+	[Parameter] public EventCallback<AccordionExpandEventArgs> OnActive { get; set; }
 
 	protected override string RootClass => "accordion-item";
 
@@ -56,8 +55,11 @@
 	//
 	protected override void OnParametersSet()
 	{
-		if (Group is not null && Group.Expanded == Id && Expanded is false)
-			Expanded = true;
+		if (Group is null)
+			ThrowSupp.InsideComponent(nameof(AccordionItem), nameof(Accordion));
+
+		if (Active is false && Group!.Active == Id)
+			Active = true;
 	}
 
 	//
@@ -65,7 +67,7 @@
 	protected override void OnAfterRender(bool firstRender)
 	{
 		if (firstRender)
-			_internal_expanded = Expanded;
+			_internal_expanded = Active;
 	}
 
 	//
@@ -73,8 +75,8 @@
 		OnClick.InvokeAsync(e);
 
 	//
-	protected Task InvokeOnExpandedAsync(bool expanded) =>
-		OnExpanded.InvokeAsync(new AccordionExpandEvent(Id, expanded));
+	protected Task InvokeOnActiveAsync(bool expanded) =>
+		OnActive.InvokeAsync(new AccordionExpandEventArgs(Id, expanded));
 
 	//
 	private async Task HandleOnClickAsync(MouseEventArgs e)
@@ -83,20 +85,7 @@
 
 		_internal_expanded = !_internal_expanded;
 
-		if (Group is not null && !Group.AlwaysOpen)
-		{
-			if (_internal_expanded)
-			{
-				if (Group.Expanded != Id)
-					await Group.SetExpandedAsync(Id);
-			}
-			else
-			{
-				if (Group.Expanded == Id)
-					await Group.SetExpandedAsync(null);
-			}
-		}
-
-		await InvokeOnExpandedAsync(_internal_expanded);
+		await Group!.SetActiveAsync(Id, _internal_expanded);
+		await InvokeOnActiveAsync(_internal_expanded);
 	}
 }

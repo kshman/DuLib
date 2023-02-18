@@ -87,3 +87,11 @@ public abstract class ComponentParent : ComponentObject
 	/// <summary>컴포넌트 아이디</summary>
 	[Parameter] public string Id { get; set; } = $"DU_B_{TypeSupp.Increment}";
 }
+
+
+// 검토
+// 팝업/다이얼로그
+//		https://stackoverflow.com/questions/72004471/creating-a-popup-in-blazor-using-c-sharp-method
+//		https://stackoverflow.com/questions/72005345/bootstrap-modal-popup-using-blazor-asp-net-core
+//		https://stackoverflow.com/questions/73617831/pass-parameters-to-modal-popup
+//		아니 찾다보니 많네..

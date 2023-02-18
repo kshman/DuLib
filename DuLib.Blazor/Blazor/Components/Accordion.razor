@@ -16,22 +16,15 @@
 	[Parameter] public bool AlwaysOpen { get; set; }
 	/// <summary>
 	/// 열림 설정하거나 얻기<br/>
-	/// 얻을 때는 부정확하니깐 <see cref="AccordionItem.OnExpanded"/> 쪽을 사용하는게 좋음
+	/// 얻을 때는 부정확하니깐 <see cref="AccordionItem.OnActive"/> 쪽을 사용하는게 좋음
 	/// </summary>
 	/// <remarks>정확히 하려면 자바스크립트로 속성 체크를 해야할 듯</remarks>
-	[Parameter] public string? Expanded { get; set; }
+	[Parameter] public string? Active { get; set; }
 
 	/// <summary>열림 이벤트</summary>
-	[Parameter] public EventCallback<string?> ExpandedChanged { get; set; }
+	[Parameter] public EventCallback<string?> ActiveChanged { get; set; }
 
 	protected override string RootClass => "accordion";
-
-	//
-	protected override async Task OnParametersSetAsync()
-	{
-		if (Expanded.IsHave(true))
-			await SetExpandedAsync(Expanded!);
-	}
 
 	//
 	protected override void OnComponentClass(CssCompose css)
@@ -39,21 +32,33 @@
 		css.Add(Flush, "accordion-flush");
 	}
 
-	//
-	internal async Task SetExpandedAsync(string? id)
+	// 자식한테 호출 받는거라 걍 무조건 클릭일 때 오게 됨
+	// AlwaysOpen 이 아니면 expanded는 무의미
+	internal async Task SetActiveAsync(string id, bool expanded)
 	{
-		if (Expanded == id)
-			return;
+		if (AlwaysOpen)
+		{
+			if (expanded && Active != id)
+			{
+				Active = id;
+				await InvokeActiveChanged(id);
+			}
+		}
+		else
+		{
+			if (Active == id)
+				return;
 
-		Expanded = id;
-		await InvokeExpandedChanged(id);
+			Active = id;
+			await InvokeActiveChanged(id);
 
-		StateHasChanged();
+			StateHasChanged();
+		}
 	}
 
 	//
-	protected virtual Task InvokeExpandedChanged(string? id) =>
-		ExpandedChanged.InvokeAsync(id);
+	protected virtual Task InvokeActiveChanged(string? id) =>
+		ActiveChanged.InvokeAsync(id);
 
 	//
 	internal string? GetIdForBsParent() =>

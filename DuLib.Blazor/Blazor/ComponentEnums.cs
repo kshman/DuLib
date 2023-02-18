@@ -107,6 +107,7 @@ public enum DropLayout
 {
 	Standard,
 	Button,
+	NavButton,
 }
 
 public enum DropDirection

@@ -74,9 +74,9 @@ else
 	[Parameter] public CarouselPlay Play { get; set; }
 
 	/// <summary>이벤트: 슬라이드가 시작될 때</summary>
-	[Parameter] public EventCallback<CarouselSlideEvent> OnBeginSlide { get; set; }
+	[Parameter] public EventCallback<CarouselSlideEventArgs> OnBeginSlide { get; set; }
 	/// <summary>이벤트: 슬라이드가 끝날 때</summary>
-	[Parameter] public EventCallback<CarouselSlideEvent> OnEndSlide { get; set; }
+	[Parameter] public EventCallback<CarouselSlideEventArgs> OnEndSlide { get; set; }
 
 	protected override string RootClass => "carousel slide"; // slide 까지가 포함됨
 
@@ -108,36 +108,22 @@ else
 	}
 
 	//
-	protected virtual Task InvokeOnBeginSlideAsync(CarouselSlideEvent e) =>
+	protected virtual Task InvokeOnBeginSlideAsync(CarouselSlideEventArgs e) =>
 		OnBeginSlide.InvokeAsync(e);
 
 	//
-	protected virtual Task InvokeOnEndSlideAsync(CarouselSlideEvent e) =>
+	protected virtual Task InvokeOnEndSlideAsync(CarouselSlideEventArgs e) =>
 		OnEndSlide.InvokeAsync(e);
 
 	// 반드시 public
 	[JSInvokable("ivk_cars_bs")]
-	public async Task InternalHandleBeginSlideAsync(int from, int to, bool isLeft)
-	{
-		await InvokeOnBeginSlideAsync(new CarouselSlideEvent
-			{
-				From = from,
-				To = to,
-				IsLeft = isLeft
-			});
-	}
+	public Task InternalHandleBeginSlideAsync(int from, int to, bool isLeft) =>
+		InvokeOnBeginSlideAsync(new CarouselSlideEventArgs(from, to, isLeft));
 
 	// 반드시 public
 	[JSInvokable("ivk_cars_es")]
-	public async Task InternalHandleEndSlideAsync(int from, int to, bool isLeft)
-	{
-		await InvokeOnEndSlideAsync(new CarouselSlideEvent
-			{
-				From = from,
-				To = to,
-				IsLeft = isLeft
-			});
-	}
+	public Task InternalHandleEndSlideAsync(int from, int to, bool isLeft) =>
+		InvokeOnEndSlideAsync(new CarouselSlideEventArgs(from, to, isLeft));
 
 	//
 	public async Task MoveToAsync(int index)

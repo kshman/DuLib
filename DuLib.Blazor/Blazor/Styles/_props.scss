@@ -17,3 +17,15 @@
 .ff-row-reverse {
 	flex-flow: row-reverse;
 }
+
+.border-none {
+	border-style: none !important;
+}
+
+.nav-button {
+	display: inline-block;
+	color: var(--bs-body-color);
+	background-color: var(--bs-body-bg);
+	border-style: none;
+	text-align: start;
+}
