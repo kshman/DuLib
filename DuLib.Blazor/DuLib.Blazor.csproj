@@ -56,10 +56,15 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <!--Content Remove="wwwroot\ref\**" /-->
-    <Compile Remove="wwwroot\ref\**" />
-    <EmbeddedResource Remove="wwwroot\ref\**" />
+    <!--Compile Remove="wwwroot\ref\**" /-->
+    <!--EmbeddedResource Remove="wwwroot\ref\**" /-->
+    <None Remove="wwwroot\ref\**" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Content Remove="wwwroot\ref\**" />
     <None Remove="wwwroot\ref\**" />
   </ItemGroup>
 

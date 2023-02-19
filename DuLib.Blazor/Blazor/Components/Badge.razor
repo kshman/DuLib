@@ -7,7 +7,7 @@
 @code {
 	[Parameter] public ComponentColor Fore { get; set; } = DefaultSettings.Fore;
 	[Parameter] public ComponentColor Back { get; set; } = DefaultSettings.Back;
-	[Parameter] public BadgeLayout Pill { get; set; } = DefaultSettings.Pill;
+	[Parameter] public BadgeLayout Layout { get; set; } = DefaultSettings.Layout;
 
 	//
 	protected override string CssName => "badge";
@@ -18,7 +18,7 @@
 		css
 			.Add(Fore.ToCss("text"))
 			.Add(Back.ToCss("bg"))
-			.Add(Pill switch
+			.Add(Layout switch
 			{
 				BadgeLayout.Pill => "rounded-pill",
 				BadgeLayout.Circle => "rounded-circle",

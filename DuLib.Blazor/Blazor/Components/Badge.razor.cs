@@ -6,7 +6,7 @@ public partial class Badge
     {
         public ComponentColor Fore { get; set; }
         public ComponentColor Back { get; set; }
-        public BadgeLayout Pill { get; set; }
+        public BadgeLayout Layout { get; set; }
         public string? Css { get; set; }
     }
 
@@ -14,7 +14,7 @@ public partial class Badge
     {
         Fore = ComponentColor.Light,
         Back = ComponentColor.Primary,
-        Pill = BadgeLayout.Standard,
+		Layout = BadgeLayout.Standard,
         Css = null,
     };
 }

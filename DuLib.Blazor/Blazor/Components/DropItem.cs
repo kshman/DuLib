@@ -1,6 +1,8 @@
-﻿namespace Du.Blazor.Components;
+﻿using Microsoft.AspNetCore.Components.Rendering;
 
-public abstract class DropItem : ComponentContainer
+namespace Du.Blazor.Components;
+
+public class DropItem : ComponentContainer
 {
 	[CascadingParameter] public DropDown? Group { get; set; }
 
@@ -14,6 +16,22 @@ public abstract class DropItem : ComponentContainer
 	{
 		if (Group == null)
 			ThrowSupp.InsideComponent(nameof(DropItem), nameof(DropDown));
+	}
+
+	//
+	protected override void BuildRenderTree(RenderTreeBuilder builder)
+	{
+		builder.OpenElement(0, "li");
+
+		builder.AddAttribute(1, "class", ListClass);
+		builder.AddMultipleAttributes(99, UserAttrs);
+
+		if (ChildContent is not null)
+			builder.AddContent(5, ChildContent);
+		else
+			builder.AddContent(5, Title);
+
+		builder.CloseElement();
 	}
 
 	//
