@@ -1,13 +1,12 @@
-﻿@inherits ComponentParent
+﻿@inherits ComponentContainer
 
-<div @ref="RootElement"
-	 class="@CssCompose.Join(Direction.ToCss(), BaseClass)"
-	 id="@Id"
+<div class="@CssCompose.Join(Direction.ToCss(), BaseClass)" id="@Id"
 	 @onfocusout="HandleFocusOutAsync" @onfocusout:stopPropagation="true">
 	@if (Layout is DropLayout.Standard)
 	{
 		var idA = $"{Id}_A";
-		<span role="button" class="@CssClass" id="@idA" @onclick="HandleOnClickAsync" @attributes="UserAttrs">
+		<span role="button" class="@CssClass" id="@idA" @attributes="UserAttrs"
+		      @onclick="HandleOnClickAsync">
 			@(Header is not null ? Header : Title)
 		</span>
 		<ul class="@MenuClass" aria-labelledby="@idA">
@@ -19,7 +18,8 @@
 	else
 	{
 		var idButton = $"{Id}_B";
-		<button type="button" class="@CssClass" id="@idButton" @onclick="HandleOnClickAsync" @attributes="UserAttrs">
+		<button type="button" class="@CssClass" id="@idButton" @attributes="UserAttrs"
+		        @onclick="HandleOnClickAsync">
 			@(Header is not null ? Header : Title)
 		</button>
 		<ul class="@MenuClass" aria-labelledby="@idButton">
@@ -52,8 +52,10 @@
 	public bool IsOpen { get; set; }
 	public DropItem? SelectedItem { get; set; }
 
-	protected override string RootClass => "dropdown-toggle";
+	//
+	protected override string CssName => "dropdown-toggle";
 
+	//
 	private bool _handle_click;
 
 	//
@@ -105,12 +107,7 @@
 	}
 
 	//
-	protected virtual Task InvokeOnClickAsync(MouseEventArgs e) => OnClick.InvokeAsync(e);
-	protected virtual Task InvokeOnShowHideAsync(bool e) => OnShowHide.InvokeAsync(e);
-	protected virtual Task InvokeOnSelectAsync(SelectEventArgs e) => OnSelect.InvokeAsync(e);
-
-	//
-	private async Task HandleFocusOutAsync()
+	protected async Task HandleFocusOutAsync()
 	{
 		if (AutoClose is false)
 			return;
@@ -120,7 +117,7 @@
 	}
 
 	//
-	private async Task HandleOnClickAsync(MouseEventArgs e)
+	protected async Task HandleOnClickAsync(MouseEventArgs e)
 	{
 		if (_handle_click is false)
 		{
@@ -134,6 +131,11 @@
 			_handle_click = false;
 		}
 	}
+
+	//
+	protected virtual Task InvokeOnClickAsync(MouseEventArgs e) => OnClick.InvokeAsync(e);
+	protected virtual Task InvokeOnShowHideAsync(bool e) => OnShowHide.InvokeAsync(e);
+	protected virtual Task InvokeOnSelectAsync(SelectEventArgs e) => OnSelect.InvokeAsync(e);
 
 	//
 	private string MenuClass => CssCompose.Join(

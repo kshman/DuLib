@@ -1,9 +1,7 @@
-﻿@inherits ComponentParent
+﻿@inherits ComponentObject
 
 <li class="@ListClass">
-	<hr @ref="@RootElement"
-	    class="@CssClass"
-	    @attributes="UserAttrs" />
+	<hr class="@CssClass" @attributes="UserAttrs" />
 </li>
 
 @code {
@@ -11,5 +9,6 @@
 
 	[Parameter] public string? ListClass { get; set; }
 
-	protected override string RootClass => "dropdown-divider";
+	//
+	protected override string CssName => "dropdown-divider";
 }

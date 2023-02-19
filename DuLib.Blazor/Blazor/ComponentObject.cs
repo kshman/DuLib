@@ -1,32 +1,24 @@
 ﻿namespace Du.Blazor;
 
 /// <summary>
-/// 컴포넌트 기본
+/// Du.Blazor 컴포넌트 맨 밑단
 /// </summary>
 public abstract class ComponentObject : ComponentBase
 {
-	/// <summary>테마 지정 (data-bs-theme)</summary>
-	[CascadingParameter] public ThemeColor Theme { get; set; }
 	/// <summary>사용하지 여부 (disabled)</summary>
 	[Parameter] public bool Enabled { get; set; } = true;
 	/// <summary>클래스 지정</summary>
 	[Parameter] public string? Class { get; set; }
 	/// <summary>사용자가 설정한 속성 지정</summary>
-	[Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object> UserAttrs { get; set; } = new();
-	
-	/// <summary>루트 엘리먼트</summary>
-	protected ElementReference RootElement { get; set; }
-	/// <summary>
-	/// 클래스 이름<br/>
-	/// 이 값이 기본 클래스가 된다
-	/// </summary>
-	protected virtual string RootClass => "";
-	
-	/// <summary>CSS 클래스 </summary>
-	public string CssClass => _css.Class;
+	[Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? UserAttrs { get; set; }
 
-	// CSS 컴포즈
-	private readonly CssCompose _css = new();
+	/// <summary>CSS 클래스 이름</summary>
+	protected virtual string CssName => string.Empty;
+	/// <summary>만들어진 최종 CSS 클래스</summary>
+	public string CssClass => _css_compose.Class;
+
+	/// <summary>CSS 작성 도움꾼</summary>
+	private readonly CssCompose _css_compose = new();
 
 	/// <summary>
 	/// 초기화 + 컴포넌트 속성 만들기.<br/>
@@ -35,9 +27,9 @@ public abstract class ComponentObject : ComponentBase
 	/// </summary>
 	protected override void OnInitialized()
 	{
-		_css.Set(RootClass).Register(() => Enabled.IfFalse("disabled"));
-		OnComponentClass(_css);
-		_css.Add(Class);
+		_css_compose.Add(CssName);
+		OnComponentClass(_css_compose);
+		_css_compose.Add(Class).Register(() => Enabled.IfFalse("disabled"));
 
 		OnComponentInitialized();
 	}
@@ -78,16 +70,23 @@ public abstract class ComponentObject : ComponentBase
 }
 
 /// <summary>
-/// 자식을 가지는 컴포넌트 기본
+/// 자식을 가지는 컴포넌트 인터페이스
 /// </summary>
-public abstract class ComponentParent : ComponentObject
+public interface IComponentId
+{
+	string Id { get; set; }
+}
+
+/// <summary>
+/// 자식을 가지는 컴포넌트
+/// </summary>
+public abstract class ComponentContainer : ComponentObject, IComponentId
 {
 	/// <summary>자식 콘텐트</summary>
 	[Parameter] public RenderFragment? ChildContent { get; set; }
 	/// <summary>컴포넌트 아이디</summary>
-	[Parameter] public string Id { get; set; } = $"DU_B_{TypeSupp.Increment}";
+	[Parameter] public string Id { get; set; } = $"D_Z_{TypeSupp.Increment}";
 }
-
 
 // 검토
 // 팝업/다이얼로그

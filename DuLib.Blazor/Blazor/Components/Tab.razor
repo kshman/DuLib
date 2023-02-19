@@ -4,15 +4,10 @@
 	@ChildContent
 </CascadingValue>
 
-<nav @ref="RootElement"
-	 class="@CssClass"
-	 id="@Id"
-	 @attributes="UserAttrs">
+<nav class="@CssClass" id="@Id" @attributes="UserAttrs">
 	@foreach (var tab in _items)
 	{
-		<a role="button"
-	   class="@CssCompose.Join(tab.CssClass, TabClass, (tab == _current).IfTrue("active"))"
-	   id="@tab.Id"
+		<a role="button" class="@CssCompose.Join(tab.CssClass, TabClass, (tab == _current).IfTrue("active"))" id="@tab.Id"
 	   @onclick="async () => await HandleOnClickAsync(tab)">
 			@if (tab.Header is not null)
 			{
@@ -43,7 +38,8 @@
 	[Parameter] public NavLayout Layout { get; set; }
 	[Parameter] public string? TabClass { get; set; }
 
-	protected override string RootClass => "nav";
+	//
+	protected override string CssName => "nav";
 
 	//
 	protected override void OnComponentClass(CssCompose css)

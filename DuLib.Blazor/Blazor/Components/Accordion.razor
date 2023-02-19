@@ -1,9 +1,6 @@
-﻿@inherits ComponentParent
+﻿@inherits ComponentContainer
 
-<div @ref="RootElement"
-	 class="@CssClass"
-	 id="@Id"
-	 @attributes="UserAttrs">
+<div class="@CssClass" id="@Id" @attributes="UserAttrs">
 	<CascadingValue Value="this" IsFixed="true">
 		@ChildContent
 	</CascadingValue>
@@ -24,16 +21,15 @@
 	/// <summary>열림 이벤트</summary>
 	[Parameter] public EventCallback<string?> ActiveChanged { get; set; }
 
-	protected override string RootClass => "accordion";
+	//
+	protected override string CssName => "accordion";
 
 	//
-	protected override void OnComponentClass(CssCompose css)
-	{
+	protected override void OnComponentClass(CssCompose css) =>
 		css.Add(Flush, "accordion-flush");
-	}
 
 	// 자식한테 호출 받는거라 걍 무조건 클릭일 때 오게 됨
-	// AlwaysOpen 이 아니면 expanded는 무의미
+	// 자식 체크 몬함. AlwaysOpen 이 아니면 expanded는 무의미
 	internal async Task SetActiveAsync(string id, bool expanded)
 	{
 		if (AlwaysOpen)
@@ -57,8 +53,7 @@
 	}
 
 	//
-	protected virtual Task InvokeActiveChanged(string? id) =>
-		ActiveChanged.InvokeAsync(id);
+	protected virtual Task InvokeActiveChanged(string? id) => ActiveChanged.InvokeAsync(id);
 
 	//
 	internal string? GetIdForBsParent() =>

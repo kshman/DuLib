@@ -1,6 +1,6 @@
 ﻿namespace Du.Blazor.Components;
 
-public abstract class DropItem : ComponentParent
+public abstract class DropItem : ComponentContainer
 {
 	[CascadingParameter] public DropDown? Group { get; set; }
 
@@ -17,7 +17,7 @@ public abstract class DropItem : ComponentParent
 	}
 
 	//
-	protected virtual async Task HandleOnClickAsync(MouseEventArgs e)
+	protected async Task HandleOnClickAsync(MouseEventArgs e)
 	{
 		await InvokeOnClickAsync(e);
 		await Group!.SetSelectedAsync(this);

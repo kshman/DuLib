@@ -2,23 +2,13 @@
 
 @if (Href.IsHave())
 {
-	<a @ref="RootElement"
-   class="@CssClass"
-   href="@Href"
-   target="@Target"
-   id="@Id"
-   @attributes="UserAttrs">
+	<a class="@CssClass" href="@Href" target="@Target" id="@Id" @attributes="UserAttrs">
 		@ChildContent
 	</a>
 }
 else
 {
-	<button @ref="RootElement"
-		class="@CssClass"
-		type="@Type.ToHtml()"
-		formtarget="@Target"
-		id="@Id"
-		@attributes="UserAttrs"
+	<button type="@Type.ToHtml()" class="@CssClass" formtarget="@Target" id="@Id" @attributes="UserAttrs"
 		@onclick="HandleOnClickAsync">
 		@ChildContent
 	</button>
@@ -29,6 +19,9 @@ else
 	[Parameter] public string? Href { get; set; }
 	/// <summary>타겟 지정.</summary>
 	[Parameter] public string? Target { get; set; }
+
+	//
+	protected override string CssName => "btn";
 
 	//
 	protected override void OnComponentClass(CssCompose css)

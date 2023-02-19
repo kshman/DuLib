@@ -1,6 +1,6 @@
 ﻿namespace Du.Blazor.Components;
 
-public class PivotItem : ComponentParent, IAsyncDisposable
+public class PivotItem : ComponentContainer, IAsyncDisposable
 {
 	/// <summary>피벗 그룹</summary>
 	[CascadingParameter] public Pivot? Group { get; set; }
@@ -12,12 +12,14 @@ public class PivotItem : ComponentParent, IAsyncDisposable
 	[Parameter] public RenderFragment? Header { get; set; }
 	/// <summary>내용
 	/// <see cref="Header"/>와 짝꿍<br/>이 내용이 있을 경우,
-	/// 태그 밖 <see cref="ComponentParent.ChildContent"/>는 처리하지 않는다
+	/// 태그 밖 <see cref="ComponentContainer.ChildContent"/>는 처리하지 않는다
 	/// </summary>
 	[Parameter] public RenderFragment? Content { get; set; }
 
-	protected override string RootClass => "hpvt-item";
+	//
+	protected override string CssName => "hpvt-item";
 
+	//
 	internal bool Selected { get; set; }
 
 	//

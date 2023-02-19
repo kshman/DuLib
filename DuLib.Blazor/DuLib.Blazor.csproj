@@ -1,62 +1,66 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-	<PropertyGroup>
-		<TargetFramework>net7.0</TargetFramework>
-		<Nullable>enable</Nullable>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<IsTrimmable>true</IsTrimmable>
-		<PublishTrimmed>true</PublishTrimmed>
-		<RootNamespace>Du</RootNamespace>
-		<RepositoryUrl>https://github.com/kshman/DuLib</RepositoryUrl>
-		<Version>0.2.0</Version>
-		<Title>Du.Blazor</Title>
-		<PackageId>Du.Blazor</PackageId>
-		<Product>Du.Blazor</Product>
-		<Description>DuLib Blazor</Description>
-		<Authors>kshman</Authors>
-		<PackageProjectUrl>https://github.com/kshman/DuLib</PackageProjectUrl>
-		<IncludeSymbols>true</IncludeSymbols>
-		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsTrimmable>true</IsTrimmable>
+    <PublishTrimmed>true</PublishTrimmed>
+    <RootNamespace>Du</RootNamespace>
+    <RepositoryUrl>https://github.com/kshman/DuLib</RepositoryUrl>
+    <Version>0.2.0</Version>
+    <Title>Du.Blazor</Title>
+    <PackageId>Du.Blazor</PackageId>
+    <Product>Du.Blazor</Product>
+    <Description>DuLib Blazor</Description>
+    <Authors>kshman</Authors>
+    <PackageProjectUrl>https://github.com/kshman/DuLib</PackageProjectUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <NoWarn>1701;1702;BL0007</NoWarn>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702</NoWarn>
+  </PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-	  <NoWarn>1701;1702;BL0007</NoWarn>
-		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn>1701;1702</NoWarn>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<SupportedPlatform Include="browser" />
-	</ItemGroup>
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<Content Remove="sassconfig.json" />
-	</ItemGroup>
+  <ItemGroup>
+    <Content Remove="sassconfig.json" />
+    <None Include="sassconfig.json" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<None Include="sassconfig.json" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.2" />
-	</ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
 
-	<ItemGroup>
-	  <Compile Update="Properties\Resources.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Resources.resx</DependentUpon>
-	  </Compile>
-	</ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
 
-	<ItemGroup>
-	  <EmbeddedResource Update="Properties\Resources.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
-	</ItemGroup>
+  <ItemGroup>
+    <!--Content Remove="wwwroot\ref\**" /-->
+    <Compile Remove="wwwroot\ref\**" />
+    <EmbeddedResource Remove="wwwroot\ref\**" />
+    <None Remove="wwwroot\ref\**" />
+  </ItemGroup>
 
 </Project>

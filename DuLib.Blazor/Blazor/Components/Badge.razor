@@ -1,0 +1,29 @@
+﻿@inherits ComponentContainer
+
+<span class="@CssClass" @attributes="UserAttrs">
+	@ChildContent
+</span>
+
+@code {
+	[Parameter] public ComponentColor Fore { get; set; } = DefaultSettings.Fore;
+	[Parameter] public ComponentColor Back { get; set; } = DefaultSettings.Back;
+	[Parameter] public BadgeLayout Pill { get; set; } = DefaultSettings.Pill;
+
+	//
+	protected override string CssName => "badge";
+
+	//
+	protected override void OnComponentClass(CssCompose css)
+	{
+		css
+			.Add(Fore.ToCss("text"))
+			.Add(Back.ToCss("bg"))
+			.Add(Pill switch
+			{
+				BadgeLayout.Pill => "rounded-pill",
+				BadgeLayout.Circle => "rounded-circle",
+				_ => null
+			})
+			.Add(DefaultSettings.Css);
+	}
+}

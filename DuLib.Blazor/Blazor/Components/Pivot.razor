@@ -1,25 +1,14 @@
-﻿@using System.Runtime.InteropServices
-@inherits AbstractPivot
+﻿@inherits AbstractPivot
 
 <CascadingValue Value="this" IsFixed="true">
 	@ChildContent
 </CascadingValue>
 
-<div @ref="RootElement"
-	 class="@CssClass"
-	 role="toolbar"
-	 id="@Id"
-	 @attributes="UserAttrs">
+<div role="toolbar" class="@CssClass" id="@Id" @attributes="UserAttrs">
 	<div class="hpvt-hdr" role="tablist">
 		@foreach (var pv in _items)
 		{
-			<button class="@pv.CssClass"
-				type="button"
-				role="tab"
-				aria-selected="@(pv == _current).ToBootStrap()"
-				tabindex="@(pv == _current ? 0 : -1)"
-				id="@Id"
-				@attributes="UserAttrs"
+			<button type="button" role="tab" class="@pv.CssClass" aria-selected="@(pv == _current).ToBootStrap()" tabindex="@(pv == _current ? 0 : -1)" id="@Id" @attributes="UserAttrs"
 				@onclick="async () => await HandleOnClickAsync(pv)">
 				@if (pv.Header is not null)
 				{
@@ -35,10 +24,7 @@
 
 	@if (TitleOnly is false)
 	{
-		<div class="hpvt-ctx"
-		 role="tabpanel"
-		 aria-hidden="false"
-		 aria-labelledby="@Id">
+		<div role="tabpanel" class="hpvt-ctx" aria-hidden="false" aria-labelledby="@Id">
 			@(_current?.Content ?? _current?.ChildContent)
 		</div>
 	}
@@ -52,7 +38,8 @@
 
 	[Parameter] public bool TitleOnly { get; set; }
 
-	protected override string RootClass => "hpvt";
+	//
+	protected override string CssName => "hpvt";
 
 	//
 	protected override void OnComponentClass(CssCompose css)

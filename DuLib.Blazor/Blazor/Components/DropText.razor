@@ -1,22 +1,20 @@
 ﻿@inherits DropItem
 
 <li class="@ListClass">
-	<span @ref="RootElement"
-	      class="@CssClass"
-	      @onmousedown="HandleOnClickAsync"
-	      @onmousedown:stopPropagation="true"
-	      @attributes="UserAttrs">
-		  @if (ChildContent != null)
-		  {
+	<span class="@CssClass" @attributes="UserAttrs"
+		  @onmousedown="HandleOnClickAsync" @onmousedown:stopPropagation="true">
+		@if (ChildContent != null)
+		{
 			@ChildContent
-		  }
-		  else
-		  {
-			  @Title
-		  }
+		}
+		else
+		{
+			@Title
+		}
 	</span>
 </li>
 
 @code {
-	protected override string RootClass => "dropdown-item-text";
+	//
+	protected override string CssName => "dropdown-item-text";
 }

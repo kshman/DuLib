@@ -1,8 +1,6 @@
-﻿@inherits ComponentParent
+﻿@inherits ComponentContainer
 
-<div @ref="RootElement"
-	 class="@CssClass"
-	 @attributes="UserAttrs">
+<div class="@CssClass" @attributes="UserAttrs">
 	<h2 class="accordion-header">
 		<button class="@CssCompose.Join("accordion-button", Active.IfFalse("collapsed"))"
 				type="button"
@@ -40,7 +38,7 @@
 
 	/// <summary>표시 타이틀</summary>
 	[Parameter] public string? Title { get; set; }
-	/// <summary>펼쳐놓기 상태. 이 값으로 확장 여부를 알면 안된다!</summary>
+	/// <summary>펼쳐놓기 상태. <c>이 값으로 확장 여부를 알면 안된다!</c></summary>
 	[Parameter] public bool Active { get; set; }
 
 	/// <summary>마우스가 눌림</summary>
@@ -48,8 +46,10 @@
 	/// <summary>펼쳐지고 닫힐 때</summary>
 	[Parameter] public EventCallback<AccordionExpandEventArgs> OnActive { get; set; }
 
-	protected override string RootClass => "accordion-item";
+	//
+	protected override string CssName => "accordion-item";
 
+	//
 	private bool _internal_expanded;
 
 	//
@@ -63,7 +63,6 @@
 	}
 
 	//
-	/// <inheritdoc />
 	protected override void OnAfterRender(bool firstRender)
 	{
 		if (firstRender)
@@ -71,21 +70,17 @@
 	}
 
 	//
-	protected Task InvokeOnClickAsync(MouseEventArgs e) =>
-		OnClick.InvokeAsync(e);
-
-	//
-	protected Task InvokeOnActiveAsync(bool expanded) =>
-		OnActive.InvokeAsync(new AccordionExpandEventArgs(Id, expanded));
-
-	//
-	private async Task HandleOnClickAsync(MouseEventArgs e)
+	protected async Task HandleOnClickAsync(MouseEventArgs e)
 	{
 		await InvokeOnClickAsync(e);
 
 		_internal_expanded = !_internal_expanded;
 
 		await Group!.SetActiveAsync(Id, _internal_expanded);
-		await InvokeOnActiveAsync(_internal_expanded);
+		await InvokeOnActiveAsync(new AccordionExpandEventArgs(Id, _internal_expanded));
 	}
+
+	//
+	protected virtual Task InvokeOnClickAsync(MouseEventArgs e) => OnClick.InvokeAsync(e);
+	protected virtual Task InvokeOnActiveAsync(AccordionExpandEventArgs e) => OnActive.InvokeAsync(e);
 }

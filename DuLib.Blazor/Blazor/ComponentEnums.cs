@@ -1,15 +1,6 @@
 ﻿namespace Du.Blazor;
 
 /// <summary>
-/// 테마 스타일 (data-bs-theme)
-/// </summary>
-public enum ThemeColor
-{
-	Light,
-	Dark,
-}
-
-/// <summary>
 /// 컴포넌트 크기
 /// </summary>
 public enum ComponentSize
@@ -130,4 +121,11 @@ public enum DropAutoClose
 	False,
 	Inside,
 	Outside,
+}
+
+public enum BadgeLayout
+{
+	Standard,
+	Pill,
+	Circle,
 }

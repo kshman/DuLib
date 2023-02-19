@@ -1,6 +1,6 @@
 ﻿namespace Du.Blazor.Components;
 
-public class ButtonBase : ComponentParent
+public abstract class ButtonBase : ComponentContainer
 {
 	/// <summary>에디트 컨텍스트</summary>
 	[CascadingParameter] public EditContext? EditContext { get; set; }
@@ -21,22 +21,16 @@ public class ButtonBase : ComponentParent
 	/// <summary>에디트 폼 InvalidClick.</summary>
 	[Parameter] public EventCallback<MouseEventArgs> OnInvalidClick { get; set; }
 
-	protected override string RootClass => "btn";
-
+	//
 	private bool _handle_click;
 
-	// OnComponentInitialized를 안쓰고 이걸 쓴 이유는... 컴포넌트 베이스니깐
+	// OnComponentInitialized를 안쓰고 이걸 쓴 이유는... 베이스 컴포넌트니깐!
 	protected override void OnInitialized()
 	{
 		Type ??= EditContext is null ? ButtonType.Button : ButtonType.Submit;
 
 		base.OnInitialized();
 	}
-
-	//
-	protected virtual Task InvokeOnClickAsync(MouseEventArgs e) => OnClick.InvokeAsync(e);
-	protected virtual Task InvokeOnValidClickAsync(MouseEventArgs e) => OnValidClick.InvokeAsync(e);
-	protected virtual Task InvokeOnInvalidClickAsync(MouseEventArgs e) => OnInvalidClick.InvokeAsync(e);
 
 	// 마우스 핸들러
 	protected async Task HandleOnClickAsync(MouseEventArgs e)
@@ -62,4 +56,9 @@ public class ButtonBase : ComponentParent
 			_handle_click = false;
 		}
 	}
+
+	//
+	protected virtual Task InvokeOnClickAsync(MouseEventArgs e) => OnClick.InvokeAsync(e);
+	protected virtual Task InvokeOnValidClickAsync(MouseEventArgs e) => OnValidClick.InvokeAsync(e);
+	protected virtual Task InvokeOnInvalidClickAsync(MouseEventArgs e) => OnInvalidClick.InvokeAsync(e);
 }
