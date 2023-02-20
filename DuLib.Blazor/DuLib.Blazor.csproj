@@ -8,7 +8,7 @@
     <PublishTrimmed>true</PublishTrimmed>
     <RootNamespace>Du</RootNamespace>
     <RepositoryUrl>https://github.com/kshman/DuLib</RepositoryUrl>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <Title>Du.Blazor</Title>
     <PackageId>Du.Blazor</PackageId>
     <Product>Du.Blazor</Product>
@@ -17,6 +17,8 @@
     <PackageProjectUrl>https://github.com/kshman/DuLib</PackageProjectUrl>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageIcon>DuLib.Blazor.png</PackageIcon>
+    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,6 +27,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <NoWarn>1701;1702</NoWarn>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
@@ -66,6 +69,13 @@
   <ItemGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <Content Remove="wwwroot\ref\**" />
     <None Remove="wwwroot\ref\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DuLib.Blazor.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

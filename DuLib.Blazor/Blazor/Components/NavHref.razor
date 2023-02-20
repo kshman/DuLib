@@ -1,0 +1,115 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+@inherits ComponentContainer
+@implements IDisposable
+@inject NavigationManager NavMan
+
+@if (DropDown is null)
+{
+	<a href="@Link" class="@CssClass" @attributes="UserAttrs">
+		@ChildContent
+	</a>
+}
+else
+{
+	<li class="@ContainerClass">
+		<a href="@Link" class="@CssClass" @attributes="UserAttrs">
+			@ChildContent
+		</a>
+	</li>
+}
+
+@code {
+	[CascadingParameter] public DropDownBase? DropDown { get; set; }
+
+	[Parameter] public NavLinkMatch Match { get; set; }
+	[Parameter] public string? Link { get; set; }
+
+	[Parameter] public string? ContainerClass { get; set; }
+
+	protected override string CssName => DropDown is null ? "nav-link" : "dropdown-item";
+
+	//
+	private bool _is_active;
+	private string? _href;
+
+	//
+	protected override void OnComponentInitialized()
+	{
+		NavMan.LocationChanged += OnLocationChanged;
+	}
+
+	//
+	protected override void OnComponentClass(CssCompose css)
+	{
+		css.Register(() => _is_active ? "active" : null);
+	}
+
+	//
+	protected override void OnParametersSet()
+	{
+		_href = Link == null ? null : NavMan.ToAbsoluteUri(Link).AbsoluteUri;
+		_is_active = ShouldMatch(NavMan.Uri);
+	}
+
+	//
+	private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+	{
+		var active = ShouldMatch(e.Location);
+		
+		if (active != _is_active)
+		{
+			_is_active = active;
+			StateHasChanged();
+		}
+
+		if (DropDown is not null)
+			InvokeAsync(DropDown.HideAsync);
+	}
+
+	//
+	private bool ShouldMatch(string uri)
+	{
+		if (_href is null)
+			return false;
+
+		if (EqualsHrefExactlyOrIfTrailingSlashAdded(uri))
+			return true;
+
+		if (Match == NavLinkMatch.Prefix && IsStrictlyPrefixWithSeparator(uri, _href))
+			return true;
+
+		return false;
+	}
+
+	//
+	private bool EqualsHrefExactlyOrIfTrailingSlashAdded(string uri)
+	{
+		if (string.Equals(uri, _href, StringComparison.OrdinalIgnoreCase))
+			return true;
+		if (uri.Length != _href!.Length - 1)
+			return false;
+		if (_href[_href!.Length - 1] != '/' || !_href.StartsWith(uri, StringComparison.OrdinalIgnoreCase))
+			return false;
+		return true;
+	}
+
+	//
+	private static bool IsStrictlyPrefixWithSeparator(string value, string prefix)
+	{
+		var l = prefix.Length;
+		if (value.Length > l)
+		{
+			return value.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+							&& (l == 0
+								|| !char.IsLetterOrDigit(prefix[l - 1])
+								|| !char.IsLetterOrDigit(value[l]));
+		}
+		return false;
+	}
+
+	//
+	public void Dispose()
+	{
+		NavMan.LocationChanged -= OnLocationChanged;
+	}
+}

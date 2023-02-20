@@ -1,0 +1,28 @@
+﻿@inherits DropDownBase
+
+<li class="@CssCompose.Join("nav-item", Direction.ToCss(), ContainerClass)" id="@Id"
+	@onfocusout="HandleFocusOutAsync" @onfocusout:stopPropagation="true">
+	@* href="#" 를 추가하면 포커스처리가 되는데 문제는.... 링크되버림 *@
+	<a role="button" class="@CssClass" @attributes="UserAttrs"
+	   @onclick="HandleOnClickAsync">
+		@Display
+	</a>
+	<ul class="@MenuCssClass">
+		<CascadingValue Value="this" IsFixed="true">
+			@if (Display is not null)
+			{
+				@List
+			}
+			else
+			{
+				@ChildContent
+			}
+		</CascadingValue>
+	</ul>
+</li>
+
+@code {
+
+	//
+	protected override string CssName => "nav-link dropdown-toggle";
+}

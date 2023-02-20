@@ -4,9 +4,9 @@ namespace Du.Blazor.Components;
 
 public class DropItem : ComponentContainer
 {
-	[CascadingParameter] public DropDown? Group { get; set; }
+	[CascadingParameter] public DropDownBase? Group { get; set; }
 
-	[Parameter] public string? ListClass { get; set; }
+	[Parameter] public string? ContainerClass { get; set; }
 	[Parameter] public string? Title { get; set; }
 
 	[Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
@@ -23,7 +23,7 @@ public class DropItem : ComponentContainer
 	{
 		builder.OpenElement(0, "li");
 
-		builder.AddAttribute(1, "class", ListClass);
+		builder.AddAttribute(1, "class", ContainerClass);
 		builder.AddMultipleAttributes(99, UserAttrs);
 
 		if (ChildContent is not null)
@@ -38,7 +38,7 @@ public class DropItem : ComponentContainer
 	protected async Task HandleOnClickAsync(MouseEventArgs e)
 	{
 		await InvokeOnClickAsync(e);
-		await Group!.SetSelectedAsync(this);
+		await Group!.InternalSetSelectedAsync(this);
 	}
 
 	//

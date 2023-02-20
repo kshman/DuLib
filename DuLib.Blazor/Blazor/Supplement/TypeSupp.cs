@@ -85,10 +85,10 @@
 
 		internal static string ToCss(this DropDirection dir) => dir switch
 		{
-			//DropDirection.Down => "dropdown",
 			DropDirection.Up => "dropup",
 			DropDirection.Start => "dropstart",
 			DropDirection.End => "dropend",
+			DropDirection.Down or
 			_ => "dropdown",
 		};
 
@@ -105,6 +105,7 @@
 		{
 			DropAlignment.Start => "dropdown-menu-start",
 			DropAlignment.End => "dropdown-menu-end",
+			DropAlignment.None or
 			_ => null
 		};
 

@@ -1,146 +1,72 @@
-﻿@inherits ComponentContainer
+﻿@inherits DropDownBase
 
-<div class="@CssCompose.Join(Direction.ToCss(), BaseClass)" id="@Id"
+<div class="@CssCompose.Join(Direction.ToCss(), ContainerClass)" id="@Id"
 	 @onfocusout="HandleFocusOutAsync" @onfocusout:stopPropagation="true">
 	@if (Layout is DropLayout.Standard)
 	{
-		var idA = $"{Id}_A";
-		<span role="button" class="@CssClass" id="@idA" @attributes="UserAttrs"
-		      @onclick="HandleOnClickAsync">
-			@(Header is not null ? Header : Title)
+		<span role="button" class="@CssClass" @attributes="UserAttrs"
+	   @onclick="HandleOnClickAsync">
+			@if (Display is not null)
+			{
+				@Display
+			}
+			else
+			{
+				@Title
+			}
 		</span>
-		<ul class="@MenuClass" aria-labelledby="@idA">
-			<CascadingValue Value="this" IsFixed="true">
-				@ChildContent
-			</CascadingValue>
-		</ul>
 	}
 	else
 	{
-		var idButton = $"{Id}_B";
-		<button type="button" class="@CssClass" id="@idButton" @attributes="UserAttrs"
-		        @onclick="HandleOnClickAsync">
-			@(Header is not null ? Header : Title)
+		<button type="button" class="@CssClass" @attributes="UserAttrs"
+			@onclick="HandleOnClickAsync">
+			@if (Display is not null)
+			{
+				@Display
+			}
+			else
+			{
+				@Title
+			}
 		</button>
-		<ul class="@MenuClass" aria-labelledby="@idButton">
-			<CascadingValue Value="this" IsFixed="true">
-				@ChildContent
-			</CascadingValue>
-		</ul>
 	}
+	<ul class="@MenuCssClass">
+		<CascadingValue Value="this" IsFixed="true">
+			@if (Display is not null)
+			{
+				@List
+			}
+			else
+			{
+				@ChildContent
+			}
+		</CascadingValue>
+	</ul>
 </div>
 
 @code {
-	[Parameter] public bool AutoClose { get; set; } = true;
 	[Parameter] public DropLayout Layout { get; set; }
-	[Parameter] public DropDirection Direction { get; set; }
-	[Parameter] public DropAlignment Alignment { get; set; }
 	[Parameter] public ComponentColor Color { get; set; }
 	[Parameter] public ComponentSize Size { get; set; }
 	[Parameter] public bool Outline { get; set; }
-	[Parameter] public string? Title { get; set; }
-	[Parameter] public RenderFragment? Header { get; set; }
-
-	[Parameter] public string? BaseClass { get; set; }
-	[Parameter] public string? ListClass { get; set; }
-
-	[Parameter] public EventCallback<MouseEventArgs> OnClick { get; set; }
-	[Parameter] public EventCallback<bool> OnShowHide { get; set; }
-	[Parameter] public EventCallback<SelectEventArgs> OnSelect { get; set; }
-
-	//
-	public bool IsOpen { get; set; }
-	public DropItem? SelectedItem { get; set; }
-
-	//
-	protected override string CssName => "dropdown-toggle";
-
-	//
-	private bool _handle_click;
 
 	//
 	protected override void OnComponentClass(CssCompose css)
 	{
-		if (Layout == DropLayout.Button)
+		switch (Layout)
 		{
-			css
-				.Add("btn")
-				.Add(Color.ToButtonCss(Outline))
-				.Add(Size.ToCss("btn"));
-		}
-		else if (Layout == DropLayout.NavButton)
-		{
-			css
-				//.Add("nav-link")
-				.Add("nav-button");
-		}
-	}
-
-	//
-	public async Task ShowAsync()
-	{
-		IsOpen = true;
-		await InvokeOnShowHideAsync(true);
-	}
-
-	//
-	public async Task HideAsync()
-	{
-		await Task.Delay(100);
-		IsOpen = false;
-		await InvokeOnShowHideAsync(false);
-	}
-
-	//
-	public async Task ToggleAsync()
-	{
-		IsOpen = !IsOpen;
-		await InvokeOnShowHideAsync(IsOpen);
-	}
-
-	//
-	internal async Task SetSelectedAsync(DropItem item)
-	{
-		SelectedItem = item;
-		await HideAsync();
-		await InvokeOnSelectAsync(new SelectEventArgs(item.Id, item.Title));
-	}
-
-	//
-	protected async Task HandleFocusOutAsync()
-	{
-		if (AutoClose is false)
-			return;
-		if (IsOpen is false)
-			return;
-		await HideAsync();
-	}
-
-	//
-	protected async Task HandleOnClickAsync(MouseEventArgs e)
-	{
-		if (_handle_click is false)
-		{
-			_handle_click = true;
-
-			if (OnClick.HasDelegate)
-				await InvokeOnClickAsync(e);
-
-			await ToggleAsync();
-
-			_handle_click = false;
+			case DropLayout.Button:
+				css
+					.Add("btn")
+					.Add(Color.ToButtonCss(Outline))
+					.Add(Size.ToCss("btn"));
+				break;
+			case DropLayout.Flat:
+				css.Add("block-flat");
+				break;
+			case DropLayout.Standard:
+			default:
+				break;
 		}
 	}
-
-	//
-	protected virtual Task InvokeOnClickAsync(MouseEventArgs e) => OnClick.InvokeAsync(e);
-	protected virtual Task InvokeOnShowHideAsync(bool e) => OnShowHide.InvokeAsync(e);
-	protected virtual Task InvokeOnSelectAsync(SelectEventArgs e) => OnSelect.InvokeAsync(e);
-
-	//
-	private string MenuClass => CssCompose.Join(
-		"dropdown-menu",
-		Alignment.ToCss(),
-		ListClass,
-		IsOpen ? "show" : null)!;
 }

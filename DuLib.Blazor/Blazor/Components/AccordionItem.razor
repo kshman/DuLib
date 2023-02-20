@@ -9,9 +9,9 @@
 				aria-expanded="@Active.ToBootStrap()"
 				aria-controls="#@Id"
 				@onclick="HandleOnClickAsync">
-			@if (Header is not null)
+			@if (Display is not null)
 			{
-				@Header
+				@Display
 			}
 			else
 			{
@@ -32,7 +32,7 @@
 	[CascadingParameter] public Accordion? Group { get; set; }
 
 	/// <summary>타이틀 대신 쓰는 헤더 블럭</summary>
-	[Parameter] public RenderFragment? Header { get; set; }
+	[Parameter] public RenderFragment? Display { get; set; }
 	/// <summary>콘텐트 블럭</summary>
 	[Parameter] public RenderFragment? Content { get; set; }
 

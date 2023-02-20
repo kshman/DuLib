@@ -9,9 +9,9 @@
 	{
 		<a role="button" class="@CssCompose.Join(tab.CssClass, TabClass, (tab == _current).IfTrue("active"))" id="@tab.Id"
 	   @onclick="async () => await HandleOnClickAsync(tab)">
-			@if (tab.Header is not null)
+			@if (tab.Display is not null)
 			{
-				@tab.Header
+				@tab.Display
 			}
 			else
 			{

@@ -94,3 +94,5 @@ public abstract class ComponentContainer : ComponentObject, IComponentId
 //		https://stackoverflow.com/questions/72005345/bootstrap-modal-popup-using-blazor-asp-net-core
 //		https://stackoverflow.com/questions/73617831/pass-parameters-to-modal-popup
 //		아니 찾다보니 많네..
+// 트리
+//		https://stackoverflow.com/questions/70311596/how-to-create-a-generic-treeview-component-in-blazor

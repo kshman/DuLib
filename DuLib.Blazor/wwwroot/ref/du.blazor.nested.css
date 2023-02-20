@@ -21,8 +21,7 @@
 .border-none {
   border-style: none !important; }
 
-.nav-button {
-  display: inline-block;
+.block-flat {
   color: var(--bs-body-color);
   background-color: var(--bs-body-bg);
   border-style: none;

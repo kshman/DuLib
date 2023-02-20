@@ -1,0 +1,24 @@
+﻿@inherits ComponentObject
+
+@if (DropDown is not null)
+{
+	<li class="@ContainerClass">
+		<hr class="@CssClass" @attributes="UserAttrs" />
+	</li>
+}
+else
+{
+	<hr class="@CssClass" @attributes="UserAttrs" />
+}
+
+@code {
+	[CascadingParameter] public DropDownBase? DropDown { get; set; }
+
+	[Parameter] public string? ContainerClass { get; set; }
+
+	//
+	protected override void OnComponentClass(CssCompose css)
+	{
+		css.Add(DropDown is not null, "dropdown-divider");
+	}
+}

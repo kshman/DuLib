@@ -1,9 +1,9 @@
 ﻿@inherits DropItem
 
-<li class="@ListClass">
-	<span role="button" class="@CssClass" @attributes="UserAttrs"
-		  @onmousedown="HandleOnClickAsync"
-		  @onmousedown:stopPropagation="true">
+<li class="@ContainerClass">
+	<a role="button" class="@CssClass" @attributes="UserAttrs"
+	   @onmousedown="HandleOnClickAsync"
+	   @onmousedown:stopPropagation="true">
 		@if (ChildContent != null)
 		{
 			@ChildContent
@@ -12,7 +12,7 @@
 		{
 			@Title
 		}
-	</span>
+	</a>
 </li>
 
 @code {

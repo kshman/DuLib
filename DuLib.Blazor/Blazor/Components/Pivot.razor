@@ -8,11 +8,11 @@
 	<div class="hpvt-hdr" role="tablist">
 		@foreach (var pv in _items)
 		{
-			<button type="button" role="tab" class="@pv.CssClass" aria-selected="@(pv == _current).ToBootStrap()" tabindex="@(pv == _current ? 0 : -1)" id="@Id" @attributes="UserAttrs"
+			<button type="button" role="tab" class="@pv.CssClass" aria-selected="@((pv == _current).ToBootStrap())" tabindex="@(pv == _current ? 0 : -1)" id="@Id" @attributes="UserAttrs"
 				@onclick="async () => await HandleOnClickAsync(pv)">
-				@if (pv.Header is not null)
+				@if (pv.Display is not null)
 				{
-					<span>@pv.Header</span>
+					<span>@pv.Display</span>
 				}
 				else
 				{

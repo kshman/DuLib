@@ -6,13 +6,13 @@ public class TabItem : ComponentContainer, IAsyncDisposable
 	/// <summary>그룹</summary>
 	[CascadingParameter] public Tab? Group { get; set; }
 
-	/// <summary>타이틀 <see cref="Header"/></summary>
+	/// <summary>타이틀 <see cref="Display"/></summary>
 	[Parameter] public string? Title { get; set; }
 
 	/// <summary>헤더 <see cref="Title"/></summary>
-	[Parameter] public RenderFragment? Header { get; set; }
+	[Parameter] public RenderFragment? Display { get; set; }
 	/// <summary>내용 
-	/// <see cref="Header"/>와 짝꿍<br/>이 내용이 있을 경우,
+	/// <see cref="Display"/>와 짝꿍<br/>이 내용이 있을 경우,
 	/// 태그 밖 <see cref="ComponentContainer.ChildContent"/>는 처리하지 않는다
 	/// </summary>
 	[Parameter] public RenderFragment? Content { get; set; }
